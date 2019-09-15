@@ -21,7 +21,7 @@ public class BeneficiaryDaoImpl implements BeneficiaryDao {
 
     @Inject
     private H2DataSourceService h2DataSourceService;
-    
+
     public HashMap<String, Dao<?, ?>> getBeneficiaryDao() {
 
         Dao<BeneficiaryEntity,Integer> beneficiaryDao;
