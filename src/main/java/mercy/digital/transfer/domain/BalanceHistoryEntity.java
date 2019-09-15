@@ -1,14 +1,26 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "BALANCE_HISTORY")
 @Entity
-@Table(name = "BALANCE_HISTORY", schema = "TRANSFER", catalog = "TRANSFER_DB")
+@Table(name = "BALANCE_HISTORY", schema = "TRANSFER")
 public class BalanceHistoryEntity {
+
+    @DatabaseField(generatedId = true)
     private int balanceId;
+
+    @DatabaseField(columnName = "BEFORE_BALANCE")
     private Double beforeBalance;
+
+    @DatabaseField(columnName = "PAST_BALANCE")
     private Double pastBalance;
+
+    @DatabaseField(foreign = true, foreignAutoCreate = true)
     private AccountEntity accountByAccountId;
 
     @Id

@@ -5,7 +5,9 @@ import mercy.digital.transfer.domain.ClientEntity;
 import java.util.List;
 
 public interface ClientService {
-    void addClient(ClientEntity clientEntity);
-    ClientEntity findAccountById(Integer id);
-    List<ClientEntity> findAllAccounts();
+    void addEntityClient(ClientEntity clientEntity);
+
+    ClientEntity findEntityAccountById(Integer id);
+
+    List<ClientEntity> findAllEntityAccounts();
 }

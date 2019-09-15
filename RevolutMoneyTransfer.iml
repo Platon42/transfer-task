@@ -6,7 +6,7 @@
         <setting name="validation-enabled" value="true" />
         <setting name="provider-name" value="EclipseLink" />
         <datasource-mapping>
-          <factory-entry name="Entities" value="e538b229-d58a-44e0-b4eb-001fa614671b" />
+          <factory-entry name="Entities" value="18252671-c8bb-4631-a08d-3c09d575fd40" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/java/META-INF/persistence.xml" />

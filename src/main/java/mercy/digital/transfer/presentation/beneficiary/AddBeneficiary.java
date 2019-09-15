@@ -1,15 +1,28 @@
 package mercy.digital.transfer.presentation.beneficiary;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
-import mercy.digital.transfer.domain.AccountEntity;
-import mercy.digital.transfer.domain.BeneficiaryEntity;
 
-@Value
+@JsonPOJOBuilder(withPrefix = "")
 @Setter
+@Getter
 public class AddBeneficiary {
 
-    private AccountEntity accountEntity;
-    private BeneficiaryEntity beneficiaryEntity;
+    @JsonProperty("account_id")
+    private int accountId;
+
+    @JsonProperty("street_line")
+    private String streetLine;
+
+    @JsonProperty("city")
+    private String city;
+
+    @JsonProperty("country")
+    private String country;
+
+    @JsonProperty("postcode")
+    private String postcode;
 
 }

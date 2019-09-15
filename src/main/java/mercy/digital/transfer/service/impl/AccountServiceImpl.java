@@ -20,7 +20,7 @@ public class AccountServiceImpl implements AccountService {
         this.accountDao = accountDao;
     }
 
-    public void addAccount (AccountEntity accountEntity) {
+    public void addEntityAccount(AccountEntity accountEntity) {
         Dao<AccountEntity, Integer> accountDao = this.accountDao.getAccountDao();
         try {
             accountDao.create(accountEntity);
@@ -29,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    public AccountEntity findAccountById (Integer id) {
+    public AccountEntity findEntityAccountById(Integer id) {
         Dao<AccountEntity, Integer> accountDao = this.accountDao.getAccountDao();
         AccountEntity accountEntity = null;
         try {
@@ -40,7 +40,7 @@ public class AccountServiceImpl implements AccountService {
         return accountEntity;
     }
 
-    public List<AccountEntity> findAllAccounts ()  {
+    public List<AccountEntity> findAllEntityAccounts() {
         Dao<AccountEntity, Integer> accountDao = this.accountDao.getAccountDao();
         List<AccountEntity> accountEntityList = null;
         try {

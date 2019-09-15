@@ -1,16 +1,19 @@
 package mercy.digital.transfer.facade;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
-import mercy.digital.transfer.domain.AccountEntity;
-import mercy.digital.transfer.presentation.account.AddAccount;
-import mercy.digital.transfer.presentation.account.GetAccount;
+import mercy.digital.transfer.domain.ClientEntity;
+import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.service.AccountService;
 import mercy.digital.transfer.service.BeneficiaryService;
 import mercy.digital.transfer.service.ClientService;
 
+@Slf4j
+@Singleton
 public class ClientFacadeImpl implements ClientFacade {
 
     private MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
@@ -26,9 +29,12 @@ public class ClientFacadeImpl implements ClientFacade {
         this.clientService = clientService;
         this.beneficiaryService = beneficiaryService;
     }
-    public void addAccount(AddAccount account) {
-        AccountEntity accountEntity = this.mapper.map(account, AccountEntity.class);
-        accountService.addAccount(accountEntity);
+
+    public void addClient(AddClient client) {
+        log.info(client.getFirstName());
+        ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
+        clientService.addEntityClient(clientEntity);
     }
+
 
 }

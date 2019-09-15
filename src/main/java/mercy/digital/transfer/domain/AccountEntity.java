@@ -1,19 +1,39 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "ACCOUNT")
 @Entity
-@Table(name = "ACCOUNT", schema = "TRANSFER", catalog = "TRANSFER_DB")
+@Table(name = "ACCOUNT", schema = "TRANSFER")
 public class AccountEntity {
+
+    @DatabaseField(generatedId = true)
     private int accountId;
+
+    @DatabaseField(columnName = "ACCOUNT_NO")
     private Integer accountNo;
+
+    @DatabaseField(columnName = "BALANCE")
     private Double balance;
+
+    @DatabaseField(columnName = "CURRENCY")
     private String currency;
+
+    @DatabaseField(columnName = "CREATED_AT")
     private Timestamp createdAt;
+
+    @DatabaseField(columnName = "UPDATED_AT")
     private Timestamp updatedAt;
+
+    @DatabaseField(columnName = "NAME")
     private String name;
+
+    @DatabaseField(columnName = "COUNTRY_OF_ISSUE")
     private String countryOfIssue;
 
     @Id

@@ -1,18 +1,36 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "CLIENT")
 @Entity
-@Table(name = "CLIENT", schema = "TRANSFER", catalog = "TRANSFER_DB")
+@Table(name = "CLIENT", schema = "TRANSFER")
 public class ClientEntity {
+
+    @DatabaseField(generatedId = true)
     private int clientId;
+
+    @DatabaseField(columnName = "FIRST_NAME")
     private String firstName;
+
+    @DatabaseField(columnName = "LAST_NAME")
     private String lastName;
+
+    @DatabaseField(columnName = "MIDDLE_NAME")
     private String middleName;
+
+    @DatabaseField(columnName = "BIRTHDAY")
     private Date birthday;
+
+    @DatabaseField(columnName = "SEX")
     private int sex;
+
+    @DatabaseField(columnName = "RESIDENT_COUNTRY")
     private String residentCountry;
 
     @Id

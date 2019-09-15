@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "TRANSACTION_HISTORY", schema = "TRANSFER", catalog = "TRANSFER_DB")
+@Table(name = "TRANSACTION_HISTORY", schema = "TRANSFER")
 public class TransactionHistoryEntity {
     private int transactionId;
     private Integer amount;

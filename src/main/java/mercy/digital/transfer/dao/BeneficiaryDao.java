@@ -1,12 +1,9 @@
 package mercy.digital.transfer.dao;
 
-import mercy.digital.transfer.domain.AccountEntity;
-import mercy.digital.transfer.domain.BeneficiaryEntity;
+import com.j256.ormlite.dao.Dao;
 
-import java.util.List;
+import java.util.HashMap;
 
 public interface BeneficiaryDao {
-    void addBeneficiary (AccountEntity accountEntity, BeneficiaryEntity beneficiaryEntity);
-    BeneficiaryEntity findBeneficiaryById (Integer id);
-    List<BeneficiaryEntity> findAllBeneficiary ();
+    HashMap<String, Dao<?, ?>> getBeneficiaryDao();
 }
