@@ -7,8 +7,6 @@ import java.util.List;
 
 public interface BeneficiaryService {
     void addEntityBeneficiary(AccountEntity accountEntity, BeneficiaryEntity beneficiaryEntity);
-
     BeneficiaryEntity findEntityBeneficiaryById(Integer id);
-
     List<BeneficiaryEntity> findAllEntityBeneficiary();
 }

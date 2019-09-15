@@ -1,0 +1,13 @@
+{
+  "currency": "RUB",
+  "name": "First",
+  "country_of_issue": "RU",
+  "beneficiary": [
+    {
+      "street_line": "street1",
+      "city": "Moscow",
+      "country": "Russia",
+      "postcode": "1111"
+    }
+  ]
+}
