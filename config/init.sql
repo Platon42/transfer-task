@@ -46,13 +46,13 @@ create table TRANSFER.BENEFICIARY
     constraint BENEFICIARY_PK
 		primary key (BENEFICIARY_ID),
     constraint BENEFICIARY_ACCOUNT_ACCOUNT_ID_FK
-		foreign key (ACCOUNT_ID) references TRANSFER.ACCOUNT,
+		foreign key (ACCOUNT_ID) references TRANSFER.CLIENT_ACCOUNT,
     constraint BENEFICIARY_CLIENT_CLIENT_ID_FK
 		foreign key (CLIENT_ID) references TRANSFER.CLIENT
 			on update cascade on delete cascade
 );
 
-alter table TRANSFER.ACCOUNT
+alter table TRANSFER.CLIENT_ACCOUNT
 	add constraint ACCOUNT_BENEFICIARY_BENEFICIARY_ID_FK
 		foreign key (BENEFICIARY_ID) references BENEFICIARY;
 
@@ -68,7 +68,7 @@ create table TRANSFER.TRANSACTION_HISTORY
     constraint TRANSACTION_HISTORY_PK
 		primary key (TRANSACTION_ID),
     constraint TRANSACTION_HISTORY_ACCOUNT_ACCOUNT_ID_ACCOUNT_ID_FK
-		foreign key (SOURCE_ACCOUNT_ID, TARGET_ACCOUNT_ID) references TRANSFER.ACCOUNT (ACCOUNT_ID, ACCOUNT_ID)
+		foreign key (SOURCE_ACCOUNT_ID, TARGET_ACCOUNT_ID) references TRANSFER.CLIENT_ACCOUNT (CLIENT_ACCOUNT_ID, CLIENT_ACCOUNT_ID)
 			on update cascade on delete cascade
 );
 
@@ -82,10 +82,10 @@ create table TRANSFER.BALANCE_HISTORY
 	constraint BALANCE_HISTORY_PK
 		primary key (BALANCE_ID),
 	constraint BALANCE_HISTORY_ACCOUNT_ACCOUNT_ID_FK
-		foreign key (ACCOUNT_ID) references TRANSFER.ACCOUNT
+		foreign key (ACCOUNT_ID) references TRANSFER.CLIENT_ACCOUNT
 			on update cascade on delete cascade,
 	constraint BALANCE_HISTORY_TRANSACTION_HISTORY_TRANSACTION_ID_FK
-        foreign key (TRANSACTION_ID) references TRANSFER.TRANSACTION_HISTORY
+        foreign key (TRANSACTION_ID) references TRANSFER.TRANSFER
 			on update cascade on delete cascade
 );
 

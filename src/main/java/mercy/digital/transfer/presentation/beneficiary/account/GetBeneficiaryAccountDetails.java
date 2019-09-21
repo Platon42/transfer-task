@@ -1,4 +1,4 @@
-package mercy.digital.transfer.presentation.account;
+package mercy.digital.transfer.presentation.beneficiary.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -12,7 +12,7 @@ import java.util.List;
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter
-public class GetAccountDetails {
+public class GetBeneficiaryAccountDetails {
 
     private int accountId;
 

@@ -1,36 +1,21 @@
 package mercy.digital.transfer.domain;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Objects;
 
-@DatabaseTable(tableName = "BENEFICIARY")
 @Entity
-@Table(name = "BENEFICIARY", schema = "TRANSFER")
+@Table(name = "BENEFICIARY", schema = "TRANSFER", catalog = "H2")
 public class BeneficiaryEntity {
-
-    @DatabaseField(generatedId = true)
     private int beneficiaryId;
-
-    @DatabaseField(columnName = "STREET_LINE")
     private String streetLine;
-
-    @DatabaseField(columnName = "CITY")
     private String city;
-
-    @DatabaseField(columnName = "COUNTRY")
     private String country;
-
-    @DatabaseField(columnName = "POSTCODE")
     private String postcode;
-
-    @DatabaseField(foreignAutoCreate = true, foreign = true)
-    private AccountEntity accountByAccountId;
+    private Collection<BeneficiaryAccountEntity> beneficiaryAccountsByBeneficiaryId;
 
     @Id
-    @Column(name = "BENEFICIARY_ID")
+    @Column(name = "BENEFICIARY_ID", nullable = false)
     public int getBeneficiaryId() {
         return beneficiaryId;
     }
@@ -40,7 +25,7 @@ public class BeneficiaryEntity {
     }
 
     @Basic
-    @Column(name = "STREET_LINE")
+    @Column(name = "STREET_LINE", nullable = true, length = 50)
     public String getStreetLine() {
         return streetLine;
     }
@@ -50,7 +35,7 @@ public class BeneficiaryEntity {
     }
 
     @Basic
-    @Column(name = "CITY")
+    @Column(name = "CITY", nullable = true, length = 50)
     public String getCity() {
         return city;
     }
@@ -60,7 +45,7 @@ public class BeneficiaryEntity {
     }
 
     @Basic
-    @Column(name = "COUNTRY")
+    @Column(name = "COUNTRY", nullable = true, length = 3)
     public String getCountry() {
         return country;
     }
@@ -70,7 +55,7 @@ public class BeneficiaryEntity {
     }
 
     @Basic
-    @Column(name = "POSTCODE")
+    @Column(name = "POSTCODE", nullable = true, length = 20)
     public String getPostcode() {
         return postcode;
     }
@@ -96,13 +81,12 @@ public class BeneficiaryEntity {
         return Objects.hash(beneficiaryId, streetLine, city, country, postcode);
     }
 
-    @ManyToOne
-    @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ACCOUNT_ID")
-    public AccountEntity getAccountByAccountId() {
-        return accountByAccountId;
+    @OneToMany(mappedBy = "beneficiaryByBeneficiaryId")
+    public Collection<BeneficiaryAccountEntity> getBeneficiaryAccountsByBeneficiaryId() {
+        return beneficiaryAccountsByBeneficiaryId;
     }
 
-    public void setAccountByAccountId(AccountEntity accountByAccountId) {
-        this.accountByAccountId = accountByAccountId;
+    public void setBeneficiaryAccountsByBeneficiaryId(Collection<BeneficiaryAccountEntity> beneficiaryAccountsByBeneficiaryId) {
+        this.beneficiaryAccountsByBeneficiaryId = beneficiaryAccountsByBeneficiaryId;
     }
 }

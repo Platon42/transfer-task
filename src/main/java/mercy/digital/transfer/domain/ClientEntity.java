@@ -1,17 +1,18 @@
 package mercy.digital.transfer.domain;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Collection;
 import java.util.Objects;
 
 @DatabaseTable(tableName = "CLIENT")
 @Entity
-@Table(name = "CLIENT", schema = "TRANSFER")
+@Table(name = "CLIENT", schema = "TRANSFER", catalog = "H2")
 public class ClientEntity {
-
     @DatabaseField(generatedId = true)
     private int clientId;
 
@@ -32,9 +33,11 @@ public class ClientEntity {
 
     @DatabaseField(columnName = "RESIDENT_COUNTRY")
     private String residentCountry;
+    @ForeignCollectionField(eager = true)
+    private Collection<ClientAccountEntity> clientAccountsByClientId;
 
     @Id
-    @Column(name = "CLIENT_ID")
+    @Column(name = "CLIENT_ID", nullable = false)
     public int getClientId() {
         return clientId;
     }
@@ -44,7 +47,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "FIRST_NAME")
+    @Column(name = "FIRST_NAME", nullable = false, length = 50)
     public String getFirstName() {
         return firstName;
     }
@@ -54,7 +57,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "LAST_NAME")
+    @Column(name = "LAST_NAME", nullable = false, length = 50)
     public String getLastName() {
         return lastName;
     }
@@ -64,7 +67,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "MIDDLE_NAME")
+    @Column(name = "MIDDLE_NAME", nullable = true, length = 50)
     public String getMiddleName() {
         return middleName;
     }
@@ -74,7 +77,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "BIRTHDAY")
+    @Column(name = "BIRTHDAY", nullable = false)
     public Date getBirthday() {
         return birthday;
     }
@@ -84,7 +87,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "SEX")
+    @Column(name = "SEX", nullable = false)
     public int getSex() {
         return sex;
     }
@@ -94,7 +97,7 @@ public class ClientEntity {
     }
 
     @Basic
-    @Column(name = "RESIDENT_COUNTRY")
+    @Column(name = "RESIDENT_COUNTRY", nullable = false, length = 20)
     public String getResidentCountry() {
         return residentCountry;
     }
@@ -120,5 +123,14 @@ public class ClientEntity {
     @Override
     public int hashCode() {
         return Objects.hash(clientId, firstName, lastName, middleName, birthday, sex, residentCountry);
+    }
+
+    @OneToMany(mappedBy = "clientByClientId")
+    public Collection<ClientAccountEntity> getClientAccountsByClientId() {
+        return clientAccountsByClientId;
+    }
+
+    public void setClientAccountsByClientId(Collection<ClientAccountEntity> clientAccountsByClientId) {
+        this.clientAccountsByClientId = clientAccountsByClientId;
     }
 }

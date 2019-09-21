@@ -8,9 +8,9 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.presentation.client.AddClient;
-import mercy.digital.transfer.service.AccountService;
-import mercy.digital.transfer.service.BeneficiaryService;
-import mercy.digital.transfer.service.ClientService;
+import mercy.digital.transfer.service.client.ClientAccountService;
+import mercy.digital.transfer.service.beneficiary.BeneficiaryService;
+import mercy.digital.transfer.service.client.ClientService;
 
 @Slf4j
 @Singleton
@@ -20,12 +20,12 @@ public class ClientFacadeImpl implements ClientFacade {
     private MapperFacade mapper = mapperFactory.getMapperFacade();
 
     private final ClientService clientService;
-    private final AccountService accountService;
+    private final ClientAccountService clientAccountService;
     private final BeneficiaryService beneficiaryService;
 
     @Inject
-    public ClientFacadeImpl (ClientService clientService, AccountService accountService, BeneficiaryService beneficiaryService) {
-        this.accountService = accountService;
+    public ClientFacadeImpl (ClientService clientService, ClientAccountService clientAccountService, BeneficiaryService beneficiaryService) {
+        this.clientAccountService = clientAccountService;
         this.clientService = clientService;
         this.beneficiaryService = beneficiaryService;
     }

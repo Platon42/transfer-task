@@ -1,30 +1,19 @@
 package mercy.digital.transfer.domain;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 import javax.persistence.*;
 import java.util.Objects;
 
-@DatabaseTable(tableName = "BALANCE_HISTORY")
 @Entity
-@Table(name = "BALANCE_HISTORY", schema = "TRANSFER")
+@Table(name = "BALANCE_HISTORY", schema = "TRANSFER", catalog = "H2")
 public class BalanceHistoryEntity {
-
-    @DatabaseField(generatedId = true)
     private int balanceId;
-
-    @DatabaseField(columnName = "BEFORE_BALANCE")
     private Double beforeBalance;
-
-    @DatabaseField(columnName = "PAST_BALANCE")
     private Double pastBalance;
-
-    @DatabaseField(foreign = true, foreignAutoCreate = true)
-    private AccountEntity accountByAccountId;
+    private ClientAccountEntity clientAccountByAccountId;
+    private TransferEntity transferByTransactionId;
 
     @Id
-    @Column(name = "BALANCE_ID")
+    @Column(name = "BALANCE_ID", nullable = false)
     public int getBalanceId() {
         return balanceId;
     }
@@ -34,7 +23,7 @@ public class BalanceHistoryEntity {
     }
 
     @Basic
-    @Column(name = "BEFORE_BALANCE")
+    @Column(name = "BEFORE_BALANCE", nullable = true, precision = 0)
     public Double getBeforeBalance() {
         return beforeBalance;
     }
@@ -44,7 +33,7 @@ public class BalanceHistoryEntity {
     }
 
     @Basic
-    @Column(name = "PAST_BALANCE")
+    @Column(name = "PAST_BALANCE", nullable = true, precision = 0)
     public Double getPastBalance() {
         return pastBalance;
     }
@@ -69,12 +58,22 @@ public class BalanceHistoryEntity {
     }
 
     @ManyToOne
-    @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "ACCOUNT_ID")
-    public AccountEntity getAccountByAccountId() {
-        return accountByAccountId;
+    @JoinColumn(name = "ACCOUNT_ID", referencedColumnName = "CLIENT_ACCOUNT_ID")
+    public ClientAccountEntity getClientAccountByAccountId() {
+        return clientAccountByAccountId;
     }
 
-    public void setAccountByAccountId(AccountEntity accountByAccountId) {
-        this.accountByAccountId = accountByAccountId;
+    public void setClientAccountByAccountId(ClientAccountEntity clientAccountByAccountId) {
+        this.clientAccountByAccountId = clientAccountByAccountId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "TRANSACTION_ID", referencedColumnName = "TRANSACTION_ID")
+    public TransferEntity getTransferByTransactionId() {
+        return transferByTransactionId;
+    }
+
+    public void setTransferByTransactionId(TransferEntity transferByTransactionId) {
+        this.transferByTransactionId = transferByTransactionId;
     }
 }

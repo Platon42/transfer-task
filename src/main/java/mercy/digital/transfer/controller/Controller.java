@@ -9,7 +9,7 @@ import mercy.digital.transfer.facade.AccountFacade;
 import mercy.digital.transfer.facade.ClientFacade;
 import mercy.digital.transfer.module.AccountFacadeModule;
 import mercy.digital.transfer.module.ClientFacadeModule;
-import mercy.digital.transfer.presentation.account.AddAccount;
+import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.client.AddClient;
 
 @Slf4j
@@ -30,9 +30,9 @@ public class Controller {
         });
 
         app.get("/account/add", ctx -> {
-            AddAccount account = objectMapper.readValue(ctx.body(), AddAccount.class);
+            AddClientAccount account = objectMapper.readValue(ctx.body(), AddClientAccount.class);
             AccountFacade accountFacade = accountFacadeInjector.getInstance(AccountFacade.class);
-            accountFacade.addAccount(account);
+            accountFacade.addClientAccount(account);
         });
     }
 }

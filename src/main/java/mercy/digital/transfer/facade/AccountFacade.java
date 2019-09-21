@@ -1,7 +1,7 @@
 package mercy.digital.transfer.facade;
 
-import mercy.digital.transfer.presentation.account.AddAccount;
+import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 
 public interface AccountFacade {
-    void addAccount(AddAccount account);
+    void addClientAccount(AddClientAccount clientAccount);
 }

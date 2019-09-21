@@ -1,19 +1,20 @@
 package mercy.digital.transfer.domain;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Objects;
 
-@DatabaseTable(tableName = "ACCOUNT")
+@DatabaseTable(tableName = "CLIENT_ACCOUNT")
 @Entity
-@Table(name = "ACCOUNT", schema = "TRANSFER")
-public class AccountEntity {
-
+@Table(name = "CLIENT_ACCOUNT", schema = "TRANSFER", catalog = "H2")
+public class ClientAccountEntity {
     @DatabaseField(generatedId = true)
-    private int accountId;
+    private int clientAccountId;
 
     @DatabaseField(columnName = "ACCOUNT_NO")
     private Integer accountNo;
@@ -36,28 +37,33 @@ public class AccountEntity {
     @DatabaseField(columnName = "COUNTRY_OF_ISSUE")
     private String countryOfIssue;
 
+    @ForeignCollectionField
+    private Collection<BalanceHistoryEntity> balanceHistoriesByClientAccountId;
+    @DatabaseField (foreign = true)
+    private ClientEntity clientByClientId;
+
     @Id
-    @Column(name = "ACCOUNT_ID")
-    public int getAccountId() {
-        return accountId;
+    @Column(name = "CLIENT_ACCOUNT_ID", nullable = false)
+    public int getClientAccountId() {
+        return clientAccountId;
     }
 
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setClientAccountId(int clientAccountId) {
+        this.clientAccountId = clientAccountId;
     }
 
     @Basic
-    @Column(name = "ACCOUNT_NO")
-    public Integer getAccountNo() {
+    @Column(name = "ACCOUNT_NO", nullable = false)
+    public int getAccountNo() {
         return accountNo;
     }
 
-    public void setAccountNo(Integer accountNo) {
+    public void setAccountNo(int accountNo) {
         this.accountNo = accountNo;
     }
 
     @Basic
-    @Column(name = "BALANCE")
+    @Column(name = "BALANCE", nullable = true, precision = 0)
     public Double getBalance() {
         return balance;
     }
@@ -67,7 +73,7 @@ public class AccountEntity {
     }
 
     @Basic
-    @Column(name = "CURRENCY")
+    @Column(name = "CURRENCY", nullable = true, length = 3)
     public String getCurrency() {
         return currency;
     }
@@ -77,7 +83,7 @@ public class AccountEntity {
     }
 
     @Basic
-    @Column(name = "CREATED_AT")
+    @Column(name = "CREATED_AT", nullable = true)
     public Timestamp getCreatedAt() {
         return createdAt;
     }
@@ -87,7 +93,7 @@ public class AccountEntity {
     }
 
     @Basic
-    @Column(name = "UPDATED_AT")
+    @Column(name = "UPDATED_AT", nullable = true)
     public Timestamp getUpdatedAt() {
         return updatedAt;
     }
@@ -97,7 +103,7 @@ public class AccountEntity {
     }
 
     @Basic
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = true, length = 50)
     public String getName() {
         return name;
     }
@@ -107,7 +113,7 @@ public class AccountEntity {
     }
 
     @Basic
-    @Column(name = "COUNTRY_OF_ISSUE")
+    @Column(name = "COUNTRY_OF_ISSUE", nullable = true, length = 20)
     public String getCountryOfIssue() {
         return countryOfIssue;
     }
@@ -120,9 +126,9 @@ public class AccountEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AccountEntity that = (AccountEntity) o;
-        return accountId == that.accountId &&
-                Objects.equals(accountNo, that.accountNo) &&
+        ClientAccountEntity that = (ClientAccountEntity) o;
+        return clientAccountId == that.clientAccountId &&
+                accountNo == that.accountNo &&
                 Objects.equals(balance, that.balance) &&
                 Objects.equals(currency, that.currency) &&
                 Objects.equals(createdAt, that.createdAt) &&
@@ -133,6 +139,25 @@ public class AccountEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountId, accountNo, balance, currency, createdAt, updatedAt, name, countryOfIssue);
+        return Objects.hash(clientAccountId, accountNo, balance, currency, createdAt, updatedAt, name, countryOfIssue);
+    }
+
+    @OneToMany(mappedBy = "clientAccountByAccountId")
+    public Collection<BalanceHistoryEntity> getBalanceHistoriesByClientAccountId() {
+        return balanceHistoriesByClientAccountId;
+    }
+
+    public void setBalanceHistoriesByClientAccountId(Collection<BalanceHistoryEntity> balanceHistoriesByClientAccountId) {
+        this.balanceHistoriesByClientAccountId = balanceHistoriesByClientAccountId;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "CLIENT_ID", referencedColumnName = "CLIENT_ID", nullable = false)
+    public ClientEntity getClientByClientId() {
+        return clientByClientId;
+    }
+
+    public void setClientByClientId(ClientEntity clientByClientId) {
+        this.clientByClientId = clientByClientId;
     }
 }

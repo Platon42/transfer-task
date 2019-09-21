@@ -1,4 +1,4 @@
-package mercy.digital.transfer.presentation.account;
+package mercy.digital.transfer.presentation.beneficiary.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -8,15 +8,11 @@ import lombok.Setter;
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter
-public class AddAccount {
+public class AddBeneficiaryAccount {
 
     @JsonProperty("currency")
     private String currency;
 
     @JsonProperty("name")
     private String name;
-
-    @JsonProperty("country_of_issue")
-    private String countryOfIssue;
-
 }
