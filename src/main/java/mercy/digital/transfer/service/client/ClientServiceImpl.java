@@ -17,8 +17,6 @@ public class ClientServiceImpl implements ClientService {
 
     public void addEntityClient(ClientEntity clientEntity) {
         Dao<ClientEntity, Integer> clientDao = this.clientDao.getClientDao();
-        log.info("client entity data " + clientEntity.getFirstName());
-        log.info("client entity  + " + clientDao.toString());
         try {
             clientDao.create(clientEntity);
         } catch (SQLException e) {
@@ -28,11 +26,12 @@ public class ClientServiceImpl implements ClientService {
 
     public ClientEntity findEntityAccountById(Integer id) {
         Dao<ClientEntity, Integer> clientDao = this.clientDao.getClientDao();
-        ClientEntity clientEntity = null;
+        ClientEntity clientEntity;
         try {
             clientEntity = clientDao.queryForId(id);
         } catch (SQLException e) {
             log.error("Cannot find by id " + id + " Client entity " + e.getLocalizedMessage());
+            return null;
         }
         return clientEntity;
     }
@@ -44,6 +43,7 @@ public class ClientServiceImpl implements ClientService {
             clientEntityList = clientDao.queryForAll();
         } catch (SQLException e) {
             log.error("Cannot find Client entity" + e.getLocalizedMessage());
+            return null;
         }
         return clientEntityList;
     }

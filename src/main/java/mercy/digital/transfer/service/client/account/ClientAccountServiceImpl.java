@@ -30,22 +30,24 @@ public class ClientAccountServiceImpl implements ClientAccountService {
 
     public ClientAccountEntity findClientEntityAccountById(Integer id) {
         Dao<ClientAccountEntity, Integer> accountDao = this.clientAccountDao.getAccountDao();
-        ClientAccountEntity accountEntity = null;
+        ClientAccountEntity accountEntity;
         try {
             accountEntity = accountDao.queryForId(id);
         } catch (SQLException e) {
             log.error("Cannot find by id " + id + " Client Account entity" + e.getLocalizedMessage());
+            return null;
         }
         return accountEntity;
     }
 
     public List<ClientAccountEntity> findAllEntityClientAccounts() {
         Dao<ClientAccountEntity, Integer> accountDao = this.clientAccountDao.getAccountDao();
-        List<ClientAccountEntity> accountEntityList = null;
+        List<ClientAccountEntity> accountEntityList;
         try {
             accountEntityList = accountDao.queryForAll();
         } catch (SQLException e) {
             log.error("Cannot find Client Account entity" + e.getLocalizedMessage());
+            return null;
         }
         return accountEntityList;
 

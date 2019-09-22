@@ -4,11 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Getter;
 import lombok.Setter;
+import mercy.digital.transfer.presentation.beneficiary.GetBeneficiary;
+import mercy.digital.transfer.presentation.client.GetClient;
 
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter
 public class AddBeneficiaryAccount {
+
+    @JsonProperty("beneficiary_param")
+    GetBeneficiary getBeneficiary;
 
     @JsonProperty("currency")
     private String currency;

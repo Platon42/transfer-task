@@ -6,8 +6,6 @@ import java.util.List;
 
 public interface ClientAccountService {
     void addClientEntityAccount(ClientAccountEntity accountEntity);
-
     ClientAccountEntity findClientEntityAccountById(Integer id);
-
     List<ClientAccountEntity> findAllEntityClientAccounts();
 }
