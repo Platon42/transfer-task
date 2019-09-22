@@ -1,15 +1,29 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "BALANCE")
 @Entity
-@Table(name = "BALANCE_HISTORY", schema = "TRANSFER", catalog = "H2")
-public class BalanceHistoryEntity {
+@Table(name = "BALANCE", schema = "TRANSFER", catalog = "H2")
+public class BalanceEntity {
+
+    @DatabaseField(generatedId = true)
     private int balanceId;
+
+    @DatabaseField(columnName = "BEFORE_BALANCE")
     private Double beforeBalance;
+
+    @DatabaseField(columnName = "PAST_BALANCE")
     private Double pastBalance;
+
+    @DatabaseField(foreign = true)
     private ClientAccountEntity clientAccountByAccountId;
+
+    @DatabaseField(foreign = true)
     private TransferEntity transferByTransactionId;
 
     @Id
@@ -46,7 +60,7 @@ public class BalanceHistoryEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BalanceHistoryEntity that = (BalanceHistoryEntity) o;
+        BalanceEntity that = (BalanceEntity) o;
         return balanceId == that.balanceId &&
                 Objects.equals(beforeBalance, that.beforeBalance) &&
                 Objects.equals(pastBalance, that.pastBalance);

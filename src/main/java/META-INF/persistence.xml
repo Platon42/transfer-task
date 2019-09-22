@@ -6,7 +6,7 @@
 
     <persistence-unit name="NewPersistenceUnit">
         <class>mercy.digital.transfer.domain.ClientAccountEntity</class>
-        <class>mercy.digital.transfer.domain.BalanceHistoryEntity</class>
+        <class>mercy.digital.transfer.domain.BalanceEntity</class>
         <class>mercy.digital.transfer.domain.BeneficiaryEntity</class>
         <class>mercy.digital.transfer.domain.ClientEntity</class>
         <class>mercy.digital.transfer.domain.TransferEntity</class>

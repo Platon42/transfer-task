@@ -1,27 +1,33 @@
 package mercy.digital.transfer.module;
 
 import com.google.inject.AbstractModule;
-import mercy.digital.transfer.dao.ClientAccountDao;
-import mercy.digital.transfer.dao.impl.ClientAccountDaoImpl;
+import mercy.digital.transfer.dao.client.ClientDao;
+import mercy.digital.transfer.dao.client.ClientDaoImpl;
+import mercy.digital.transfer.dao.client.account.ClientAccountDao;
+import mercy.digital.transfer.dao.client.account.ClientAccountDaoImpl;
 import mercy.digital.transfer.datasorce.H2DataSource;
 import mercy.digital.transfer.datasorce.H2DataSourceService;
-import mercy.digital.transfer.facade.AccountFacade;
-import mercy.digital.transfer.facade.AccountFacadeImpl;
-import mercy.digital.transfer.service.client.ClientAccountService;
-import mercy.digital.transfer.service.BalanceService;
-import mercy.digital.transfer.service.TransactionService;
-import mercy.digital.transfer.service.TransferService;
-import mercy.digital.transfer.service.client.ClientClientAccountServiceImpl;
-import mercy.digital.transfer.service.impl.BalanceServiceImpl;
-import mercy.digital.transfer.service.impl.TransactionServiceImpl;
-import mercy.digital.transfer.service.impl.TransferServiceImpl;
+import mercy.digital.transfer.facade.account.AccountFacade;
+import mercy.digital.transfer.facade.account.AccountFacadeImpl;
+import mercy.digital.transfer.service.balance.BalanceService;
+import mercy.digital.transfer.service.balance.BalanceServiceImpl;
+import mercy.digital.transfer.service.client.ClientService;
+import mercy.digital.transfer.service.client.ClientServiceImpl;
+import mercy.digital.transfer.service.client.account.ClientAccountService;
+import mercy.digital.transfer.service.client.account.ClientAccountServiceImpl;
+import mercy.digital.transfer.service.transfer.TransactionService;
+import mercy.digital.transfer.service.transfer.TransactionServiceImpl;
+import mercy.digital.transfer.service.transfer.TransferService;
+import mercy.digital.transfer.service.transfer.TransferServiceImpl;
 
 public class AccountFacadeModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(H2DataSourceService.class).to(H2DataSource.class);
         bind(ClientAccountDao.class).to(ClientAccountDaoImpl.class);
-        bind(ClientAccountService.class).to(ClientClientAccountServiceImpl.class);
+        bind(ClientDao.class).to(ClientDaoImpl.class);
+        bind(ClientAccountService.class).to(ClientAccountServiceImpl.class);
+        bind(ClientService.class).to(ClientServiceImpl.class);
         bind(TransferService.class).to(TransferServiceImpl.class);
         bind(TransactionService.class).to(TransactionServiceImpl.class);
         bind(BalanceService.class).to(BalanceServiceImpl.class);

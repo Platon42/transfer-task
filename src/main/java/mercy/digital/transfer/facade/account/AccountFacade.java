@@ -1,4 +1,4 @@
-package mercy.digital.transfer.facade;
+package mercy.digital.transfer.facade.account;
 
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 

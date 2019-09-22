@@ -7,7 +7,7 @@ import java.util.Objects;
 @Table(name = "BENEFICIARY_ACCOUNT", schema = "TRANSFER", catalog = "H2")
 public class BeneficiaryAccountEntity {
     private int beneficiaryAccountId;
-    private int accountNo;
+    private Long accountNo;
     private String name;
     private Boolean isClient;
     private BeneficiaryEntity beneficiaryByBeneficiaryId;
@@ -24,11 +24,11 @@ public class BeneficiaryAccountEntity {
 
     @Basic
     @Column(name = "ACCOUNT_NO", nullable = false)
-    public int getAccountNo() {
+    public Long getAccountNo() {
         return accountNo;
     }
 
-    public void setAccountNo(int accountNo) {
+    public void setAccountNo(Long accountNo) {
         this.accountNo = accountNo;
     }
 
@@ -58,7 +58,7 @@ public class BeneficiaryAccountEntity {
         if (o == null || getClass() != o.getClass()) return false;
         BeneficiaryAccountEntity that = (BeneficiaryAccountEntity) o;
         return beneficiaryAccountId == that.beneficiaryAccountId &&
-                accountNo == that.accountNo &&
+                accountNo.equals(that.accountNo) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(isClient, that.isClient);
     }

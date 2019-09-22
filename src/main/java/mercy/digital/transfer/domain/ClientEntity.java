@@ -13,7 +13,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "CLIENT", schema = "TRANSFER", catalog = "H2")
 public class ClientEntity {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, columnName = "CLIENT_ID")
     private int clientId;
 
     @DatabaseField(columnName = "FIRST_NAME")

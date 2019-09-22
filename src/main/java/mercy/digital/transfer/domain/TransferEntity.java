@@ -1,20 +1,42 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "TRANSFER")
 @Entity
 @Table(name = "TRANSFER", schema = "TRANSFER", catalog = "H2")
 public class TransferEntity {
+
+    @DatabaseField(generatedId = true, columnName = "TRANSACTION_ID")
     private int transactionId;
+
+    @DatabaseField(columnName = "SOURCE_ACCOUNT_ID")
     private int sourceAccountId;
+
+    @DatabaseField(columnName = "TARGET_ACCOUNT_ID")
     private Integer targetAccountId;
+
+    @DatabaseField(columnName = "AMOUNT")
     private Integer amount;
+
+    @DatabaseField(columnName = "CURRENCY")
     private String currency;
-    private Object createdAt;
+
+    @DatabaseField(columnName = "CREATED_AT")
+    private Timestamp createdAt;
+
+    @DatabaseField(columnName = "TRANSACTION_TYPE")
     private String transactionType;
-    private Collection<BalanceHistoryEntity> balanceHistoriesByTransactionId;
+
+    @ForeignCollectionField
+    private Collection<BalanceEntity> balanceHistoriesByTransactionId;
 
     @Id
     @Column(name = "TRANSACTION_ID", nullable = false)
@@ -68,11 +90,11 @@ public class TransferEntity {
 
     @Basic
     @Column(name = "CREATED_AT", nullable = false)
-    public Object getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Object createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
 
@@ -106,11 +128,11 @@ public class TransferEntity {
     }
 
     @OneToMany(mappedBy = "transferByTransactionId")
-    public Collection<BalanceHistoryEntity> getBalanceHistoriesByTransactionId() {
+    public Collection<BalanceEntity> getBalanceHistoriesByTransactionId() {
         return balanceHistoriesByTransactionId;
     }
 
-    public void setBalanceHistoriesByTransactionId(Collection<BalanceHistoryEntity> balanceHistoriesByTransactionId) {
+    public void setBalanceHistoriesByTransactionId(Collection<BalanceEntity> balanceHistoriesByTransactionId) {
         this.balanceHistoriesByTransactionId = balanceHistoriesByTransactionId;
     }
 }

@@ -13,11 +13,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "CLIENT_ACCOUNT", schema = "TRANSFER", catalog = "H2")
 public class ClientAccountEntity {
-    @DatabaseField(generatedId = true)
+    @DatabaseField(generatedId = true, columnName = "CLIENT_ACCOUNT_ID")
     private int clientAccountId;
 
     @DatabaseField(columnName = "ACCOUNT_NO")
-    private Integer accountNo;
+    private Long accountNo;
 
     @DatabaseField(columnName = "BALANCE")
     private Double balance;
@@ -38,9 +38,13 @@ public class ClientAccountEntity {
     private String countryOfIssue;
 
     @ForeignCollectionField
-    private Collection<BalanceHistoryEntity> balanceHistoriesByClientAccountId;
-    @DatabaseField (foreign = true)
+    private Collection<BalanceEntity> balanceHistoriesByClientAccountId;
+
+    private Integer clientId;
+
+    @DatabaseField(foreign = true, columnName = "CLIENT_ID")
     private ClientEntity clientByClientId;
+
 
     @Id
     @Column(name = "CLIENT_ACCOUNT_ID", nullable = false)
@@ -54,11 +58,11 @@ public class ClientAccountEntity {
 
     @Basic
     @Column(name = "ACCOUNT_NO", nullable = false)
-    public int getAccountNo() {
+    public Long getAccountNo() {
         return accountNo;
     }
 
-    public void setAccountNo(int accountNo) {
+    public void setAccountNo(Long accountNo) {
         this.accountNo = accountNo;
     }
 
@@ -117,9 +121,18 @@ public class ClientAccountEntity {
     public String getCountryOfIssue() {
         return countryOfIssue;
     }
-
     public void setCountryOfIssue(String countryOfIssue) {
         this.countryOfIssue = countryOfIssue;
+    }
+
+    @Basic
+    @Column(name = "CLIENT_ID", nullable = false)
+    public Integer getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Integer clientId) {
+        this.clientId = clientId;
     }
 
     @Override
@@ -128,7 +141,7 @@ public class ClientAccountEntity {
         if (o == null || getClass() != o.getClass()) return false;
         ClientAccountEntity that = (ClientAccountEntity) o;
         return clientAccountId == that.clientAccountId &&
-                accountNo == that.accountNo &&
+                accountNo.equals(that.accountNo) &&
                 Objects.equals(balance, that.balance) &&
                 Objects.equals(currency, that.currency) &&
                 Objects.equals(createdAt, that.createdAt) &&
@@ -143,11 +156,11 @@ public class ClientAccountEntity {
     }
 
     @OneToMany(mappedBy = "clientAccountByAccountId")
-    public Collection<BalanceHistoryEntity> getBalanceHistoriesByClientAccountId() {
+    public Collection<BalanceEntity> getBalanceHistoriesByClientAccountId() {
         return balanceHistoriesByClientAccountId;
     }
 
-    public void setBalanceHistoriesByClientAccountId(Collection<BalanceHistoryEntity> balanceHistoriesByClientAccountId) {
+    public void setBalanceHistoriesByClientAccountId(Collection<BalanceEntity> balanceHistoriesByClientAccountId) {
         this.balanceHistoriesByClientAccountId = balanceHistoriesByClientAccountId;
     }
 

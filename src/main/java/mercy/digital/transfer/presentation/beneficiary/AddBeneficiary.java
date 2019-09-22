@@ -10,9 +10,6 @@ import lombok.Setter;
 @Getter
 public class AddBeneficiary {
 
-    @JsonProperty("account_id")
-    private int accountId;
-
     @JsonProperty("street_line")
     private String streetLine;
 

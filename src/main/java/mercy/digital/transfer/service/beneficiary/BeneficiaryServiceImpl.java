@@ -3,7 +3,7 @@ package mercy.digital.transfer.service.beneficiary;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import lombok.extern.slf4j.Slf4j;
-import mercy.digital.transfer.dao.BeneficiaryDao;
+import mercy.digital.transfer.dao.beneficiary.BeneficiaryDao;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
 
 import java.sql.SQLException;
@@ -14,7 +14,6 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     @Inject
     private BeneficiaryDao beneficiaryDao;
-
 
     public void addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity) {
         Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.beneficiaryDao.getBeneficiaryDao();

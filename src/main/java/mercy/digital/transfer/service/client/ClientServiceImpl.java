@@ -3,9 +3,8 @@ package mercy.digital.transfer.service.client;
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
 import lombok.extern.slf4j.Slf4j;
-import mercy.digital.transfer.dao.ClientDao;
+import mercy.digital.transfer.dao.client.ClientDao;
 import mercy.digital.transfer.domain.ClientEntity;
-import mercy.digital.transfer.service.client.ClientService;
 
 import java.sql.SQLException;
 import java.util.List;
