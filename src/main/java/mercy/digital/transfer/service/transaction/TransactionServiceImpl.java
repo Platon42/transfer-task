@@ -2,7 +2,9 @@ package mercy.digital.transfer.service.transaction;
 
 import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
+import mercy.digital.transfer.domain.BeneficiaryAccountEntity;
 import mercy.digital.transfer.domain.ClientAccountEntity;
+import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 import mercy.digital.transfer.service.transfer.converter.ConverterService;
 
@@ -16,31 +18,46 @@ public class TransactionServiceImpl implements TransactionService {
     private ClientAccountService clientAccountService;
 
     @Inject
+    private BeneficiaryAccountService beneficiaryAccountService;
+
+    @Inject
     private ConverterService converterService;
-    
-    public TransactionStatus doTransfer (int sourceId,
-                               int targetId,
-                               Double reqAmount,
-                               TransactionType type,
-                               CurrencyCode targetCurrency) {
-        Double sourceBalance;
-        CurrencyCode currentCurrency;
-        ClientAccountEntity clientAccountEntity = clientAccountService.findClientEntityAccountById(sourceId);
+
+    public TransactionStatus doTransfer(
+            int clientId,
+            int beneficiaryId,
+            Double reqAmount,
+            TransactionType type,
+            CurrencyCode transferCurrency) {
+
+        Double clientBalance;
+        CurrencyCode clientCurrency;
+        CurrencyCode beneficiaryCurrency;
+
+        ClientAccountEntity clientAccountEntity = clientAccountService.findClientEntityAccountById(clientId);
+        BeneficiaryAccountEntity beneficiaryAccountEntity = beneficiaryAccountService.findBeneficiaryEntityAccountById(beneficiaryId);
 
         if (clientAccountEntity != null) {
-            sourceBalance = clientAccountEntity.getBalance();
-            currentCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
+            clientBalance = clientAccountEntity.getBalance();
+            clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
         } else {
-            log.info("Not found client by Client Id " + sourceId);
+            log.warn("Not found client by Client Id " + clientId);
             return TransactionStatus.NOT_A_CLIENT;
         }
 
-        if (currentCurrency.equals(targetCurrency)) {
-            if (sourceBalance < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
+        if (beneficiaryAccountEntity != null) {
+            beneficiaryCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
+        } else {
+            log.warn("Not found beneficiary by Beneficiary Id " + beneficiaryId);
+            return TransactionStatus.NOT_A_BENEFICIARY;
         }
 
-        if (!currentCurrency.equals(targetCurrency)) {
-            Double exchange = this.converterService.doExchange(currentCurrency, targetCurrency, reqAmount);
+        if (clientCurrency.equals(transferCurrency)) {
+            if (clientBalance < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
+        }
+
+        if (!clientCurrency.equals(transferCurrency)) {
+            Double exchange = this.converterService.doExchange(clientCurrency, transferCurrency, reqAmount);
             if (exchange < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
         }
 
