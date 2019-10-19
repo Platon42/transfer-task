@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @DatabaseTable(tableName = "TRANSFER")
 @Entity
-@Table(name = "TRANSFER", schema = "TRANSFER", catalog = "H2")
+@Table(name = "TRANSACTION", schema = "TRANSFER", catalog = "H2")
 public class TransferEntity {
 
     @DatabaseField(generatedId = true, columnName = "TRANSACTION_ID")

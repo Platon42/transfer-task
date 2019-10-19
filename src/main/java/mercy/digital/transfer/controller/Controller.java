@@ -5,13 +5,14 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.javalin.Javalin;
 import lombok.extern.slf4j.Slf4j;
-import mercy.digital.transfer.facade.account.AccountFacade;
+import mercy.digital.transfer.facade.account.ClientAccountFacade;
 import mercy.digital.transfer.facade.beneficiary.BeneficiaryFacade;
 import mercy.digital.transfer.facade.client.ClientFacade;
 import mercy.digital.transfer.module.AccountFacadeModule;
 import mercy.digital.transfer.module.BeneficiaryFacadeModule;
 import mercy.digital.transfer.module.ClientFacadeModule;
 import mercy.digital.transfer.presentation.beneficiary.AddBeneficiary;
+import mercy.digital.transfer.presentation.beneficiary.account.AddBeneficiaryAccount;
 import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
@@ -34,6 +35,13 @@ public class Controller {
             ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
             clientFacade.addClient(client);
         });
+        app.get("/client/account/add", ctx -> {
+            AddClientAccount account = objectMapper.readValue(ctx.body(), AddClientAccount.class);
+            ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);
+            ResponseModel responseModel = clientAccountFacade.addClientAccount(account);
+            ctx.result(objectMapper.writeValueAsString(responseModel));
+        });
+
         app.get("/client/get", ctx -> {
             GetClient getClient = objectMapper.readValue(ctx.body(), GetClient.class);
             ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
@@ -44,12 +52,12 @@ public class Controller {
             BeneficiaryFacade beneficiaryFacade = beneficiaryFacadeInjector.getInstance(BeneficiaryFacade.class);
             beneficiaryFacade.addBeneficiary(beneficiary);
         });
-
-        app.get("/client/account/add", ctx -> {
-            AddClientAccount account = objectMapper.readValue(ctx.body(), AddClientAccount.class);
-            AccountFacade accountFacade = accountFacadeInjector.getInstance(AccountFacade.class);
-            ResponseModel responseModel = accountFacade.addClientAccount(account);
+        app.get("/beneficiary/account/add", ctx -> {
+            AddBeneficiaryAccount account = objectMapper.readValue(ctx.body(), AddBeneficiaryAccount.class);
+            BeneficiaryFacade beneficiaryFacade = beneficiaryFacadeInjector.getInstance(BeneficiaryFacade.class);
+            ResponseModel responseModel = beneficiaryFacade.addBeneficiaryAccount(account);
             ctx.result(objectMapper.writeValueAsString(responseModel));
         });
+
     }
 }

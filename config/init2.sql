@@ -103,7 +103,7 @@ create table TRANSFER.BALANCE
         foreign key (ACCOUNT_ID) references TRANSFER.CLIENT_ACCOUNT
             on update cascade on delete cascade,
     constraint BALANCE_HISTORY_TRANSACTION_HISTORY_TRANSACTION_ID_FK
-        foreign key (TRANSACTION_ID) references TRANSFER.TRANSFER
+        foreign key (TRANSACTION_ID) references TRANSFER.TRANSACTION
             on update cascade on delete cascade
 );
 

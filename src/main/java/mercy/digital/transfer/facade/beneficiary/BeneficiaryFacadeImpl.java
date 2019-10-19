@@ -6,12 +6,11 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import mercy.digital.transfer.domain.BeneficiaryAccountEntity;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
-import mercy.digital.transfer.domain.ClientAccountEntity;
-import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.presentation.beneficiary.AddBeneficiary;
 import mercy.digital.transfer.presentation.beneficiary.account.AddBeneficiaryAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.beneficiary.BeneficiaryService;
+import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 
 import java.time.ZonedDateTime;
 
@@ -21,6 +20,8 @@ public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
     private MapperFacade mapper = mapperFactory.getMapperFacade();
     private ResponseModel responseModel = new ResponseModel();
 
+    @Inject
+    private BeneficiaryAccountService beneficiaryAccountService;
     @Inject
     private BeneficiaryService beneficiaryService;
 
@@ -40,11 +41,11 @@ public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
         if (entityBeneficiaryById != null) {
             BeneficiaryAccountEntity beneficiaryAccountEntity = this.mapper.map(beneficiaryAccount, BeneficiaryAccountEntity.class);
             beneficiaryAccountEntity.setBeneficiaryByBeneficiaryId(entityBeneficiaryById);
-            //beneficiaryService.addEntityBeneficiary(beneficiaryAccountEntity);
+            beneficiaryAccountService.addBeneficiaryEntityAccount(beneficiaryAccountEntity);
             responseModel.setMessage("Success");
         } else {
-            //responseModel.setErrorMessage("Cannot create client account, with Client Id " +
-              //      clientId + " see log for details");
+            responseModel.setErrorMessage("Cannot create Beneficiary account, with Beneficiary Id " +
+                    beneficiaryId + " see log for details");
         }
         return responseModel;
     }

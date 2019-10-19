@@ -8,6 +8,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.presentation.client.AddClient;
+import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 
@@ -17,6 +18,7 @@ public class ClientFacadeImpl implements ClientFacade {
 
     private MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
     private MapperFacade mapper = mapperFactory.getMapperFacade();
+    private ResponseModel responseModel = new ResponseModel();
 
     private final ClientService clientService;
     private final ClientAccountService clientAccountService;
@@ -28,8 +30,14 @@ public class ClientFacadeImpl implements ClientFacade {
     }
 
     public void addClient(AddClient client) {
-        ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
-        clientService.addEntityClient(clientEntity);
+
+        try {
+            ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
+            clientService.addEntityClient(clientEntity);
+        } catch (Exception e) {
+
+        }
+
     }
 
 

@@ -11,12 +11,12 @@ import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.balance.BalanceService;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
-import mercy.digital.transfer.service.transfer.TransactionService;
+import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transfer.TransferService;
 
 import java.time.ZonedDateTime;
 
-public class AccountFacadeImpl implements AccountFacade {
+public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
     private MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
     private MapperFacade mapper = mapperFactory.getMapperFacade();

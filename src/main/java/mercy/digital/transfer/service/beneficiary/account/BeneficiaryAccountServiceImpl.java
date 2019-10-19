@@ -12,7 +12,6 @@ import java.util.List;
 @Slf4j
 public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService {
 
-
     @Inject
     private BeneficiaryAccountDao beneficiaryAccountDao;
 

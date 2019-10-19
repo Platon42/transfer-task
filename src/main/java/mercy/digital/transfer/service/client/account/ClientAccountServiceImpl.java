@@ -12,12 +12,8 @@ import java.util.List;
 @Slf4j
 public class ClientAccountServiceImpl implements ClientAccountService {
 
-    private ClientAccountDao clientAccountDao;
-
     @Inject
-    ClientAccountServiceImpl(ClientAccountDao clientAccountDao) {
-        this.clientAccountDao = clientAccountDao;
-    }
+    private ClientAccountDao clientAccountDao;
 
     public void addClientEntityAccount(ClientAccountEntity accountEntity) {
         Dao<ClientAccountEntity, Integer> accountDao = this.clientAccountDao.getAccountDao();

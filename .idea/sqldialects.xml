@@ -3,5 +3,6 @@
   <component name="SqlDialectMappings">
     <file url="file://$PROJECT_DIR$/config/init.sql" dialect="H2" />
     <file url="file://$PROJECT_DIR$/config/init2.sql" dialect="H2" />
+    <file url="file://$PROJECT_DIR$/config/init3.sql" dialect="H2" />
   </component>
 </project>
