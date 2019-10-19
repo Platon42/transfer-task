@@ -1,4 +1,4 @@
-package mercy.digital.transfer.service.transfer.converter;
+package mercy.digital.transfer.service.transaction.converter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,11 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.service.transaction.CurrencyCode;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.MalformedInputException;
-import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ConverterServiceImpl implements ConverterService {

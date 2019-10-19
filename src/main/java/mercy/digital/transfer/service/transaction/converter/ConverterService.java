@@ -1,4 +1,4 @@
-package mercy.digital.transfer.service.transfer.converter;
+package mercy.digital.transfer.service.transaction.converter;
 
 import mercy.digital.transfer.service.transaction.CurrencyCode;
 

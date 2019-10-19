@@ -2,6 +2,8 @@ package mercy.digital.transfer.service.client.account;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.dao.client.account.ClientAccountDao;
 import mercy.digital.transfer.domain.ClientAccountEntity;
@@ -31,6 +33,21 @@ public class ClientAccountServiceImpl implements ClientAccountService {
             accountEntity = accountDao.queryForId(id);
         } catch (SQLException e) {
             log.error("Cannot find by id " + id + " Client Account entity" + e.getLocalizedMessage());
+            return null;
+        }
+        return accountEntity;
+    }
+
+    public ClientAccountEntity findClientEntityAccountByAccountNo(Integer accountNo) {
+        Dao<ClientAccountEntity, Integer> accountDao = this.clientAccountDao.getAccountDao();
+        QueryBuilder<ClientAccountEntity, Integer> queryBuilder = accountDao.queryBuilder();
+        ClientAccountEntity accountEntity;
+        try {
+            PreparedQuery<ClientAccountEntity> accountNoQuery =
+                    queryBuilder.where().eq("ACCOUNT_NO", accountNo).prepare();
+            accountEntity =  accountDao.query(accountNoQuery).get(0);
+        } catch (SQLException e) {
+            log.error("Cannot find by account No " + accountNo + " Client Account entity" + e.getLocalizedMessage());
             return null;
         }
         return accountEntity;

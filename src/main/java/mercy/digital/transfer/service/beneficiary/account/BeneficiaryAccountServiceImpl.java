@@ -2,9 +2,12 @@ package mercy.digital.transfer.service.beneficiary.account;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.dao.beneficiary.account.BeneficiaryAccountDao;
 import mercy.digital.transfer.domain.BeneficiaryAccountEntity;
+import mercy.digital.transfer.domain.ClientAccountEntity;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -33,6 +36,21 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
             log.error("Cannot find by id " + id + " Beneficiary Account entity" + e.getLocalizedMessage());
         }
         return accountEntity;
+    }
+
+    public BeneficiaryAccountEntity findBeneficiaryEntityAccountByAccountNo(Integer accountNo) {
+        Dao<BeneficiaryAccountEntity, Integer> accountDao = this.beneficiaryAccountDao.getBeneficiaryAccountDao();
+        QueryBuilder<BeneficiaryAccountEntity, Integer> queryBuilder = accountDao.queryBuilder();
+        BeneficiaryAccountEntity beneficiaryAccountEntity;
+        try {
+            PreparedQuery<BeneficiaryAccountEntity> accountNoQuery =
+                    queryBuilder.where().eq("ACCOUNT_NO", accountNo).prepare();
+            beneficiaryAccountEntity =  accountDao.query(accountNoQuery).get(0);
+        } catch (SQLException e) {
+            log.error("Cannot find by account No " + accountNo + " Beneficiary Account entity" + e.getLocalizedMessage());
+            return null;
+        }
+        return beneficiaryAccountEntity;
     }
 
     public List<BeneficiaryAccountEntity> findAllEntityBeneficiaryAccounts() {

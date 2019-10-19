@@ -6,7 +6,7 @@ import mercy.digital.transfer.domain.BeneficiaryAccountEntity;
 import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
-import mercy.digital.transfer.service.transfer.converter.ConverterService;
+import mercy.digital.transfer.service.transaction.converter.ConverterService;
 
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
@@ -24,8 +24,8 @@ public class TransactionServiceImpl implements TransactionService {
     private ConverterService converterService;
 
     public TransactionStatus doTransfer(
-            int clientId,
-            int beneficiaryId,
+            int clientAccountNo, //accountNo
+            int beneficiaryAccountNo, //accountNo
             Double reqAmount,
             TransactionType type,
             CurrencyCode transferCurrency) {
@@ -34,21 +34,23 @@ public class TransactionServiceImpl implements TransactionService {
         CurrencyCode clientCurrency;
         CurrencyCode beneficiaryCurrency;
 
-        ClientAccountEntity clientAccountEntity = clientAccountService.findClientEntityAccountById(clientId);
-        BeneficiaryAccountEntity beneficiaryAccountEntity = beneficiaryAccountService.findBeneficiaryEntityAccountById(beneficiaryId);
+        ClientAccountEntity clientAccountEntity =
+                clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
+        BeneficiaryAccountEntity beneficiaryAccountEntity =
+                beneficiaryAccountService.findBeneficiaryEntityAccountByAccountNo(beneficiaryAccountNo);
 
         if (clientAccountEntity != null) {
             clientBalance = clientAccountEntity.getBalance();
             clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
         } else {
-            log.warn("Not found client by Client Id " + clientId);
+            log.warn("Not found client by Client Id " + clientAccountNo);
             return TransactionStatus.NOT_A_CLIENT;
         }
 
         if (beneficiaryAccountEntity != null) {
             beneficiaryCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
         } else {
-            log.warn("Not found beneficiary by Beneficiary Id " + beneficiaryId);
+            log.warn("Not found beneficiary by Beneficiary Id " + beneficiaryAccountNo);
             return TransactionStatus.NOT_A_BENEFICIARY;
         }
 
