@@ -9,7 +9,6 @@ import mercy.digital.transfer.domain.TransactionEntity;
 import mercy.digital.transfer.service.balance.BalanceService;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
-import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transaction.converter.ConverterService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
@@ -30,9 +29,6 @@ public class TransferServiceImpl implements TransferService {
     @Inject
     private ConverterService converterService;
 
-    @Inject
-    private TransactionService transactionService;
-
     public TransactionStatus doTransfer(
             int clientAccountNo, //accountNo
             int beneficiaryAccountNo, //accountNo
@@ -40,7 +36,7 @@ public class TransferServiceImpl implements TransferService {
             TransactionType type,
             CurrencyCode transferCurrency) {
 
-        Double clientBalance;
+        Double clientBalance = 0.0;
         CurrencyCode clientCurrency;
         CurrencyCode beneficiaryCurrency;
 
@@ -51,6 +47,7 @@ public class TransferServiceImpl implements TransferService {
 
         TransactionEntity transactionEntity = new TransactionEntity();
         BalanceEntity balanceEntity = new BalanceEntity();
+
         if (clientAccountEntity != null) {
             clientBalance = clientAccountEntity.getBalance();
             clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
@@ -66,27 +63,55 @@ public class TransferServiceImpl implements TransferService {
             return TransactionStatus.NOT_A_BENEFICIARY;
         }
 
+        if (clientAccountEntity.getBalance() == null) clientBalance = 0.0;
+
         if (clientCurrency.equals(transferCurrency) & clientCurrency.equals(beneficiaryCurrency)) {
+
             if (clientBalance < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
+            balanceService.transferFunds(clientAccountEntity,
+                    transactionEntity,
+                    balanceEntity,
+                    beneficiaryAccountEntity,
+                    clientAccountNo,
+                    beneficiaryAccountNo,
+                    reqAmount,
+                    transferCurrency);
+            return TransactionStatus.TRANSFER_COMPLETED;
         }
 
-        if (!clientCurrency.equals(transferCurrency)) {
+        if (!clientCurrency.equals(transferCurrency) & beneficiaryCurrency.equals(transferCurrency)) {
             Double exchange = this.converterService.doExchange(clientCurrency, transferCurrency, reqAmount);
-
-            transactionEntity.setSourceAccountNo(clientAccountNo);
-            transactionEntity.setTargetAccountNo(beneficiaryAccountNo);
-            transactionEntity.setAmount(reqAmount);
-            transactionEntity.setTransactionType(TransactionType.FUNDS_TRANSFER.name());
-            transactionService.addEntityTransaction(transactionEntity);
-
-            balanceEntity.setClientAccountByAccountId(clientAccountEntity);
-            balanceEntity.setPastBalance(reqAmount);
-            balanceEntity.setTransactionByTransactionId(transactionEntity);
-            balanceService.updateClientBalance(balanceEntity);
-
             if (exchange < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
+            balanceService.transferFunds(clientAccountEntity,
+                    transactionEntity,
+                    balanceEntity,
+                    beneficiaryAccountEntity,
+                    clientAccountNo,
+                    beneficiaryAccountNo,
+                    exchange,
+                    transferCurrency);
+            return TransactionStatus.TRANSFER_COMPLETED;
+
         }
 
-        return TransactionStatus.INSUFFICIENT_FUNDS;
+        if (!beneficiaryCurrency.equals(transferCurrency) & !clientCurrency.equals(transferCurrency)) {
+
+            Double exchangeToTransfer = this.converterService.doExchange(clientCurrency, transferCurrency, reqAmount);
+            Double exchangeToBeneficiary = this.converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
+
+            if (exchangeToBeneficiary < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
+            balanceService.transferFunds(clientAccountEntity,
+                    transactionEntity,
+                    balanceEntity,
+                    beneficiaryAccountEntity,
+                    clientAccountNo,
+                    beneficiaryAccountNo,
+                    exchangeToBeneficiary,
+                    transferCurrency);
+            return TransactionStatus.TRANSFER_COMPLETED;
+
+        }
+
+        return TransactionStatus.ERROR_OCCURRED;
     }
 }

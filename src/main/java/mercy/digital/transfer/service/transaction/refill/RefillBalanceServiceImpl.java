@@ -23,18 +23,23 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
 
     public TransactionStatus refillBalance(int clientAccountNo, Double amount, CurrencyCode chargeCurrency) {
 
+        if (amount <= 0) return TransactionStatus.INCORRECT_AMOUNT;
+
         ClientAccountEntity clientAccountEntity =
                 clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
         TransactionEntity transactionEntity = new TransactionEntity();
         BalanceEntity balanceEntity = new BalanceEntity();
 
-        Double clientBalance = 0.0;
+        Double clientBalance;
         CurrencyCode clientCurrency;
 
-        if (clientAccountEntity.getBalance() == null) clientBalance = 0.0;
-        clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
+        if (clientAccountEntity.getBalance() == null) {
+            clientBalance = 0.0;
+        } else {
+            clientBalance = clientAccountEntity.getBalance();
+        }
 
-        if (amount <= 0) return TransactionStatus.INCORRECT_AMOUNT;
+        clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
 
         if (chargeCurrency.equals(clientCurrency)) {
             balanceService.refillClientAccount(clientAccountEntity, transactionEntity, balanceEntity,

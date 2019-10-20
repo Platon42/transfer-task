@@ -7,7 +7,6 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.dao.beneficiary.account.BeneficiaryAccountDao;
 import mercy.digital.transfer.domain.BeneficiaryAccountEntity;
-import mercy.digital.transfer.domain.ClientAccountEntity;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,6 +19,10 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
 
     public void addBeneficiaryEntityAccount(BeneficiaryAccountEntity accountEntity) {
         Dao<BeneficiaryAccountEntity, Integer> accountDao = this.beneficiaryAccountDao.getBeneficiaryAccountDao();
+        //rules for define our clients
+        if (accountEntity.getAccountNo().toString().startsWith("101")) {
+            accountEntity.setClient(true);
+        }
         try {
             accountDao.create(accountEntity);
         } catch (SQLException e) {
