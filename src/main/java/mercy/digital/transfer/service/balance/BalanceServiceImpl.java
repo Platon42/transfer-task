@@ -2,6 +2,8 @@ package mercy.digital.transfer.service.balance;
 
 import com.google.inject.Inject;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.dao.balance.BalanceDao;
 import mercy.digital.transfer.domain.BalanceEntity;
@@ -29,13 +31,27 @@ public class BalanceServiceImpl implements BalanceService {
     @Inject
     private ClientAccountService clientAccountService;
 
-    private void updateClientBalance(BalanceEntity balanceEntity) {
+    private void addClientBalance(BalanceEntity balanceEntity) {
         Dao<BalanceEntity, Integer> balanceDao = this.balanceDao.getBalanceDao();
         try {
             balanceDao.create(balanceEntity);
         } catch (SQLException e) {
             log.error(e.getLocalizedMessage());
         }
+    }
+
+    private BalanceEntity findBalanceEntityByAccountId(Integer id) {
+        Dao<BalanceEntity, Integer> balanceDao = this.balanceDao.getBalanceDao();
+        QueryBuilder<BalanceEntity, Integer> balancQueryBuilder = balanceDao.queryBuilder();
+        BalanceEntity balanceEntity;
+        try {
+            PreparedQuery<BalanceEntity> balanceQuery = balancQueryBuilder.where().eq("ACCOUNT_ID", id).prepare();
+            balanceEntity = balanceDao.query(balanceQuery).get(0);
+        } catch (SQLException e) {
+            log.error(e.getLocalizedMessage());
+            return null;
+        }
+        return balanceEntity;
     }
 
     public void refillClientAccount(
@@ -65,32 +81,30 @@ public class BalanceServiceImpl implements BalanceService {
         balanceEntity.setBeforeBalance(clientBalance);
         balanceEntity.setPastBalance(newBalance);
         balanceEntity.setTransactionByTransactionId(transactionEntity);
-        updateClientBalance(balanceEntity);
+        addClientBalance(balanceEntity);
 
     }
 
-    @Override
-    public void transferFunds(ClientAccountEntity clientAccountEntity, TransactionEntity transactionEntity, BalanceEntity balanceEntity, BeneficiaryAccountEntity beneficiaryAccountEntity, int clientAccountNo, int beneficiaryAccountNo, Double reqAmount, CurrencyCode targetCurrency) {
+    public void transferFunds(ClientAccountEntity clientAccountEntity,
+                              TransactionEntity transactionEntity, BalanceEntity balanceEntity, BeneficiaryAccountEntity beneficiaryAccountEntity,
+                              int clientAccountNo, int beneficiaryAccountNo, Double reqAmount, CurrencyCode targetCurrency) {
 
-    }
 
-    public void transferFunds(
+        //when beneficiary our client
 
-            ClientAccountEntity clientAccountEntity,
-            BeneficiaryAccountEntity beneficiaryAccountEntity,
-
-            TransactionEntity transactionEntity,
-            BalanceEntity balanceEntity,
-            int clientAccountNo,
-            int beneficiaryAccountNo,
-            Double reqAmount,
-            CurrencyCode targetCurrency) {
+        Double oldBalance = clientAccountEntity.getBalance();
+        Double newBalance = oldBalance - reqAmount;
 
         if (beneficiaryAccountEntity.getClient()) {
 
+            ClientAccountEntity clientSecondAccountEntity =
+                    clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+            BalanceEntity balanceSecondAccountEntity =
+                    findBalanceEntityByAccountId(clientSecondAccountEntity.getClientAccountId());
+            
+            clientAccountService.updateColumnClientAccount(clientSecondAccountEntity.getClientAccountId(), "BALANCE", newBalance.toString());
+
         }
-        Double oldBalance = clientAccountEntity.getBalance();
-        Double newBalance = oldBalance - reqAmount;
         clientAccountService.updateColumnClientAccount(clientAccountEntity.getClientAccountId(), "BALANCE", newBalance.toString());
 
         transactionEntity.setSourceAccountNo(clientAccountNo);
@@ -107,7 +121,6 @@ public class BalanceServiceImpl implements BalanceService {
         balanceEntity.setBeforeBalance(oldBalance);
         balanceEntity.setPastBalance(newBalance);
         balanceEntity.setTransactionByTransactionId(transactionEntity);
-        updateClientBalance(balanceEntity);
-
+        addClientBalance(balanceEntity);
     }
 }
