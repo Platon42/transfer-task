@@ -9,34 +9,31 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 
-@DatabaseTable(tableName = "TRANSFER")
+@DatabaseTable(tableName = "TRANSACTION")
 @Entity
 @Table(name = "TRANSACTION", schema = "TRANSFER", catalog = "H2")
-public class TransferEntity {
+public class TransactionEntity {
 
     @DatabaseField(generatedId = true, columnName = "TRANSACTION_ID")
     private int transactionId;
 
-    @DatabaseField(columnName = "SOURCE_ACCOUNT_ID")
-    private int sourceAccountId;
-
-    @DatabaseField(columnName = "TARGET_ACCOUNT_ID")
-    private Integer targetAccountId;
-
+    @DatabaseField(columnName = "SOURCE_ACCOUNT_NO")
+    private Integer sourceAccountNo;
+    @DatabaseField(columnName = "TARGET_ACCOUNT_NO")
+    private Integer targetAccountNo;
     @DatabaseField(columnName = "AMOUNT")
-    private Integer amount;
-
+    private Double amount;
     @DatabaseField(columnName = "CURRENCY")
     private String currency;
-
     @DatabaseField(columnName = "CREATED_AT")
     private Timestamp createdAt;
-
     @DatabaseField(columnName = "TRANSACTION_TYPE")
     private String transactionType;
 
     @ForeignCollectionField
     private Collection<BalanceEntity> balanceHistoriesByTransactionId;
+    @ForeignCollectionField
+    private Collection<BalanceEntity> balancesByTransactionId;
 
     @Id
     @Column(name = "TRANSACTION_ID", nullable = false)
@@ -49,32 +46,36 @@ public class TransferEntity {
     }
 
     @Basic
-    @Column(name = "SOURCE_ACCOUNT_ID", nullable = false)
-    public int getSourceAccountId() {
-        return sourceAccountId;
+    @Column(name = "SOURCE_ACCOUNT_NO", nullable = false)
+    public Integer getSourceAccountNo() {
+        return sourceAccountNo;
     }
 
-    public void setSourceAccountId(int sourceAccountId) {
-        this.sourceAccountId = sourceAccountId;
+    public void setSourceAccountNo(int sourceAccountNo) {
+        this.sourceAccountNo = sourceAccountNo;
+    }
+
+    public void setSourceAccountNo(Integer sourceAccountNo) {
+        this.sourceAccountNo = sourceAccountNo;
     }
 
     @Basic
-    @Column(name = "TARGET_ACCOUNT_ID", nullable = true)
-    public Integer getTargetAccountId() {
-        return targetAccountId;
+    @Column(name = "TARGET_ACCOUNT_NO", nullable = true)
+    public Integer getTargetAccountNo() {
+        return targetAccountNo;
     }
 
-    public void setTargetAccountId(Integer targetAccountId) {
-        this.targetAccountId = targetAccountId;
+    public void setTargetAccountNo(Integer targetAccountNo) {
+        this.targetAccountNo = targetAccountNo;
     }
 
     @Basic
     @Column(name = "AMOUNT", nullable = true)
-    public Integer getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 
@@ -112,10 +113,10 @@ public class TransferEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TransferEntity that = (TransferEntity) o;
+        TransactionEntity that = (TransactionEntity) o;
         return transactionId == that.transactionId &&
-                sourceAccountId == that.sourceAccountId &&
-                Objects.equals(targetAccountId, that.targetAccountId) &&
+                sourceAccountNo.equals(that.sourceAccountNo) &&
+                Objects.equals(targetAccountNo, that.targetAccountNo) &&
                 Objects.equals(amount, that.amount) &&
                 Objects.equals(currency, that.currency) &&
                 Objects.equals(createdAt, that.createdAt) &&
@@ -124,15 +125,16 @@ public class TransferEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(transactionId, sourceAccountId, targetAccountId, amount, currency, createdAt, transactionType);
+        return Objects.hash(transactionId, sourceAccountNo, targetAccountNo, amount, currency, createdAt, transactionType);
     }
 
-    @OneToMany(mappedBy = "transferByTransactionId")
-    public Collection<BalanceEntity> getBalanceHistoriesByTransactionId() {
-        return balanceHistoriesByTransactionId;
+
+    @OneToMany(mappedBy = "transactionByTransactionId")
+    public Collection<BalanceEntity> getBalancesByTransactionId() {
+        return balancesByTransactionId;
     }
 
-    public void setBalanceHistoriesByTransactionId(Collection<BalanceEntity> balanceHistoriesByTransactionId) {
-        this.balanceHistoriesByTransactionId = balanceHistoriesByTransactionId;
+    public void setBalancesByTransactionId(Collection<BalanceEntity> balancesByTransactionId) {
+        this.balancesByTransactionId = balancesByTransactionId;
     }
 }

@@ -1,4 +1,4 @@
-package mercy.digital.transfer.facade.account;
+package mercy.digital.transfer.facade.client.account;
 
 import com.google.inject.Inject;
 import ma.glasnost.orika.MapperFacade;
@@ -6,18 +6,17 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.domain.ClientEntity;
-import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
-import mercy.digital.transfer.presentation.transfer.GetTransfer;
-import mercy.digital.transfer.service.balance.BalanceService;
+import mercy.digital.transfer.presentation.transaction.refill.GetRefill;
+import mercy.digital.transfer.presentation.transaction.transfer.GetTransfer;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
-import mercy.digital.transfer.service.transaction.CurrencyCode;
-import mercy.digital.transfer.service.transaction.TransactionService;
-import mercy.digital.transfer.service.transaction.TransactionStatus;
-import mercy.digital.transfer.service.transaction.TransactionType;
-import mercy.digital.transfer.service.transfer.TransferService;
+import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
+import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
+import mercy.digital.transfer.service.transaction.dict.TransactionType;
+import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
+import mercy.digital.transfer.service.transaction.transfer.TransferService;
 
 import java.time.ZonedDateTime;
 
@@ -28,12 +27,6 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
     private ResponseModel responseModel = new ResponseModel();
 
     @Inject
-    private TransactionService transactionService;
-
-    @Inject
-    private BalanceService balanceService;
-
-    @Inject
     private TransferService transferService;
 
     @Inject
@@ -41,6 +34,9 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
     @Inject
     private ClientService clientService;
+
+    @Inject
+    private RefillBalanceService refillBalanceService;
 
     public ResponseModel addClientAccount(AddClientAccount clientAccount) {
 
@@ -63,7 +59,7 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
     }
 
     public ResponseModel doTransfer (GetTransfer transfer) {
-        TransactionStatus transactionStatus = transactionService.doTransfer(
+        TransactionStatus transactionStatus = transferService.doTransfer(
                 transfer.getAccountNoSender(),
                 transfer.getAccountNoReceiver(),
                 transfer.getAmount(),
@@ -71,6 +67,15 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
                 CurrencyCode.valueOf(transfer.getChangeCurrency())
         );
         responseModel.setMessage(transactionStatus.name());
+        return responseModel;
+    }
+
+    public ResponseModel doRefill(GetRefill refill) {
+        refillBalanceService.refillBalance(
+                refill.getAccountNo(),
+                refill.getAmount(),
+                CurrencyCode.valueOf(refill.getCurrency()));
+        responseModel.setMessage("");
         return responseModel;
     }
 

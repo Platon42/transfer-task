@@ -20,11 +20,11 @@ public class BalanceEntity {
     @DatabaseField(columnName = "PAST_BALANCE")
     private Double pastBalance;
 
-    @DatabaseField(foreign = true)
+    @DatabaseField(foreign = true, columnName = "ACCOUNT_ID")
     private ClientAccountEntity clientAccountByAccountId;
 
-    @DatabaseField(foreign = true)
-    private TransferEntity transferByTransactionId;
+    @DatabaseField(foreign = true, columnName = "TRANSACTION_ID")
+    private TransactionEntity transactionByTransactionId;
 
     @Id
     @Column(name = "BALANCE_ID", nullable = false)
@@ -83,11 +83,11 @@ public class BalanceEntity {
 
     @ManyToOne
     @JoinColumn(name = "TRANSACTION_ID", referencedColumnName = "TRANSACTION_ID")
-    public TransferEntity getTransferByTransactionId() {
-        return transferByTransactionId;
+    public TransactionEntity getTransactionByTransactionId() {
+        return transactionByTransactionId;
     }
 
-    public void setTransferByTransactionId(TransferEntity transferByTransactionId) {
-        this.transferByTransactionId = transferByTransactionId;
+    public void setTransactionByTransactionId(TransactionEntity transactionByTransactionId) {
+        this.transactionByTransactionId = transactionByTransactionId;
     }
 }

@@ -1,76 +1,51 @@
 package mercy.digital.transfer.service.transaction;
 
 import com.google.inject.Inject;
+import com.j256.ormlite.dao.Dao;
 import lombok.extern.slf4j.Slf4j;
-import mercy.digital.transfer.domain.BalanceEntity;
-import mercy.digital.transfer.domain.BeneficiaryAccountEntity;
-import mercy.digital.transfer.domain.ClientAccountEntity;
-import mercy.digital.transfer.service.balance.BalanceService;
-import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
-import mercy.digital.transfer.service.client.account.ClientAccountService;
-import mercy.digital.transfer.service.transaction.converter.ConverterService;
+import mercy.digital.transfer.dao.transaction.TransactionDao;
+import mercy.digital.transfer.domain.TransactionEntity;
+
+import java.sql.SQLException;
+import java.util.List;
 
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
     @Inject
-    private BalanceService balanceService;
+    private TransactionDao transactionDao;
 
-    @Inject
-    private ClientAccountService clientAccountService;
-
-    @Inject
-    private BeneficiaryAccountService beneficiaryAccountService;
-
-    @Inject
-    private ConverterService converterService;
-
-    public TransactionStatus doTransfer(
-            int clientAccountNo, //accountNo
-            int beneficiaryAccountNo, //accountNo
-            Double reqAmount,
-            TransactionType type,
-            CurrencyCode transferCurrency) {
-
-        Double clientBalance;
-        CurrencyCode clientCurrency;
-        CurrencyCode beneficiaryCurrency;
-
-        ClientAccountEntity clientAccountEntity =
-                clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
-        BeneficiaryAccountEntity beneficiaryAccountEntity =
-                beneficiaryAccountService.findBeneficiaryEntityAccountByAccountNo(beneficiaryAccountNo);
-
-        BalanceEntity balanceEntity = new BalanceEntity();
-
-        if (clientAccountEntity != null) {
-            clientBalance = clientAccountEntity.getBalance();
-            clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
-        } else {
-            log.warn("Not found client by AccountNo " + clientAccountNo);
-            return TransactionStatus.NOT_A_CLIENT;
+    public void addEntityTransaction(TransactionEntity transactionEntity) {
+        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
+        try {
+            transactionDao.create(transactionEntity);
+        } catch (SQLException e) {
+            log.error("Cannot add Transaction entity " + e.getLocalizedMessage());
         }
-
-        if (beneficiaryAccountEntity != null) {
-            beneficiaryCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
-        } else {
-            log.warn("Not found beneficiary by AccountNo " + beneficiaryAccountNo);
-            return TransactionStatus.NOT_A_BENEFICIARY;
-        }
-
-        if (clientCurrency.equals(transferCurrency) & clientCurrency.equals(beneficiaryCurrency)) {
-            if (clientBalance < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-        }
-
-        if (!clientCurrency.equals(transferCurrency)) {
-            Double exchange = this.converterService.doExchange(clientCurrency, transferCurrency, reqAmount);
-            balanceEntity.setClientAccountByAccountId(clientAccountEntity);
-            balanceEntity.setPastBalance(reqAmount);
-            balanceService.updateClientBalance(balanceEntity);
-
-            if (exchange < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-        }
-
-        return TransactionStatus.INSUFFICIENT_FUNDS;
     }
+
+    public TransactionEntity findEntityTransactionById(Integer id) {
+        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
+        TransactionEntity transactionEntity;
+        try {
+            transactionEntity = transactionDao.queryForId(id);
+        } catch (SQLException e) {
+            log.error("Cannot find by id " + id + " Transaction entity " + e.getLocalizedMessage());
+            return null;
+        }
+        return transactionEntity;
+    }
+
+    public List<TransactionEntity> findAllTransactions() {
+        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
+        List<TransactionEntity> transactionEntityList;
+        try {
+            transactionEntityList = transactionDao.queryForAll();
+        } catch (SQLException e) {
+            log.error("Cannot find Transaction entity" + e.getLocalizedMessage());
+            return null;
+        }
+        return transactionEntityList;
+    }
+
 }

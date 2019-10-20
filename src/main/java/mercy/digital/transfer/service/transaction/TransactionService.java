@@ -1,10 +1,13 @@
 package mercy.digital.transfer.service.transaction;
 
+import mercy.digital.transfer.domain.TransactionEntity;
+
+import java.util.List;
+
 public interface TransactionService {
-    TransactionStatus doTransfer(
-            int clientAccountNo, //accountNo
-            int beneficiaryAccountNo, //accountNo
-            Double reqAmount,
-            TransactionType type,
-            CurrencyCode transferCurrency);
+    void addEntityTransaction(TransactionEntity transactionEntity);
+
+    TransactionEntity findEntityTransactionById(Integer id);
+
+    List<TransactionEntity> findAllTransactions();
 }

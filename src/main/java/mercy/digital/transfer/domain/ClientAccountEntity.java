@@ -18,25 +18,18 @@ public class ClientAccountEntity {
 
     @DatabaseField(columnName = "ACCOUNT_NO")
     private Long accountNo;
-
     @DatabaseField(columnName = "BALANCE")
     private Double balance;
-
     @DatabaseField(columnName = "CURRENCY")
     private String currency;
-
     @DatabaseField(columnName = "CREATED_AT")
     private Timestamp createdAt;
-
     @DatabaseField(columnName = "UPDATED_AT")
     private Timestamp updatedAt;
-
     @DatabaseField(columnName = "NAME")
     private String name;
-
     @DatabaseField(columnName = "COUNTRY_OF_ISSUE")
     private String countryOfIssue;
-
     @ForeignCollectionField
     private Collection<BalanceEntity> balanceHistoriesByClientAccountId;
 
@@ -45,6 +38,7 @@ public class ClientAccountEntity {
     @DatabaseField(foreign = true, columnName = "CLIENT_ID")
     private ClientEntity clientByClientId;
 
+    private Collection<BalanceEntity> balancesByClientAccountId;
 
     @Id
     @Column(name = "CLIENT_ACCOUNT_ID", nullable = false)
@@ -60,6 +54,10 @@ public class ClientAccountEntity {
     @Column(name = "ACCOUNT_NO", nullable = false)
     public Long getAccountNo() {
         return accountNo;
+    }
+
+    public void setAccountNo(long accountNo) {
+        this.accountNo = accountNo;
     }
 
     public void setAccountNo(Long accountNo) {
@@ -131,6 +129,10 @@ public class ClientAccountEntity {
         return clientId;
     }
 
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
+    }
+
     public void setClientId(Integer clientId) {
         this.clientId = clientId;
     }
@@ -172,5 +174,14 @@ public class ClientAccountEntity {
 
     public void setClientByClientId(ClientEntity clientByClientId) {
         this.clientByClientId = clientByClientId;
+    }
+
+    @OneToMany(mappedBy = "clientAccountByAccountId")
+    public Collection<BalanceEntity> getBalancesByClientAccountId() {
+        return balancesByClientAccountId;
+    }
+
+    public void setBalancesByClientAccountId(Collection<BalanceEntity> balancesByClientAccountId) {
+        this.balancesByClientAccountId = balancesByClientAccountId;
     }
 }

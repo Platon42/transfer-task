@@ -9,9 +9,15 @@
         <class>mercy.digital.transfer.domain.BalanceEntity</class>
         <class>mercy.digital.transfer.domain.BeneficiaryEntity</class>
         <class>mercy.digital.transfer.domain.ClientEntity</class>
-        <class>mercy.digital.transfer.domain.TransferEntity</class>
-        <class>mercy.digital.transfer.domain.TransferEntity</class>
+        <class>mercy.digital.transfer.domain.ClientEntity</class>
+        <class>mercy.digital.transfer.domain.ClientEntity</class>
         <class>mercy.digital.transfer.domain.BeneficiaryAccountEntity</class>
         <class>mercy.digital.transfer.domain.ClientAccountEntity</class>
+        <class>mercy.digital.transfer.domain.TransactionEntity</class>
+        <properties>
+            <property name="eclipselink.jdbc.url"
+                      value="jdbc:h2:file:C:/Users/Platon/IdeaProjects/RevolutMoneyTransfer/data/h2"/>
+            <property name="eclipselink.jdbc.driver" value="org.h2.Driver"/>
+        </properties>
     </persistence-unit>
 </persistence>

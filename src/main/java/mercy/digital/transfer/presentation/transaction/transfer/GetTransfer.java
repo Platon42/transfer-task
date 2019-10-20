@@ -1,4 +1,4 @@
-package mercy.digital.transfer.presentation.transfer;
+package mercy.digital.transfer.presentation.transaction.transfer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;

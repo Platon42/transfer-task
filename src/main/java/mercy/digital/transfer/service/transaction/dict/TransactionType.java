@@ -1,4 +1,4 @@
-package mercy.digital.transfer.service.transaction;
+package mercy.digital.transfer.service.transaction.dict;
 
 public enum TransactionType {
     PAYMENT,

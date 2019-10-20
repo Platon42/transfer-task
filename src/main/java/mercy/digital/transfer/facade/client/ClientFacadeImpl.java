@@ -12,6 +12,8 @@ import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 
+import java.sql.SQLException;
+
 @Slf4j
 @Singleton
 public class ClientFacadeImpl implements ClientFacade {
@@ -20,25 +22,20 @@ public class ClientFacadeImpl implements ClientFacade {
     private MapperFacade mapper = mapperFactory.getMapperFacade();
     private ResponseModel responseModel = new ResponseModel();
 
-    private final ClientService clientService;
-    private final ClientAccountService clientAccountService;
-
     @Inject
-    public ClientFacadeImpl(ClientService clientService, ClientAccountService clientAccountService) {
-        this.clientAccountService = clientAccountService;
-        this.clientService = clientService;
-    }
+    private ClientService clientService;
+    @Inject
+    private ClientAccountService clientAccountService;
 
-    public void addClient(AddClient client) {
+    public void addClient(AddClient client) throws SQLException {
+        ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
 
         try {
-            ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
             clientService.addEntityClient(clientEntity);
-        } catch (Exception e) {
-
+        } catch (SQLException e) {
+            log.error(e.getLocalizedMessage());
+            throw new SQLException("Cannot create client Entity by client " + client.getFirstName());
         }
 
     }
-
-
 }

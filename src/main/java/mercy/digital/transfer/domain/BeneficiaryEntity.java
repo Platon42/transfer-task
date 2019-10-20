@@ -1,17 +1,34 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "BENEFICIARY")
 @Entity
 @Table(name = "BENEFICIARY", schema = "TRANSFER", catalog = "H2")
 public class BeneficiaryEntity {
+
+    @DatabaseField(generatedId = true, columnName = "BENEFICIARY_ID")
     private int beneficiaryId;
+
+    @DatabaseField(columnName = "STREET_LINE")
     private String streetLine;
+
+    @DatabaseField(columnName = "CITY")
     private String city;
+
+    @DatabaseField(columnName = "COUNTRY")
     private String country;
+
+    @DatabaseField(columnName = "POSTCODE")
     private String postcode;
+
+    @ForeignCollectionField
     private Collection<BeneficiaryAccountEntity> beneficiaryAccountsByBeneficiaryId;
 
     @Id

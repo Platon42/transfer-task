@@ -3,7 +3,7 @@ package mercy.digital.transfer.service.transaction.converter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import mercy.digital.transfer.service.transaction.CurrencyCode;
+import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

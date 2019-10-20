@@ -1,16 +1,33 @@
 package mercy.digital.transfer.domain;
 
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
 import javax.persistence.*;
 import java.util.Objects;
 
+@DatabaseTable(tableName = "BENEFICIARY_ACCOUNT")
 @Entity
 @Table(name = "BENEFICIARY_ACCOUNT", schema = "TRANSFER", catalog = "H2")
 public class BeneficiaryAccountEntity {
+
+    @DatabaseField(generatedId = true, columnName = "BENEFICIARY_ACCOUNT_ID")
     private int beneficiaryAccountId;
+
+    @DatabaseField(columnName = "ACCOUNT_NO")
     private Long accountNo;
+
+    @DatabaseField(columnName = "NAME")
     private String name;
+
+    @DatabaseField(columnName = "IS_CLIENT")
     private Boolean isClient;
+
+    @DatabaseField(foreign = true, columnName = "BENEFICIARY_ID")
     private BeneficiaryEntity beneficiaryByBeneficiaryId;
+
+    @DatabaseField(columnName = "CURRENCY")
+    private String currency;
 
     @Id
     @Column(name = "BENEFICIARY_ACCOUNT_ID", nullable = false)
@@ -76,5 +93,15 @@ public class BeneficiaryAccountEntity {
 
     public void setBeneficiaryByBeneficiaryId(BeneficiaryEntity beneficiaryByBeneficiaryId) {
         this.beneficiaryByBeneficiaryId = beneficiaryByBeneficiaryId;
+    }
+
+    @Basic
+    @Column(name = "CURRENCY")
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
