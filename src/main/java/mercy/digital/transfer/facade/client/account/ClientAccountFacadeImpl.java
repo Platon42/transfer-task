@@ -6,19 +6,25 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.domain.ClientEntity;
+import mercy.digital.transfer.domain.TransactionEntity;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
-import mercy.digital.transfer.presentation.transaction.refill.GetRefill;
-import mercy.digital.transfer.presentation.transaction.transfer.GetTransfer;
+import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
+import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
+import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
+import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.List;
 
 public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
@@ -38,19 +44,22 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
     @Inject
     private RefillBalanceService refillBalanceService;
 
+    @Inject
+    private TransactionService transactionService;
+
     public ResponseModel addClientAccount(AddClientAccount clientAccount) {
 
         int clientId = clientAccount.getGetClient().getClientId();
         ClientEntity accountById = clientService.findEntityAccountById(clientId);
 
-        responseModel.setDateTime(ZonedDateTime.now());
-        responseModel.setService(this.getClass().getName());
+        responseModel.setDateTime(LocalDateTime.now());
+        responseModel.setService("addClientAccount");
 
         if (accountById != null) {
             ClientAccountEntity accountEntity = this.mapper.map(clientAccount, ClientAccountEntity.class);
             accountEntity.setClientByClientId(accountById);
             clientAccountService.addClientEntityAccount(accountEntity);
-            responseModel.setMessage("Success");
+            responseModel.setMessage("Success created client Account");
         } else {
             responseModel.setErrorMessage("Cannot create client account, with Client Id " +
                     clientId + " see log for details");
@@ -58,8 +67,8 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
         return responseModel;
     }
 
-    public ResponseModel doTransfer (GetTransfer transfer) {
-        TransactionStatus transactionStatus = transferService.doTransfer(
+    public ResponseModel doTransfer (DoTransfer transfer) {
+        TransactionStatus transactionStatus = transferService.doTransfer (
                 transfer.getAccountNoSender(),
                 transfer.getAccountNoReceiver(),
                 transfer.getAmount(),
@@ -70,13 +79,25 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
         return responseModel;
     }
 
-    public ResponseModel doRefill(GetRefill refill) {
+    public ResponseModel doRefill (DoRefill refill) {
         refillBalanceService.refillBalance(
                 refill.getAccountNo(),
                 refill.getAmount(),
                 CurrencyCode.valueOf(refill.getCurrency()));
         responseModel.setMessage("");
         return responseModel;
+    }
+
+    public GetTransactionDetails getTransactionDetails (Integer accountId) {
+
+        List<TransactionEntity> entityTransactions = transactionService.findEntityTransactionByAccountNo(accountId);
+        GetTransactionDetails transactionDetails = new GetTransactionDetails();
+
+        this.mapper.map(entityTransactions, transactionDetails);
+        transactionDetails.setAccountNo(accountId);
+
+        return transactionDetails;
+
     }
 
 }

@@ -15,13 +15,15 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     @Inject
     private BeneficiaryDao beneficiaryDao;
 
-    public void addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity) {
+    public Integer addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity) {
         Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.beneficiaryDao.getBeneficiaryDao();
         try {
             beneficiaryDao.create(beneficiaryEntity);
+            return beneficiaryEntity.getBeneficiaryId();
         } catch (SQLException e) {
             log.error("Cannot add Beneficiary entity" + e.getLocalizedMessage());
         }
+        return null;
     }
 
     public BeneficiaryEntity findEntityBeneficiaryById(Integer id) {

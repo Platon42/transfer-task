@@ -31,8 +31,6 @@ public class TransactionEntity {
     private String transactionType;
 
     @ForeignCollectionField
-    private Collection<BalanceEntity> balanceHistoriesByTransactionId;
-    @ForeignCollectionField
     private Collection<BalanceEntity> balancesByTransactionId;
 
     @Id

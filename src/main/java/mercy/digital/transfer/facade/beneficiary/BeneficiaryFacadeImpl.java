@@ -12,7 +12,8 @@ import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.beneficiary.BeneficiaryService;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
 
@@ -25,24 +26,36 @@ public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
     @Inject
     private BeneficiaryService beneficiaryService;
 
-    public void addBeneficiary(AddBeneficiary beneficiary) {
+    public ResponseModel addBeneficiary(AddBeneficiary beneficiary) {
         BeneficiaryEntity beneficiaryEntity = this.mapper.map(beneficiary, BeneficiaryEntity.class);
-        beneficiaryService.addEntityBeneficiary(beneficiaryEntity);
+        Integer id = beneficiaryService.addEntityBeneficiary(beneficiaryEntity);
+        responseModel.setService("addBeneficiary");
+        responseModel.setDateTime(LocalDateTime.now());
+        if (id != null) {
+            responseModel.setMessage("Success beneficiary added");
+            responseModel.setId(id);
+            return responseModel;
+        } else {
+            responseModel.setErrorMessage("Common error occurred, see log for details");
+            return responseModel;
+        }
     }
 
-    public ResponseModel addBeneficiaryAccount(AddBeneficiaryAccount beneficiaryAccount) {
+    public ResponseModel addBeneficiaryAccount(AddBeneficiaryAccount addBeneficiaryAccount) {
 
-        int beneficiaryId = beneficiaryAccount.getGetBeneficiary().getBeneficiaryId();
+        int beneficiaryId = addBeneficiaryAccount.getGetBeneficiary().getBeneficiaryId();
         BeneficiaryEntity entityBeneficiaryById = beneficiaryService.findEntityBeneficiaryById(beneficiaryId);
 
-        responseModel.setDateTime(ZonedDateTime.now());
-        responseModel.setService(this.getClass().getName());
+        responseModel.setDateTime(LocalDateTime.now());
+        responseModel.setService("addBeneficiaryAccount");
 
         if (entityBeneficiaryById != null) {
-            BeneficiaryAccountEntity beneficiaryAccountEntity = this.mapper.map(beneficiaryAccount, BeneficiaryAccountEntity.class);
+            BeneficiaryAccountEntity beneficiaryAccountEntity = this.mapper.map(addBeneficiaryAccount,
+                    BeneficiaryAccountEntity.class);
             beneficiaryAccountEntity.setBeneficiaryByBeneficiaryId(entityBeneficiaryById);
             beneficiaryAccountService.addBeneficiaryEntityAccount(beneficiaryAccountEntity);
-            responseModel.setMessage("Success");
+            responseModel.setMessage("Success beneficiary account added");
+            responseModel.setId(beneficiaryId);
         } else {
             responseModel.setErrorMessage("Cannot create Beneficiary account, with Beneficiary Id " +
                     beneficiaryId + " see log for details");

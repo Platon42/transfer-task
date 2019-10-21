@@ -21,9 +21,11 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
     @Inject
     private ConverterService converterService;
 
-    public TransactionStatus refillBalance(int clientAccountNo, Double amount, CurrencyCode chargeCurrency) {
+    public TransactionStatus refillBalance(int clientAccountNo,
+                                           Double transactionAmount,
+                                           CurrencyCode chargeCurrency) {
 
-        if (amount <= 0) return TransactionStatus.INCORRECT_AMOUNT;
+        if (transactionAmount <= 0) return TransactionStatus.INCORRECT_AMOUNT;
 
         ClientAccountEntity clientAccountEntity =
                 clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
@@ -41,14 +43,14 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
 
         clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
 
-        if (chargeCurrency.equals(clientCurrency)) {
+        if (clientCurrency.equals(chargeCurrency)) {
             balanceService.refillClientAccount(clientAccountEntity, transactionEntity, balanceEntity,
-                    clientAccountNo, amount, clientBalance, clientCurrency);
+                    clientAccountNo, transactionAmount, transactionAmount, clientBalance, clientCurrency);
             return TransactionStatus.REFILL_COMPLETED;
         } else {
-            Double exchange = this.converterService.doExchange(clientCurrency, chargeCurrency, amount);
+            Double refillAmount = converterService.doExchange(chargeCurrency, clientCurrency, transactionAmount);
             balanceService.refillClientAccount(clientAccountEntity, transactionEntity, balanceEntity,
-                    clientAccountNo, exchange, clientBalance, chargeCurrency);
+                    clientAccountNo, transactionAmount, refillAmount, clientBalance, chargeCurrency);
             return TransactionStatus.REFILL_COMPLETED;
 
         }

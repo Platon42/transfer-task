@@ -8,7 +8,7 @@ import lombok.Setter;
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter
-public class GetRefill {
+public class DoRefill {
 
     @JsonProperty("account_no")
     private Integer accountNo;

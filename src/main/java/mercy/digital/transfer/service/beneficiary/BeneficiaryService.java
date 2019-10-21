@@ -5,7 +5,7 @@ import mercy.digital.transfer.domain.BeneficiaryEntity;
 import java.util.List;
 
 public interface BeneficiaryService {
-    void addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity);
+    Integer addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity);
     BeneficiaryEntity findEntityBeneficiaryById(Integer id);
     List<BeneficiaryEntity> findAllEntityBeneficiary();
 }

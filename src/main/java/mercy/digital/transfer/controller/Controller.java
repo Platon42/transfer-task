@@ -17,8 +17,9 @@ import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
-import mercy.digital.transfer.presentation.transaction.refill.GetRefill;
-import mercy.digital.transfer.presentation.transaction.transfer.GetTransfer;
+import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
+import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
+import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
 
 @Slf4j
 public class Controller {
@@ -35,7 +36,8 @@ public class Controller {
         app.get("/client/add", ctx -> {
             AddClient client = objectMapper.readValue(ctx.body(), AddClient.class);
             ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
-            clientFacade.addClient(client);
+            ResponseModel responseModel = clientFacade.addClient(client);
+            ctx.result(objectMapper.writeValueAsString(responseModel));
         });
         app.get("/client/account/add", ctx -> {
             AddClientAccount account = objectMapper.readValue(ctx.body(), AddClientAccount.class);
@@ -44,15 +46,11 @@ public class Controller {
             ctx.result(objectMapper.writeValueAsString(responseModel));
         });
 
-        app.get("/client/get", ctx -> {
-            GetClient getClient = objectMapper.readValue(ctx.body(), GetClient.class);
-            ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
-            //clientFacade;
-        });
         app.get("/beneficiary/add", ctx -> {
             AddBeneficiary beneficiary = objectMapper.readValue(ctx.body(), AddBeneficiary.class);
             BeneficiaryFacade beneficiaryFacade = beneficiaryFacadeInjector.getInstance(BeneficiaryFacade.class);
-            beneficiaryFacade.addBeneficiary(beneficiary);
+            ResponseModel responseModel = beneficiaryFacade.addBeneficiary(beneficiary);
+            ctx.result(objectMapper.writeValueAsString(responseModel));
         });
         app.get("/beneficiary/account/add", ctx -> {
             AddBeneficiaryAccount account = objectMapper.readValue(ctx.body(), AddBeneficiaryAccount.class);
@@ -62,18 +60,32 @@ public class Controller {
         });
 
         app.get("/transaction/transfer", ctx -> {
-            GetTransfer transfer = objectMapper.readValue(ctx.body(), GetTransfer.class);
+            DoTransfer transfer = objectMapper.readValue(ctx.body(), DoTransfer.class);
             ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);
             ResponseModel responseModel = clientAccountFacade.doTransfer(transfer);
             ctx.result(objectMapper.writeValueAsString(responseModel));
         });
 
         app.get("/transaction/refill", ctx -> {
-            GetRefill refill = objectMapper.readValue(ctx.body(), GetRefill.class);
+            DoRefill refill = objectMapper.readValue(ctx.body(), DoRefill.class);
             ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);
             ResponseModel responseModel = clientAccountFacade.doRefill(refill);
             ctx.result(objectMapper.writeValueAsString(responseModel));
         });
+
+        app.get("/client/get", ctx -> {
+            GetClient getClient = objectMapper.readValue(ctx.body(), GetClient.class);
+            ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
+            //clientFacade;
+        });
+
+        app.get("/client/account/transaction/details/:account_no", ctx -> {
+            Integer accountNo = Integer.valueOf(ctx.pathParam("account_no"));
+            ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);
+            GetTransactionDetails details = clientAccountFacade.getTransactionDetails(accountNo);
+            ctx.result(objectMapper.writeValueAsString(details));
+        });
+
 
     }
 }

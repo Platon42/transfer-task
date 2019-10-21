@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @JsonPOJOBuilder(withPrefix = "")
@@ -12,14 +14,14 @@ import java.time.ZonedDateTime;
 @Getter
 public class ResponseModel {
 
-    @JsonProperty("response_service")
+    @JsonProperty("service")
     private String service;
 
-    @JsonProperty("entity_id")
+    @JsonProperty("id")
     private int id;
 
     @JsonProperty("date_time")
-    private ZonedDateTime dateTime;
+    private LocalDateTime dateTime;
 
     @JsonProperty("error_message")
     private String errorMessage;

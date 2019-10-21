@@ -12,21 +12,25 @@ import java.net.URL;
 @Slf4j
 public class ConverterServiceImpl implements ConverterService {
 
-    private final String API_KEY = "fe62525f8c87ad20de58256179c42db4";
+    private final String API_KEY = "ba274ae507e40659ed68dd2186ecd410";
 
     public Double doExchange (CurrencyCode from, CurrencyCode to, Double amount) {
         double exchangeTargetAmount = 0;
         ObjectMapper mapper = new ObjectMapper();
-        String url = "http://data.fixer.io/api/convert\n" +
-                "    ? access_key = "+API_KEY+"\n" +
-                "    & from = "+from.name()+"\n" +
-                "    & to = "+to.name()+"\n" +
-                "    & amount = "+amount;
+        String url = "http://data.fixer.io/api/convert" +
+                "?access_key=" + API_KEY +
+                "&from=" + from.name() +
+                "&to=" + to.name() +
+                "&amount=" + amount;
+
+        System.out.println(url);
+
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             JsonNode jsonNode = mapper.readTree(con.getInputStream());
+            System.out.println(jsonNode);
             exchangeTargetAmount = jsonNode.get("result").asDouble();
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());

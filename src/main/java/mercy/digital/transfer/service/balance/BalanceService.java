@@ -12,9 +12,10 @@ public interface BalanceService {
                              TransactionEntity transactionEntity,
                              BalanceEntity balanceEntity,
                              int clientAccountNo,
-                             Double amount,
+                             Double transactionAmount,
+                             Double refillAmount,
                              Double clientBalance,
-                             CurrencyCode chargeCurrency);
+                             CurrencyCode transactionCurrency);
 
     void transferFunds(ClientAccountEntity clientAccountEntity,
                        TransactionEntity transactionEntity,
@@ -23,5 +24,5 @@ public interface BalanceService {
                        int clientAccountNo,
                        int beneficiaryAccountNo,
                        Double reqAmount,
-                       CurrencyCode targetCurrency);
+                       CurrencyCode transferCurrency);
 }

@@ -15,14 +15,15 @@ public class ClientServiceImpl implements ClientService {
     @Inject
     private ClientDao clientDao;
 
-    public void addEntityClient(ClientEntity clientEntity) throws SQLException {
+    public Integer addEntityClient(ClientEntity clientEntity) {
         Dao<ClientEntity, Integer> clientDao = this.clientDao.getClientDao();
         try {
             clientDao.create(clientEntity);
+            return clientEntity.getClientId();
         } catch (SQLException e) {
             log.error("Cannot add Client entity " + e.getLocalizedMessage());
-            throw new SQLException("sds");
         }
+        return null;
     }
 
     public ClientEntity findEntityAccountById(Integer id) {

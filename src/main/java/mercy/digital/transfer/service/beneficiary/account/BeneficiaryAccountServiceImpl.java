@@ -19,11 +19,13 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
 
     public void addBeneficiaryEntityAccount(BeneficiaryAccountEntity accountEntity) {
         Dao<BeneficiaryAccountEntity, Integer> accountDao = this.beneficiaryAccountDao.getBeneficiaryAccountDao();
-        //rules for define our clients
-        if (accountEntity.getAccountNo().toString().startsWith("101")) {
-            accountEntity.setClient(true);
-        }
         try {
+            //rules for define our clients
+            if (accountEntity.getAccountNo().toString().startsWith("101")) {
+                accountEntity.setClient(true);
+            } else {
+                accountEntity.setClient(false);
+            }
             accountDao.create(accountEntity);
         } catch (SQLException e) {
             log.error("Cannot add Beneficiary Account entity" + e.getLocalizedMessage());

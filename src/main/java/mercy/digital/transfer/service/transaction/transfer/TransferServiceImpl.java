@@ -29,7 +29,7 @@ public class TransferServiceImpl implements TransferService {
     @Inject
     private ConverterService converterService;
 
-    public TransactionStatus doTransfer(
+    public TransactionStatus doTransfer (
             int clientAccountNo, //accountNo
             int beneficiaryAccountNo, //accountNo
             Double reqAmount,
@@ -44,9 +44,6 @@ public class TransferServiceImpl implements TransferService {
                 clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
         BeneficiaryAccountEntity beneficiaryAccountEntity =
                 beneficiaryAccountService.findBeneficiaryEntityAccountByAccountNo(beneficiaryAccountNo);
-
-        TransactionEntity transactionEntity = new TransactionEntity();
-        BalanceEntity balanceEntity = new BalanceEntity();
 
         if (clientAccountEntity != null) {
             clientBalance = clientAccountEntity.getBalance();
@@ -63,12 +60,22 @@ public class TransferServiceImpl implements TransferService {
             return TransactionStatus.NOT_A_BENEFICIARY;
         }
 
-        if (clientAccountEntity.getBalance() == null) clientBalance = 0.0;
+        System.out.println(beneficiaryAccountEntity.getClient());
+        System.out.println(beneficiaryAccountEntity.getAccountNo());
 
-        if (clientCurrency.equals(transferCurrency) & clientCurrency.equals(beneficiaryCurrency)) {
+        System.out.println("clientCurrency " + clientCurrency);
+        System.out.println("beneficiaryCurrency " + beneficiaryCurrency);
+        System.out.println("transferCurrency " + transferCurrency);
 
+
+        TransactionEntity transactionEntity = new TransactionEntity();
+        BalanceEntity balanceEntity = new BalanceEntity();
+
+        if (clientCurrency.equals(transferCurrency) && beneficiaryCurrency.equals(transferCurrency)) {
+            System.out.println("first");
             if (clientBalance < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-            balanceService.transferFunds(clientAccountEntity,
+            balanceService.transferFunds(
+                    clientAccountEntity,
                     transactionEntity,
                     balanceEntity,
                     beneficiaryAccountEntity,
@@ -80,9 +87,15 @@ public class TransferServiceImpl implements TransferService {
         }
 
         if (!clientCurrency.equals(transferCurrency) & beneficiaryCurrency.equals(transferCurrency)) {
-            Double exchange = this.converterService.doExchange(clientCurrency, transferCurrency, reqAmount);
+            System.out.println("second ");
+
+            Double exchange = converterService.doExchange(transferCurrency, clientCurrency, reqAmount);
+            System.out.println("exc " + exchange);
+            System.out.println("req " + reqAmount);
+
             if (exchange < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-            balanceService.transferFunds(clientAccountEntity,
+            balanceService.transferFunds(
+                    clientAccountEntity,
                     transactionEntity,
                     balanceEntity,
                     beneficiaryAccountEntity,
@@ -94,10 +107,16 @@ public class TransferServiceImpl implements TransferService {
 
         }
 
-        if (!beneficiaryCurrency.equals(transferCurrency) & !clientCurrency.equals(transferCurrency)) {
+        if (!clientCurrency.equals(transferCurrency) & !beneficiaryCurrency.equals(transferCurrency)) {
 
-            Double exchangeToTransfer = this.converterService.doExchange(clientCurrency, transferCurrency, reqAmount);
-            Double exchangeToBeneficiary = this.converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
+            System.out.println("third ");
+            System.out.println("req " + reqAmount);
+
+            Double exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, reqAmount);
+            System.out.println("exchangeToTransfer " + exchangeToTransfer);
+
+            Double exchangeToBeneficiary = converterService.doExchange(clientCurrency, beneficiaryCurrency, exchangeToTransfer);
+            System.out.println("exchangeToBeneficiary " + exchangeToBeneficiary);
 
             if (exchangeToBeneficiary < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
             balanceService.transferFunds(clientAccountEntity,
@@ -111,7 +130,6 @@ public class TransferServiceImpl implements TransferService {
             return TransactionStatus.TRANSFER_COMPLETED;
 
         }
-
         return TransactionStatus.ERROR_OCCURRED;
     }
 }

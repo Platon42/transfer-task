@@ -26,7 +26,7 @@ create table BENEFICIARY_ACCOUNT
     ACCOUNT_NO             BIGINT      not null
         unique,
     NAME                   VARCHAR(50),
-    IS_CLIENT              BOOLEAN,
+    IS_CLIENT              BOOLEAN default false,
     BENEFICIARY_ID         INTEGER,
     CURRENCY               VARCHAR(10) not null,
     constraint BENEFICIARY_ACCOUNT_BENEFICIARY_BENEFICIARY_ID_FK

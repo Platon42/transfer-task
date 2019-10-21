@@ -5,6 +5,6 @@ import mercy.digital.transfer.presentation.beneficiary.account.AddBeneficiaryAcc
 import mercy.digital.transfer.presentation.response.ResponseModel;
 
 public interface BeneficiaryFacade {
-    void addBeneficiary(AddBeneficiary beneficiary);
+    ResponseModel addBeneficiary(AddBeneficiary beneficiary);
     ResponseModel addBeneficiaryAccount(AddBeneficiaryAccount beneficiaryAccount);
 }

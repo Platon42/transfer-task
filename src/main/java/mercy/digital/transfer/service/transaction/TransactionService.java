@@ -6,8 +6,7 @@ import java.util.List;
 
 public interface TransactionService {
     void addEntityTransaction(TransactionEntity transactionEntity);
-
     TransactionEntity findEntityTransactionById(Integer id);
-
     List<TransactionEntity> findAllTransactions();
+    List<TransactionEntity> findEntityTransactionByAccountNo (Integer accountNo);
 }

@@ -8,7 +8,7 @@ import lombok.Setter;
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter
-public class GetTransfer {
+public class DoTransfer {
 
     @JsonProperty("account_no_sender")
     private Integer accountNoSender;
