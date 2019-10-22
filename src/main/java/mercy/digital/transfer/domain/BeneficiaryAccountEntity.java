@@ -15,7 +15,7 @@ public class BeneficiaryAccountEntity {
     private int beneficiaryAccountId;
 
     @DatabaseField(columnName = "ACCOUNT_NO")
-    private Long accountNo;
+    private Integer accountNo;
 
     @DatabaseField(columnName = "NAME")
     private String name;
@@ -41,16 +41,16 @@ public class BeneficiaryAccountEntity {
 
     @Basic
     @Column(name = "ACCOUNT_NO", nullable = false)
-    public Long getAccountNo() {
+    public Integer getAccountNo() {
         return accountNo;
     }
 
-    public void setAccountNo(Long accountNo) {
+    public void setAccountNo(Integer accountNo) {
         this.accountNo = accountNo;
     }
 
     @Basic
-    @Column(name = "NAME", nullable = true, length = 50)
+    @Column(name = "NAME", length = 50)
     public String getName() {
         return name;
     }
@@ -60,7 +60,7 @@ public class BeneficiaryAccountEntity {
     }
 
     @Basic
-    @Column(name = "IS_CLIENT", nullable = true)
+    @Column(name = "IS_CLIENT")
     public Boolean getClient() {
         return isClient;
     }

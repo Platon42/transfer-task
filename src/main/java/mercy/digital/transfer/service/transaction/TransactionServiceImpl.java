@@ -7,8 +7,12 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.dao.transaction.TransactionDao;
 import mercy.digital.transfer.domain.TransactionEntity;
+import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
+import mercy.digital.transfer.service.transaction.dict.TransactionType;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +28,24 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (SQLException e) {
             log.error("Cannot add Transaction entity " + e.getLocalizedMessage());
         }
+    }
+
+    public void setTransactionEntity(TransactionEntity transactionEntity,
+                                     TransactionType transactionType,
+                                     Double transactionAmount,
+                                     CurrencyCode currencyCode,
+                                     Integer clientAccountNo,
+                                     Integer beneficiaryAccountNo) {
+
+        transactionEntity.setSourceAccountNo(clientAccountNo);
+        transactionEntity.setTargetAccountNo(beneficiaryAccountNo);
+        transactionEntity.setAmount(transactionAmount);
+        transactionEntity.setCurrency(currencyCode.name());
+        transactionEntity.setTransactionType(transactionType.name());
+        transactionEntity.setCreatedAt(Timestamp.from(Instant.now()));
+
+        addEntityTransaction(transactionEntity);
+
     }
 
     public List<TransactionEntity> findEntityTransactionByAccountNo (Integer accountNo) {

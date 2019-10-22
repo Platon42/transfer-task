@@ -17,13 +17,10 @@ import mercy.digital.transfer.service.client.account.ClientAccountService;
 import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
-import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 public class ClientAccountFacadeImpl implements ClientAccountFacade {
@@ -72,7 +69,6 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
                 transfer.getAccountNoSender(),
                 transfer.getAccountNoReceiver(),
                 transfer.getAmount(),
-                TransactionType.FUNDS_TRANSFER,
                 CurrencyCode.valueOf(transfer.getChangeCurrency())
         );
         responseModel.setMessage(transactionStatus.name());

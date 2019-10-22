@@ -9,16 +9,22 @@ import mercy.digital.transfer.domain.TransactionEntity;
 import mercy.digital.transfer.service.balance.BalanceService;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
+import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transaction.converter.ConverterService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.dict.TransactionType;
+import mercy.digital.transfer.service.transaction.dict.TransferType;
+
 
 @Slf4j
 public class TransferServiceImpl implements TransferService {
 
     @Inject
     private BalanceService balanceService;
+
+    @Inject
+    private TransactionService transactionService;
 
     @Inject
     private ClientAccountService clientAccountService;
@@ -29,16 +35,99 @@ public class TransferServiceImpl implements TransferService {
     @Inject
     private ConverterService converterService;
 
-    public TransactionStatus doTransfer (
+    private CurrencyCode transferCurrency, clientCurrency, beneficiaryCurrency;
+    private Integer clientAccountNo, beneficiaryAccountNo;
+
+    private Double calculateTransferAmount(TransferType transferType,
+                                           TransactionType transactionType,
+                                           Double clientBalance,
+                                           Double transferAmount) {
+
+        Double newBalance, exchangeToTransfer, exchangeToBeneficiary;
+
+        switch (transferType) {
+            case ALL_PARTICIPANTS_SAME_CURRENCY:
+                if (TransactionType.REFILL.equals(transactionType)) {
+                    newBalance = clientBalance + transferAmount;
+                    return newBalance;
+                }
+                if (TransactionType.WITHDRAWAL.equals(transactionType)) {
+                    newBalance = clientBalance - transferAmount;
+                    return newBalance;
+                }
+                break;
+            case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
+                exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+                exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
+                if (TransactionType.REFILL.equals(transactionType)) {
+                    newBalance = clientBalance + exchangeToBeneficiary;
+                    return newBalance;
+                }
+                if (TransactionType.WITHDRAWAL.equals(transactionType)) {
+                    newBalance = clientBalance - exchangeToTransfer;
+                    return newBalance;
+                }
+                break;
+            }
+            case SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY:
+                exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+                if (TransactionType.REFILL.equals(transactionType)) {
+                    newBalance = clientBalance + exchangeToTransfer;
+                    return newBalance;
+                }
+                if (TransactionType.WITHDRAWAL.equals(transactionType)) {
+                    newBalance = clientBalance - exchangeToTransfer;
+                    return newBalance;
+                }
+                break;
+        }
+        return null;
+    }
+
+    private TransactionStatus applyTransferEntities(TransferType transferType,
+                                                    TransactionType transactionType,
+                                                    ClientAccountEntity clientAccountEntity,
+                                                    Double transferAmount,
+                                                    Double clientBalance) {
+
+
+        TransactionEntity transactionEntity = new TransactionEntity();
+        BalanceEntity balanceEntity = new BalanceEntity();
+        Double newBalance = calculateTransferAmount(
+                transferType,
+                transactionType,
+                clientBalance,
+                transferAmount);
+
+        if (newBalance == null) {
+            return TransactionStatus.ERROR_OCCURRED;
+        }
+        if (newBalance < 0.0) {
+            return TransactionStatus.INSUFFICIENT_FUNDS;
+        }
+
+        transactionService.setTransactionEntity(
+                transactionEntity,
+                transactionType,
+                transferAmount,
+                transferCurrency,
+                clientAccountNo,
+                beneficiaryAccountNo);
+        balanceService.setBalanceEntity(clientAccountEntity, balanceEntity, transactionEntity, clientBalance, newBalance);
+        return TransactionStatus.TRANSFER_COMPLETED;
+    }
+
+    public TransactionStatus doTransfer(
             int clientAccountNo, //accountNo
             int beneficiaryAccountNo, //accountNo
-            Double reqAmount,
-            TransactionType type,
+            Double transferAmount,
             CurrencyCode transferCurrency) {
 
-        Double clientBalance = 0.0;
-        CurrencyCode clientCurrency;
-        CurrencyCode beneficiaryCurrency;
+        this.transferCurrency = transferCurrency;
+        this.clientAccountNo = clientAccountNo;
+        this.beneficiaryAccountNo = beneficiaryAccountNo;
+
+        Double clientBalance;
 
         ClientAccountEntity clientAccountEntity =
                 clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
@@ -54,82 +143,60 @@ public class TransferServiceImpl implements TransferService {
         }
 
         if (beneficiaryAccountEntity != null) {
-            beneficiaryCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
+            beneficiaryCurrency = CurrencyCode.valueOf(beneficiaryAccountEntity.getCurrency());
         } else {
             log.warn("Not found beneficiary by AccountNo " + beneficiaryAccountNo);
             return TransactionStatus.NOT_A_BENEFICIARY;
         }
 
-        System.out.println(beneficiaryAccountEntity.getClient());
-        System.out.println(beneficiaryAccountEntity.getAccountNo());
+        TransactionStatus transactionStatus;
 
-        System.out.println("clientCurrency " + clientCurrency);
-        System.out.println("beneficiaryCurrency " + beneficiaryCurrency);
-        System.out.println("transferCurrency " + transferCurrency);
+        if (clientCurrency.equals(transferCurrency) & beneficiaryCurrency.equals(transferCurrency)) {
 
+            transactionStatus = applyTransferEntities(TransferType.ALL_PARTICIPANTS_SAME_CURRENCY,
+                    TransactionType.WITHDRAWAL, clientAccountEntity, transferAmount, clientBalance);
+            if (TransactionStatus.ERROR_OCCURRED.equals(transactionStatus)) return transactionStatus;
 
-        TransactionEntity transactionEntity = new TransactionEntity();
-        BalanceEntity balanceEntity = new BalanceEntity();
+            if (beneficiaryAccountEntity.getClient()) {
+                //bcs this beneficiary is client
+                clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+                transactionStatus = applyTransferEntities(TransferType.ALL_PARTICIPANTS_SAME_CURRENCY,
+                        TransactionType.REFILL, clientAccountEntity, transferAmount, clientBalance);
+                if (TransactionStatus.ERROR_OCCURRED.equals(transactionStatus)) return transactionStatus;
+            }
 
-        if (clientCurrency.equals(transferCurrency) && beneficiaryCurrency.equals(transferCurrency)) {
-            System.out.println("first");
-            if (clientBalance < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-            balanceService.transferFunds(
-                    clientAccountEntity,
-                    transactionEntity,
-                    balanceEntity,
-                    beneficiaryAccountEntity,
-                    clientAccountNo,
-                    beneficiaryAccountNo,
-                    reqAmount,
-                    transferCurrency);
-            return TransactionStatus.TRANSFER_COMPLETED;
+            return transactionStatus;
         }
 
-        if (!clientCurrency.equals(transferCurrency) & beneficiaryCurrency.equals(transferCurrency)) {
-            System.out.println("second ");
+        if (!clientCurrency.equals(transferCurrency) & !beneficiaryCurrency.equals(transferCurrency) & !clientCurrency.equals(beneficiaryCurrency)) {
 
-            Double exchange = converterService.doExchange(transferCurrency, clientCurrency, reqAmount);
-            System.out.println("exc " + exchange);
-            System.out.println("req " + reqAmount);
+            transactionStatus = applyTransferEntities(TransferType.ALL_PARTICIPANTS_DIFFERENT_CURRENCY,
+                    TransactionType.WITHDRAWAL, clientAccountEntity, transferAmount, clientBalance);
+            if (TransactionStatus.ERROR_OCCURRED.equals(transactionStatus)) return transactionStatus;
 
-            if (exchange < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-            balanceService.transferFunds(
-                    clientAccountEntity,
-                    transactionEntity,
-                    balanceEntity,
-                    beneficiaryAccountEntity,
-                    clientAccountNo,
-                    beneficiaryAccountNo,
-                    exchange,
-                    transferCurrency);
-            return TransactionStatus.TRANSFER_COMPLETED;
+            if (beneficiaryAccountEntity.getClient()) {
+                clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+                transactionStatus = applyTransferEntities(TransferType.ALL_PARTICIPANTS_DIFFERENT_CURRENCY,
+                        TransactionType.REFILL, clientAccountEntity, transferAmount, clientBalance);
+                if (TransactionStatus.ERROR_OCCURRED.equals(transactionStatus)) return transactionStatus;
+            }
 
+            return transactionStatus;
+
+        } else {
+
+            transactionStatus = applyTransferEntities(TransferType.SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY,
+                    TransactionType.WITHDRAWAL, clientAccountEntity, transferAmount, clientBalance);
+            if (TransactionStatus.ERROR_OCCURRED.equals(transactionStatus)) return transactionStatus;
+
+            if (beneficiaryAccountEntity.getClient()) {
+                clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+                transactionStatus = applyTransferEntities(TransferType.SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY,
+                        TransactionType.REFILL, clientAccountEntity, transferAmount, clientBalance);
+                if (TransactionStatus.ERROR_OCCURRED.equals(transactionStatus)) return transactionStatus;
+            }
+
+            return transactionStatus;
         }
-
-        if (!clientCurrency.equals(transferCurrency) & !beneficiaryCurrency.equals(transferCurrency)) {
-
-            System.out.println("third ");
-            System.out.println("req " + reqAmount);
-
-            Double exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, reqAmount);
-            System.out.println("exchangeToTransfer " + exchangeToTransfer);
-
-            Double exchangeToBeneficiary = converterService.doExchange(clientCurrency, beneficiaryCurrency, exchangeToTransfer);
-            System.out.println("exchangeToBeneficiary " + exchangeToBeneficiary);
-
-            if (exchangeToBeneficiary < reqAmount) return TransactionStatus.INSUFFICIENT_FUNDS;
-            balanceService.transferFunds(clientAccountEntity,
-                    transactionEntity,
-                    balanceEntity,
-                    beneficiaryAccountEntity,
-                    clientAccountNo,
-                    beneficiaryAccountNo,
-                    exchangeToBeneficiary,
-                    transferCurrency);
-            return TransactionStatus.TRANSFER_COMPLETED;
-
-        }
-        return TransactionStatus.ERROR_OCCURRED;
     }
 }
