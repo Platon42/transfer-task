@@ -11,7 +11,7 @@ import java.util.Objects;
 @Table(name = "BALANCE", schema = "TRANSFER", catalog = "H2")
 public class BalanceEntity {
 
-    @DatabaseField(generatedId = true)
+    @DatabaseField(columnName = "BALANCE_ID", generatedId = true)
     private int balanceId;
 
     @DatabaseField(columnName = "BEFORE_BALANCE")

@@ -4,11 +4,14 @@ import com.google.inject.Inject;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
+import mercy.digital.transfer.domain.BalanceEntity;
 import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.domain.TransactionEntity;
+import mercy.digital.transfer.presentation.balance.GetBalance;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
+import mercy.digital.transfer.presentation.transaction.GetTransaction;
 import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
 import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
 import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
@@ -21,6 +24,8 @@ import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ClientAccountFacadeImpl implements ClientAccountFacade {
@@ -86,10 +91,41 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
     public GetTransactionDetails getTransactionDetails (Integer accountId) {
 
-        List<TransactionEntity> entityTransactions = transactionService.findEntityTransactionByAccountNo(accountId);
+        List<TransactionEntity> entityTransactions = transactionService.findEntitiesTransactionByAccountNo(accountId);
         GetTransactionDetails transactionDetails = new GetTransactionDetails();
 
-        this.mapper.map(entityTransactions, transactionDetails);
+        List<GetTransaction> getTransactions = new ArrayList<>();
+        ArrayList<GetBalance> getBalances = new ArrayList<>();
+        Collection<BalanceEntity> balances = new ArrayList<>();
+        for (TransactionEntity e : entityTransactions) {
+            balances = e.getBalancesByTransactionId();
+            GetTransaction getTransaction = new GetTransaction();
+            GetBalance getBalance = new GetBalance();
+            for (BalanceEntity b : balances) {
+                getBalance.setBeforeBalance(b.getBeforeBalance());
+                getBalance.setPastBalance(b.getPastBalance());
+                getBalance.setTransactionId(b.getTransactionByTransactionId().getTransactionId());
+                getBalances.add(getBalance);
+            }
+
+            getTransaction.setTransactionId(e.getTransactionId());
+            getTransaction.setAmount(e.getAmount());
+            getTransaction.setCurrency(e.getCurrency());
+            getTransaction.setTargetAccountNo(e.getTargetAccountNo());
+            getTransaction.setSourceAccountNo(e.getSourceAccountNo());
+            getTransaction.setTransactionType(e.getTransactionType());
+            getTransaction.setGetBalance(getBalances);
+
+            getTransactions.add(getTransaction);
+        }
+
+        for (GetBalance getBalance : getBalances) {
+            System.out.println(getBalance.getTransactionId());
+        }
+
+        transactionDetails.setTransactionList(getTransactions);
+
+        transactionDetails.setAccountNo(1);
         transactionDetails.setAccountNo(accountId);
 
         return transactionDetails;

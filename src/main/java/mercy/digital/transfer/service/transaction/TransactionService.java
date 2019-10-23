@@ -17,5 +17,6 @@ public interface TransactionService {
                               Integer beneficiaryAccountNo);
     TransactionEntity findEntityTransactionById(Integer id);
     List<TransactionEntity> findAllTransactions();
-    List<TransactionEntity> findEntityTransactionByAccountNo (Integer accountNo);
+
+    List<TransactionEntity> findEntitiesTransactionByAccountNo(Integer accountNo);
 }

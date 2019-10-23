@@ -13,6 +13,9 @@ import java.util.List;
 @Getter
 public class GetTransaction {
 
+    @JsonProperty("transaction_id")
+    private Integer transactionId;
+
     @JsonProperty("source_account_no")
     private Integer sourceAccountNo;
 
@@ -20,7 +23,7 @@ public class GetTransaction {
     private Integer targetAccountNo;
 
     @JsonProperty("amount")
-    private Integer amount;
+    private Double amount;
 
     @JsonProperty("currency")
     private String currency;
@@ -28,7 +31,7 @@ public class GetTransaction {
     @JsonProperty("transaction_type")
     private String transactionType;
 
-    @JsonProperty("balance_list")
-    private List<GetBalance> getBalanceList;
+    @JsonProperty("balance_info")
+    private List<GetBalance> getBalance;
 
 }

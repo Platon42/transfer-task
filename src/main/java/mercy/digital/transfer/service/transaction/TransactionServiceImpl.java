@@ -48,12 +48,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-    public List<TransactionEntity> findEntityTransactionByAccountNo (Integer accountNo) {
+    public List<TransactionEntity> findEntitiesTransactionByAccountNo(Integer accountNo) {
         Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
         QueryBuilder<TransactionEntity, Integer> transactionQueryBuilder = transactionDao.queryBuilder();
         List<TransactionEntity> transactionEntities;
         try {
-            PreparedQuery<TransactionEntity> accountQuery = transactionQueryBuilder.where().eq("ACCOUNT_NO", accountNo).prepare();
+            PreparedQuery<TransactionEntity> accountQuery = transactionQueryBuilder.where().eq("SOURCE_ACCOUNT_NO", accountNo).prepare();
             transactionEntities = transactionDao.query(accountQuery);
         } catch (SQLException e) {
             log.error("Cannot find by account No " + accountNo + " Transaction entity " + e.getLocalizedMessage());
@@ -84,5 +84,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
         return transactionEntityList;
     }
+
 
 }

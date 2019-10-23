@@ -17,8 +17,8 @@ public class GetBalance {
     private Integer transactionId;
 
     @JsonProperty("before_balance")
-    private Integer beforeBalance;
+    private Double beforeBalance;
 
     @JsonProperty("past_balance")
-    private Integer pastBalance;
+    private Double pastBalance;
 }
