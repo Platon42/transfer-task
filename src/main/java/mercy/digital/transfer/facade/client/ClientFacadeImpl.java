@@ -16,12 +16,16 @@ import java.time.LocalDateTime;
 @Slf4j
 public class ClientFacadeImpl implements ClientFacade {
 
-    private MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-    private MapperFacade mapper = mapperFactory.getMapperFacade();
-    private ResponseModel responseModel = new ResponseModel();
+    private final MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+    private final MapperFacade mapper = mapperFactory.getMapperFacade();
+    private final ResponseModel responseModel = new ResponseModel();
 
     @Inject
     private ClientService clientService;
+
+    public void setClientService(ClientService clientService) {
+        this.clientService = clientService;
+    }
 
     public ResponseModel addClient(AddClient client) {
         ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
