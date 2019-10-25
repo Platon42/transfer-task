@@ -9,6 +9,7 @@ import mercy.digital.transfer.domain.TransactionEntity;
 import mercy.digital.transfer.service.balance.BalanceService;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
+import mercy.digital.transfer.service.dict.ErrorCode;
 import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transaction.converter.ConverterService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
@@ -56,17 +57,24 @@ public class TransferServiceImpl implements TransferService {
                                            Double clientBalance,
                                            Double transferAmount) {
 
-        Double newBalance, exchangeToTransfer, exchangeToBeneficiary;
+        Double newBalance;
+        Double exchangeToTransfer;
+        Double exchangeToBeneficiary;
 
         switch (transferType) {
             case ALL_PARTICIPANTS_SAME_CURRENCY:
-                return changeBalance(transactionType, transferAmount, clientBalance);
+                if (TransactionType.REFILL.equals(transactionType)) {
+                    newBalance = clientBalance + transferAmount;
+                    return newBalance;
+                }
+                if (TransactionType.WITHDRAWAL.equals(transactionType)) {
+                    newBalance = clientBalance - transferAmount;
+                    return newBalance;
+                }
+                break;
             case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
                 exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
-
-                //return changeBalance(transactionType, transferAmount, clientBalance);
-
                 if (TransactionType.REFILL.equals(transactionType)) {
                     newBalance = clientBalance + exchangeToBeneficiary;
                     return newBalance;
@@ -89,6 +97,7 @@ public class TransferServiceImpl implements TransferService {
                 }
                 break;
         }
+
         return null;
     }
 
@@ -125,6 +134,18 @@ public class TransferServiceImpl implements TransferService {
         return TransactionStatus.TRANSFER_COMPLETED;
     }
 
+    private ErrorCode checkEntity(ClientAccountEntity clientAccountEntity, BeneficiaryAccountEntity beneficiaryAccountEntity) {
+        if (clientAccountEntity == null) {
+            log.warn("Not found client by AccountNo " + clientAccountNo);
+            return ErrorCode.NOT_A_CLIENT;
+        }
+        if (beneficiaryAccountEntity == null) {
+            log.warn("Not found beneficiary by AccountNo " + beneficiaryAccountNo);
+            return ErrorCode.NOT_A_BENEFICIARY;
+        }
+        return null;
+    }
+
     public TransactionStatus doTransfer(
             int clientAccountNo, //accountNo
             int beneficiaryAccountNo, //accountNo
@@ -141,23 +162,14 @@ public class TransferServiceImpl implements TransferService {
                 clientAccountService.findClientEntityAccountByAccountNo(clientAccountNo);
         BeneficiaryAccountEntity beneficiaryAccountEntity =
                 beneficiaryAccountService.findBeneficiaryEntityAccountByAccountNo(beneficiaryAccountNo);
-
-        if (clientAccountEntity != null) {
-            clientBalance = clientAccountEntity.getBalance();
-            clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
-        } else {
-            log.warn("Not found client by AccountNo " + clientAccountNo);
-            return TransactionStatus.NOT_A_CLIENT;
-        }
-
-        if (beneficiaryAccountEntity != null) {
-            beneficiaryCurrency = CurrencyCode.valueOf(beneficiaryAccountEntity.getCurrency());
-        } else {
-            log.warn("Not found beneficiary by AccountNo " + beneficiaryAccountNo);
-            return TransactionStatus.NOT_A_BENEFICIARY;
-        }
-
         TransactionStatus transactionStatus;
+
+        checkEntity(clientAccountEntity, beneficiaryAccountEntity);
+
+        clientBalance = clientAccountEntity.getBalance();
+        clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
+        beneficiaryCurrency = CurrencyCode.valueOf(beneficiaryAccountEntity.getCurrency());
+
 
         if (clientCurrency.equals(transferCurrency) & beneficiaryCurrency.equals(transferCurrency)) {
 
