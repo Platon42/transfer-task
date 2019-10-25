@@ -30,24 +30,28 @@ import java.util.List;
 
 public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
-    private MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
-    private MapperFacade mapper = mapperFactory.getMapperFacade();
-    private ResponseModel responseModel = new ResponseModel();
+    private final MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+    private final MapperFacade mapper = mapperFactory.getMapperFacade();
+    private final ResponseModel responseModel = new ResponseModel();
+
+    private final TransferService transferService;
+    private final ClientAccountService clientAccountService;
+    private final ClientService clientService;
+    private final RefillBalanceService refillBalanceService;
+    private final TransactionService transactionService;
 
     @Inject
-    private TransferService transferService;
-
-    @Inject
-    private ClientAccountService clientAccountService;
-
-    @Inject
-    private ClientService clientService;
-
-    @Inject
-    private RefillBalanceService refillBalanceService;
-
-    @Inject
-    private TransactionService transactionService;
+    public ClientAccountFacadeImpl(TransferService transferService,
+                                   ClientAccountService clientAccountService,
+                                   ClientService clientService,
+                                   RefillBalanceService refillBalanceService,
+                                   TransactionService transactionService) {
+        this.transferService = transferService;
+        this.clientAccountService = clientAccountService;
+        this.clientService = clientService;
+        this.refillBalanceService = refillBalanceService;
+        this.transactionService = transactionService;
+    }
 
     public ResponseModel addClientAccount(AddClientAccount clientAccount) {
 

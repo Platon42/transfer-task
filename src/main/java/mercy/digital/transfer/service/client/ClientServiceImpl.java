@@ -22,8 +22,8 @@ public class ClientServiceImpl implements ClientService {
             return clientEntity.getClientId();
         } catch (SQLException e) {
             log.error("Cannot add Client entity " + e.getLocalizedMessage());
+            return null;
         }
-        return null;
     }
 
     public ClientEntity findEntityAccountById(Integer id) {

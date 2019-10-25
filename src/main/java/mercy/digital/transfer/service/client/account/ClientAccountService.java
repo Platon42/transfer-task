@@ -6,10 +6,12 @@ import java.util.List;
 
 public interface ClientAccountService {
 
-    void addClientEntityAccount(ClientAccountEntity accountEntity);
+    Integer addClientEntityAccount(ClientAccountEntity accountEntity);
     ClientAccountEntity findClientEntityAccountById(Integer id);
     ClientAccountEntity findClientEntityAccountByAccountNo(Integer accountNo);
     List<ClientAccountEntity> findAllEntityClientAccounts();
-    void updateColumnClientAccount(Integer clientId, String columnName, String value);
-    void updateClientAccount(ClientAccountEntity accountEntity);
+
+    Integer updateColumnClientAccount(Integer clientId, String columnName, String value);
+
+    Integer updateClientAccount(ClientAccountEntity accountEntity);
 }

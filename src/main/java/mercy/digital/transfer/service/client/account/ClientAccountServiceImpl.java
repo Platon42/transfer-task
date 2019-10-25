@@ -18,32 +18,37 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     @Inject
     private ClientAccountDao clientAccountDao;
 
-    public void addClientEntityAccount(ClientAccountEntity accountEntity) {
+    public Integer addClientEntityAccount(ClientAccountEntity accountEntity) {
         Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
         try {
             clientAccountDao.create(accountEntity);
+            return accountEntity.getClientId();
         } catch (SQLException e) {
             log.error("Cannot add Client Account entity " + e.getLocalizedMessage());
         }
+        return null;
     }
 
-    public void updateClientAccount(ClientAccountEntity accountEntity) {
+    public Integer updateClientAccount(ClientAccountEntity accountEntity) {
         Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
         try {
             clientAccountDao.update(accountEntity);
+            return accountEntity.getClientId();
         } catch (SQLException e) {
             log.error("Cannot update Client Account entity " + e.getLocalizedMessage());
         }
+        return null;
     }
 
-    public void updateColumnClientAccount(Integer clientAccountId, String columnName, String value) {
+    public Integer updateColumnClientAccount(Integer clientAccountId, String columnName, String value) {
         Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
         UpdateBuilder<ClientAccountEntity, Integer> updateBuilder = clientAccountDao.updateBuilder();
         try {
             updateBuilder.updateColumnValue(columnName, value).where().idEq(clientAccountId);
-            updateBuilder.update();
+            return clientAccountId;
         } catch (SQLException e) {
             log.error("Cannot update Client Account entity " + e.getLocalizedMessage());
+            return null;
         }
     }
 

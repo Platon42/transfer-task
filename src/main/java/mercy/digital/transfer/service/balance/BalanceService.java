@@ -6,9 +6,9 @@ import mercy.digital.transfer.domain.TransactionEntity;
 
 public interface BalanceService {
 
-    void addClientBalance(BalanceEntity balanceEntity);
+    Integer addClientBalance(BalanceEntity balanceEntity);
 
-    void setBalanceEntity(
+    Integer setBalanceEntity(
             ClientAccountEntity clientAccountEntity,
             BalanceEntity balanceEntity,
             TransactionEntity transactionEntity,

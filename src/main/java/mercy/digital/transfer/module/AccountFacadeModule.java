@@ -1,6 +1,7 @@
 package mercy.digital.transfer.module;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
 import mercy.digital.transfer.dao.balance.BalanceDao;
 import mercy.digital.transfer.dao.balance.BalanceDaoImpl;
 import mercy.digital.transfer.dao.beneficiary.account.BeneficiaryAccountDao;
@@ -35,20 +36,15 @@ import mercy.digital.transfer.service.transaction.transfer.TransferServiceImpl;
 public class AccountFacadeModule extends AbstractModule {
     @Override
     protected void configure() {
-        bind(H2DataSourceService.class).to(H2DataSource.class);
-
+        bind(H2DataSourceService.class).to(H2DataSource.class).in(Singleton.class);
         bind(ClientAccountDao.class).to(ClientAccountDaoImpl.class);
         bind(BeneficiaryAccountDao.class).to(BeneficiaryAccountDaoImpl.class);
-
         bind(ClientDao.class).to(ClientDaoImpl.class);
         bind(BalanceDao.class).to(BalanceDaoImpl.class);
         bind(TransactionDao.class).to(TransactionDaoImpl.class);
-
-
         bind(ClientAccountService.class).to(ClientAccountServiceImpl.class);
         bind(BeneficiaryAccountService.class).to(BeneficiaryAccountServiceImpl.class);
         bind(ClientService.class).to(ClientServiceImpl.class);
-
         bind(TransferService.class).to(TransferServiceImpl.class);
         bind(TransactionService.class).to(TransactionServiceImpl.class);
         bind(BalanceService.class).to(BalanceServiceImpl.class);

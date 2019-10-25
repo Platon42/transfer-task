@@ -22,7 +22,7 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
     @Inject
     private ClientAccountService clientAccountService;
 
-    public void addBeneficiaryEntityAccount(BeneficiaryAccountEntity beneficiaryAccountEntity) {
+    public Integer addBeneficiaryEntityAccount(BeneficiaryAccountEntity beneficiaryAccountEntity) {
         Dao<BeneficiaryAccountEntity, Integer> accountDao = this.beneficiaryAccountDao.getBeneficiaryAccountDao();
         try {
             //rules for define our clients
@@ -32,6 +32,7 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
                         clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountEntity.getAccountNo());
                 if (clientEntityAccountByAccountNo == null) {
                     log.error("Not found client with Account No " + beneficiaryAccountEntity.getAccountNo());
+                    return null;
                 } else {
                     if (!beneficiaryAccountEntity.getCurrency().equals(clientEntityAccountByAccountNo.getCurrency())) {
                         log.warn("Our Client and Beneficiary Accounts has set with different currencies");
@@ -43,10 +44,11 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
                 beneficiaryAccountEntity.setClient(false);
             }
             accountDao.create(beneficiaryAccountEntity);
+            return beneficiaryAccountEntity.getBeneficiaryAccountId();
         } catch (SQLException e) {
             log.error("Cannot add Beneficiary Account entity" + e.getLocalizedMessage());
+            return null;
         }
-
     }
 
     public BeneficiaryAccountEntity findBeneficiaryEntityAccountById(Integer id) {

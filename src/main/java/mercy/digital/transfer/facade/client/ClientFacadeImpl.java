@@ -10,7 +10,6 @@ import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.client.ClientService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -20,10 +19,10 @@ public class ClientFacadeImpl implements ClientFacade {
     private final MapperFacade mapper = mapperFactory.getMapperFacade();
     private final ResponseModel responseModel = new ResponseModel();
 
-    @Inject
-    private ClientService clientService;
+    private final ClientService clientService;
 
-    public void setClientService(ClientService clientService) {
+    @Inject
+    public ClientFacadeImpl(ClientService clientService) {
         this.clientService = clientService;
     }
 

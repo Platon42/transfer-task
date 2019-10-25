@@ -1,5 +1,8 @@
-package mercy.digital.transfer.facade.client;
+package mercy.digital.transfer.client;
 
+import com.google.inject.Inject;
+import mercy.digital.transfer.facade.client.ClientFacade;
+import mercy.digital.transfer.facade.client.ClientFacadeImpl;
 import mercy.digital.transfer.module.ClientFacadeModule;
 import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.response.ResponseModel;
@@ -13,33 +16,37 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
 
 @ExtendWith(GuiceExtension.class)
-@IncludeModule(ClientFacadeModule.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ClientFacadeImplTest {
+@IncludeModule(ClientFacadeModule.class)
+public class ClientFacadeTest {
 
-    public static final int CLIENT_ID = 10;
+    private static final int CLIENT_ID = 10;
     private AddClient addClientStub;
+
+
+    @Inject
+    private ClientService clientService;
+
+    private ClientFacade clientFacade;
 
     @BeforeAll
     void initTest() {
         addClientStub = new AddClient();
+        clientService = Mockito.mock(ClientService.class);
+        clientFacade = new ClientFacadeImpl(clientService);
     }
 
     @Test
     void addClient() {
-        // setup
-        ClientService clientService = Mockito.mock(ClientService.class);
-        when(clientService.addEntityClient(any())).thenReturn(CLIENT_ID);
-        ClientFacadeImpl clientFacade = new ClientFacadeImpl();
-        clientFacade.setClientService(clientService);
 
+        when(clientService.addEntityClient(any())).thenReturn(CLIENT_ID);
+        clientFacade.addClient(addClientStub);
         // exercise
         ResponseModel actualResponseModel = clientFacade.addClient(addClientStub);
-
         // verify
         ResponseModel expectedResponseModel = new ResponseModel();
         expectedResponseModel.setId(CLIENT_ID);
@@ -47,4 +54,5 @@ class ClientFacadeImplTest {
         Assertions.assertEquals(expectedResponseModel.getMessage(),actualResponseModel.getMessage());
         Assertions.assertEquals(expectedResponseModel.getId(),expectedResponseModel.getId());
     }
+
 }

@@ -23,16 +23,18 @@ public class BalanceServiceImpl implements BalanceService {
     @Inject
     private ClientAccountService clientAccountService;
 
-    public void addClientBalance(BalanceEntity balanceEntity) {
+    public Integer addClientBalance(BalanceEntity balanceEntity) {
         Dao<BalanceEntity, Integer> balanceDao = this.balanceDao.getBalanceDao();
         try {
             balanceDao.create(balanceEntity);
+            return balanceEntity.getBalanceId();
         } catch (SQLException e) {
             log.error(e.getLocalizedMessage());
+            return null;
         }
     }
 
-    public void setBalanceEntity(
+    public Integer setBalanceEntity(
             ClientAccountEntity clientAccountEntity,
             BalanceEntity balanceEntity,
             TransactionEntity transactionEntity,
@@ -48,7 +50,7 @@ public class BalanceServiceImpl implements BalanceService {
         clientAccountService.updateColumnClientAccount(
                 clientAccountEntity.getClientAccountId(), "BALANCE",
                 newBalance.toString());
-
+        return balanceEntity.getBalanceId();
     }
 
     private BalanceEntity findBalanceEntityByAccountId(Integer id) {

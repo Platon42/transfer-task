@@ -12,7 +12,6 @@ import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.beneficiary.BeneficiaryService;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
@@ -21,10 +20,15 @@ public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
     private MapperFacade mapper = mapperFactory.getMapperFacade();
     private ResponseModel responseModel = new ResponseModel();
 
+    private final BeneficiaryAccountService beneficiaryAccountService;
+    private final BeneficiaryService beneficiaryService;
+
     @Inject
-    private BeneficiaryAccountService beneficiaryAccountService;
-    @Inject
-    private BeneficiaryService beneficiaryService;
+    public BeneficiaryFacadeImpl(BeneficiaryAccountService beneficiaryAccountService,
+                                 BeneficiaryService beneficiaryService) {
+        this.beneficiaryAccountService = beneficiaryAccountService;
+        this.beneficiaryService = beneficiaryService;
+    }
 
     public ResponseModel addBeneficiary(AddBeneficiary beneficiary) {
         BeneficiaryEntity beneficiaryEntity = this.mapper.map(beneficiary, BeneficiaryEntity.class);
