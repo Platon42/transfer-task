@@ -13,10 +13,10 @@ import java.util.List;
 public class ClientServiceImpl implements ClientService {
 
     @Inject
-    private ClientDao clientDao;
+    private ClientDao dao;
 
     public Integer addEntityClient(ClientEntity clientEntity) {
-        Dao<ClientEntity, Integer> clientDao = this.clientDao.getClientDao();
+        Dao<ClientEntity, Integer> clientDao = this.dao.getClientDao();
         try {
             clientDao.create(clientEntity);
             return clientEntity.getClientId();
@@ -27,7 +27,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     public ClientEntity findEntityAccountById(Integer id) {
-        Dao<ClientEntity, Integer> clientDao = this.clientDao.getClientDao();
+        Dao<ClientEntity, Integer> clientDao = this.dao.getClientDao();
         ClientEntity clientEntity;
         try {
             clientEntity = clientDao.queryForId(id);
@@ -39,8 +39,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     public List<ClientEntity> findAllEntityAccounts() {
-        Dao<ClientEntity, Integer> clientDao = this.clientDao.getClientDao();
-        List<ClientEntity> clientEntityList = null;
+        Dao<ClientEntity, Integer> clientDao = this.dao.getClientDao();
+        List<ClientEntity> clientEntityList;
         try {
             clientEntityList = clientDao.queryForAll();
         } catch (SQLException e) {

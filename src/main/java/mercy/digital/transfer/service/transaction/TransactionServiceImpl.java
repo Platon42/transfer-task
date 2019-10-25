@@ -13,29 +13,32 @@ import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
     @Inject
-    private TransactionDao transactionDao;
+    private TransactionDao dao;
 
-    public void addEntityTransaction(TransactionEntity transactionEntity) {
-        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
+    public Integer addEntityTransaction(TransactionEntity transactionEntity) {
+        Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
         try {
-            transactionDao.create(transactionEntity);
+            daoTransactionDao.create(transactionEntity);
+            return transactionEntity.getTransactionId();
         } catch (SQLException e) {
             log.error("Cannot add Transaction entity " + e.getLocalizedMessage());
+            return null;
         }
     }
 
-    public void setTransactionEntity(TransactionEntity transactionEntity,
-                                     TransactionType transactionType,
-                                     Double transactionAmount,
-                                     CurrencyCode currencyCode,
-                                     Integer clientAccountNo,
-                                     Integer beneficiaryAccountNo) {
+    public Integer setTransactionEntity(TransactionEntity transactionEntity,
+                                        TransactionType transactionType,
+                                        Double transactionAmount,
+                                        CurrencyCode currencyCode,
+                                        Integer clientAccountNo,
+                                        Integer beneficiaryAccountNo) {
 
         transactionEntity.setSourceAccountNo(clientAccountNo);
         transactionEntity.setTargetAccountNo(beneficiaryAccountNo);
@@ -46,26 +49,28 @@ public class TransactionServiceImpl implements TransactionService {
 
         addEntityTransaction(transactionEntity);
 
+        return transactionEntity.getTransactionId();
+
     }
 
     public List<TransactionEntity> findEntitiesTransactionByAccountNo(Integer accountNo) {
-        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
-        QueryBuilder<TransactionEntity, Integer> transactionQueryBuilder = transactionDao.queryBuilder();
+        Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
+        QueryBuilder<TransactionEntity, Integer> transactionQueryBuilder = daoTransactionDao.queryBuilder();
         List<TransactionEntity> transactionEntities;
         try {
             PreparedQuery<TransactionEntity> accountQuery = transactionQueryBuilder.where().eq("SOURCE_ACCOUNT_NO", accountNo).prepare();
-            transactionEntities = transactionDao.query(accountQuery);
+            transactionEntities = daoTransactionDao.query(accountQuery);
         } catch (SQLException e) {
             log.error("Cannot find by account No " + accountNo + " Transaction entity " + e.getLocalizedMessage());
-            return null;
+            return Collections.emptyList();
         }
         return transactionEntities;
     }
     public TransactionEntity findEntityTransactionById(Integer id) {
-        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
+        Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
         TransactionEntity transactionEntity;
         try {
-            transactionEntity = transactionDao.queryForId(id);
+            transactionEntity = daoTransactionDao.queryForId(id);
         } catch (SQLException e) {
             log.error("Cannot find by id " + id + " Transaction entity " + e.getLocalizedMessage());
             return null;
@@ -74,13 +79,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     public List<TransactionEntity> findAllTransactions() {
-        Dao<TransactionEntity, Integer> transactionDao = this.transactionDao.getTransactionDao();
+        Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
         List<TransactionEntity> transactionEntityList;
         try {
-            transactionEntityList = transactionDao.queryForAll();
+            transactionEntityList = daoTransactionDao.queryForAll();
         } catch (SQLException e) {
             log.error("Cannot find Transaction entity" + e.getLocalizedMessage());
-            return null;
+            return Collections.emptyList();
         }
         return transactionEntityList;
     }

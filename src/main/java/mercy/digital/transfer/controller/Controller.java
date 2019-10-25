@@ -14,7 +14,6 @@ import mercy.digital.transfer.module.ClientFacadeModule;
 import mercy.digital.transfer.presentation.beneficiary.AddBeneficiary;
 import mercy.digital.transfer.presentation.beneficiary.account.AddBeneficiaryAccount;
 import mercy.digital.transfer.presentation.client.AddClient;
-import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
@@ -73,12 +72,12 @@ public class Controller {
             ctx.result(objectMapper.writeValueAsString(responseModel));
         });
 
+        /*
         app.get("/client/get", ctx -> {
             GetClient getClient = objectMapper.readValue(ctx.body(), GetClient.class);
             ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
-            //clientFacade;
         });
-
+        */
         app.get("/client/account/transaction/details/:account_no", ctx -> {
             Integer accountNo = Integer.valueOf(ctx.pathParam("account_no"));
             ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);

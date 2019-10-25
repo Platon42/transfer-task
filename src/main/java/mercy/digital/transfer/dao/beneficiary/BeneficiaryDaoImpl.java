@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.datasorce.H2DataSourceService;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
 
-import javax.print.DocFlavor;
 import java.sql.SQLException;
 
 @Slf4j

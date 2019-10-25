@@ -12,10 +12,10 @@ import java.net.URL;
 @Slf4j
 public class ConverterServiceImpl implements ConverterService {
 
-    private final String API_KEY = "ba274ae507e40659ed68dd2186ecd410";
+    private static final String API_KEY = "ba274ae507e40659ed68dd2186ecd410";
 
     public Double doExchange (CurrencyCode from, CurrencyCode to, Double amount) {
-        double exchangeTargetAmount = 0;
+        double exchangeTargetAmount;
         ObjectMapper mapper = new ObjectMapper();
         String url = "http://data.fixer.io/api/convert" +
                 "?access_key=" + API_KEY +

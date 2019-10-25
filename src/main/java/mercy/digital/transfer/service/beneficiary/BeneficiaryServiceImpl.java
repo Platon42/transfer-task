@@ -13,40 +13,40 @@ import java.util.List;
 public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     @Inject
-    private BeneficiaryDao beneficiaryDao;
+    private BeneficiaryDao dao;
 
     public Integer addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity) {
-        Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.beneficiaryDao.getBeneficiaryDao();
+        Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.dao.getBeneficiaryDao();
         try {
             beneficiaryDao.create(beneficiaryEntity);
             return beneficiaryEntity.getBeneficiaryId();
         } catch (SQLException e) {
             log.error("Cannot add Beneficiary entity" + e.getLocalizedMessage());
+            return null;
         }
-        return null;
     }
 
     public BeneficiaryEntity findEntityBeneficiaryById(Integer id) {
-        Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.beneficiaryDao.getBeneficiaryDao();
-        BeneficiaryEntity beneficiaryEntity = null;
+        Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.dao.getBeneficiaryDao();
+        BeneficiaryEntity beneficiaryEntity;
         try {
             beneficiaryEntity = beneficiaryDao.queryForId(id);
+            return beneficiaryEntity;
         } catch (SQLException e) {
             log.error("Cannot find by id " + id + " Beneficiary entity" + e.getLocalizedMessage());
+            return null;
         }
-        return beneficiaryEntity;
     }
 
     public List<BeneficiaryEntity> findAllEntityBeneficiary() {
-        Dao<BeneficiaryEntity, Integer> beneficiaryDao  = this.beneficiaryDao.getBeneficiaryDao();
-        List<BeneficiaryEntity> beneficiaryEntities = null;
+        Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.dao.getBeneficiaryDao();
+        List<BeneficiaryEntity> beneficiaryEntities;
         try {
             beneficiaryEntities = beneficiaryDao.queryForAll();
+            return beneficiaryEntities;
         } catch (SQLException e) {
             log.error("Cannot find Beneficiary entity" + e.getLocalizedMessage());
+            return null;
         }
-        return beneficiaryEntities;
-
     }
-
 }

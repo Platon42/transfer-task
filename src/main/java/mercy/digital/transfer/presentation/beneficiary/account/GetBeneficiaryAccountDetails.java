@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @JsonPOJOBuilder(withPrefix = "")
@@ -26,10 +26,10 @@ public class GetBeneficiaryAccountDetails {
     private String currency;
 
     @JsonProperty("created_at")
-    private ZonedDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("updated_at")
-    private ZonedDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @JsonProperty("name")
     private String name;

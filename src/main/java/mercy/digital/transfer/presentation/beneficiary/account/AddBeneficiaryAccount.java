@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Getter;
 import lombok.Setter;
 import mercy.digital.transfer.presentation.beneficiary.GetBeneficiary;
-import mercy.digital.transfer.presentation.client.GetClient;
 
 @JsonPOJOBuilder(withPrefix = "")
 @Setter

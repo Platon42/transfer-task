@@ -18,13 +18,13 @@ import java.util.List;
 public class BalanceServiceImpl implements BalanceService {
 
     @Inject
-    private BalanceDao balanceDao;
+    private BalanceDao dao;
 
     @Inject
     private ClientAccountService clientAccountService;
 
     public Integer addClientBalance(BalanceEntity balanceEntity) {
-        Dao<BalanceEntity, Integer> balanceDao = this.balanceDao.getBalanceDao();
+        Dao<BalanceEntity, Integer> balanceDao = this.dao.getBalanceDao();
         try {
             balanceDao.create(balanceEntity);
             return balanceEntity.getBalanceId();
@@ -53,14 +53,14 @@ public class BalanceServiceImpl implements BalanceService {
         return balanceEntity.getBalanceId();
     }
 
-    private BalanceEntity findBalanceEntityByAccountId(Integer id) {
-        Dao<BalanceEntity, Integer> balanceDao = this.balanceDao.getBalanceDao();
+    public BalanceEntity findBalanceEntityByAccountId(Integer id) {
+        Dao<BalanceEntity, Integer> balanceDao = this.dao.getBalanceDao();
         QueryBuilder<BalanceEntity, Integer> balanceQueryBuilder = balanceDao.queryBuilder();
         BalanceEntity balanceEntity;
         try {
             PreparedQuery<BalanceEntity> balanceQuery = balanceQueryBuilder.where().eq("ACCOUNT_ID", id).prepare();
             List<BalanceEntity> balanceEntities = balanceDao.query(balanceQuery);
-            if (balanceEntities.size() != 0) {
+            if (!balanceEntities.isEmpty()) {
                 balanceEntity = balanceEntities.get(0);
             } else {
                 log.warn("Not found balance records for AccountID" + id);

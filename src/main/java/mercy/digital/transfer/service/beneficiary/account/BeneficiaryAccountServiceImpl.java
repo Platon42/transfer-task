@@ -53,13 +53,14 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
 
     public BeneficiaryAccountEntity findBeneficiaryEntityAccountById(Integer id) {
         Dao<BeneficiaryAccountEntity, Integer> accountDao = this.beneficiaryAccountDao.getBeneficiaryAccountDao();
-        BeneficiaryAccountEntity accountEntity = null;
+        BeneficiaryAccountEntity accountEntity;
         try {
             accountEntity = accountDao.queryForId(id);
+            return accountEntity;
         } catch (SQLException e) {
             log.error("Cannot find by id " + id + " Beneficiary Account entity" + e.getLocalizedMessage());
+            return null;
         }
-        return accountEntity;
     }
 
     public BeneficiaryAccountEntity findBeneficiaryEntityAccountByAccountNo(Integer accountNo) {
@@ -70,22 +71,22 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
             PreparedQuery<BeneficiaryAccountEntity> accountNoQuery =
                     queryBuilder.where().eq("ACCOUNT_NO", accountNo).prepare();
             beneficiaryAccountEntity =  accountDao.query(accountNoQuery).get(0);
+            return beneficiaryAccountEntity;
         } catch (SQLException e) {
             log.error("Cannot find by account No " + accountNo + " Beneficiary Account entity" + e.getLocalizedMessage());
             return null;
         }
-        return beneficiaryAccountEntity;
     }
 
     public List<BeneficiaryAccountEntity> findAllEntityBeneficiaryAccounts() {
         Dao<BeneficiaryAccountEntity, Integer> accountDao = this.beneficiaryAccountDao.getBeneficiaryAccountDao();
-        List<BeneficiaryAccountEntity> beneficiaryAccountEntityList = null;
+        List<BeneficiaryAccountEntity> beneficiaryAccountEntityList;
         try {
             beneficiaryAccountEntityList = accountDao.queryForAll();
+            return beneficiaryAccountEntityList;
         } catch (SQLException e) {
             log.error("Cannot find Beneficiary Account entity" + e.getLocalizedMessage());
+            return null;
         }
-        return beneficiaryAccountEntityList;
-
     }
 }

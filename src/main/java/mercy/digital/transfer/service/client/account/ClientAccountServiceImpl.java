@@ -16,10 +16,10 @@ import java.util.List;
 public class ClientAccountServiceImpl implements ClientAccountService {
 
     @Inject
-    private ClientAccountDao clientAccountDao;
+    private ClientAccountDao dao;
 
     public Integer addClientEntityAccount(ClientAccountEntity accountEntity) {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
+        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         try {
             clientAccountDao.create(accountEntity);
             return accountEntity.getClientId();
@@ -30,7 +30,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     }
 
     public Integer updateClientAccount(ClientAccountEntity accountEntity) {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
+        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         try {
             clientAccountDao.update(accountEntity);
             return accountEntity.getClientId();
@@ -41,7 +41,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     }
 
     public Integer updateColumnClientAccount(Integer clientAccountId, String columnName, String value) {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
+        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         UpdateBuilder<ClientAccountEntity, Integer> updateBuilder = clientAccountDao.updateBuilder();
         try {
             updateBuilder.updateColumnValue(columnName, value).where().idEq(clientAccountId);
@@ -53,7 +53,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     }
 
     public ClientAccountEntity findClientEntityAccountById(Integer id) {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
+        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         ClientAccountEntity accountEntity;
         try {
             accountEntity = clientAccountDao.queryForId(id);
@@ -65,7 +65,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     }
 
     public ClientAccountEntity findClientEntityAccountByAccountNo(Integer accountNo) {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
+        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         QueryBuilder<ClientAccountEntity, Integer> queryBuilder = clientAccountDao.queryBuilder();
         ClientAccountEntity accountEntity;
         try {
@@ -80,7 +80,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     }
 
     public List<ClientAccountEntity> findAllEntityClientAccounts() {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.clientAccountDao.getAccountDao();
+        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         List<ClientAccountEntity> accountEntityList;
         try {
             accountEntityList = clientAccountDao.queryForAll();
