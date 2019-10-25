@@ -38,6 +38,19 @@ public class TransferServiceImpl implements TransferService {
     private CurrencyCode transferCurrency, clientCurrency, beneficiaryCurrency;
     private Integer clientAccountNo, beneficiaryAccountNo;
 
+    private Double changeBalance(TransactionType transactionType, Double transferAmount, Double clientBalance) {
+        Double newBalance = 0.0;
+        if (TransactionType.REFILL.equals(transactionType)) {
+            newBalance = clientBalance + transferAmount;
+            return newBalance;
+        }
+        if (TransactionType.WITHDRAWAL.equals(transactionType)) {
+            newBalance = clientBalance - transferAmount;
+            return newBalance;
+        }
+        return newBalance;
+    }
+
     private Double calculateTransferAmount(TransferType transferType,
                                            TransactionType transactionType,
                                            Double clientBalance,
@@ -47,18 +60,13 @@ public class TransferServiceImpl implements TransferService {
 
         switch (transferType) {
             case ALL_PARTICIPANTS_SAME_CURRENCY:
-                if (TransactionType.REFILL.equals(transactionType)) {
-                    newBalance = clientBalance + transferAmount;
-                    return newBalance;
-                }
-                if (TransactionType.WITHDRAWAL.equals(transactionType)) {
-                    newBalance = clientBalance - transferAmount;
-                    return newBalance;
-                }
-                break;
+                return changeBalance(transactionType, transferAmount, clientBalance);
             case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
                 exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
+
+                //return changeBalance(transactionType, transferAmount, clientBalance);
+
                 if (TransactionType.REFILL.equals(transactionType)) {
                     newBalance = clientBalance + exchangeToBeneficiary;
                     return newBalance;
