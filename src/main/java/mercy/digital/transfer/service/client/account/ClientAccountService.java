@@ -10,8 +10,6 @@ public interface ClientAccountService {
     ClientAccountEntity findClientEntityAccountById(Integer id);
     ClientAccountEntity findClientEntityAccountByAccountNo(Integer accountNo);
     List<ClientAccountEntity> findAllEntityClientAccounts();
-
     Integer updateColumnClientAccount(Integer clientId, String columnName, String value);
-
     Integer updateClientAccount(ClientAccountEntity accountEntity);
 }

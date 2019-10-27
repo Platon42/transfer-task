@@ -45,6 +45,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
         UpdateBuilder<ClientAccountEntity, Integer> updateBuilder = clientAccountDao.updateBuilder();
         try {
             updateBuilder.updateColumnValue(columnName, value).where().idEq(clientAccountId);
+            updateBuilder.update();
             return clientAccountId;
         } catch (SQLException e) {
             log.error("Cannot update Client Account entity " + e.getLocalizedMessage());

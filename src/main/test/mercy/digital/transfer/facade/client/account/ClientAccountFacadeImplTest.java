@@ -1,12 +1,15 @@
 package mercy.digital.transfer.facade.client.account;
 
 import com.google.inject.Inject;
+import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.module.AccountFacadeModule;
 import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
+import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 import mercy.digital.transfer.service.transaction.TransactionService;
+import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
 import name.falgout.jeffrey.testing.junit.guice.GuiceExtension;
@@ -79,6 +82,18 @@ class ClientAccountFacadeImplTest {
 
     @Test
     void doTransfer() {
+        DoTransfer doTransfer = new DoTransfer();
+        doTransfer.setAccountNoReceiver(1);
+        doTransfer.setAccountNoSender(2);
+        doTransfer.setAmount(80.0);
+        doTransfer.setChangeCurrency(CurrencyCode.RUB.name());
+
+        ClientAccountEntity sender = new ClientAccountEntity();
+        sender.setAccountNo(2);
+
+        //when(clientAccountService.addClientEntityAccount())
+
+        clientAccountFacade.doTransfer(doTransfer);
 
     }
 

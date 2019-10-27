@@ -35,11 +35,12 @@ public class ClientFacadeImpl implements ClientFacade {
 
         if (id != null) {
             responseModel.setMessage("Success client added");
-            responseModel.setId(id);
-            return responseModel;
+            responseModel.setAdditional(String.valueOf(id));
+            responseModel.setStatus(0);
         } else {
-            responseModel.setErrorMessage("Common error occurred, see log for details");
-            return responseModel;
+            responseModel.setMessage("Common error occurred, see log for details");
+            responseModel.setStatus(-1);
         }
+        return responseModel;
     }
 }

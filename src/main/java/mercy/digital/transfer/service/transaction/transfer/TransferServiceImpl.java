@@ -15,6 +15,7 @@ import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import mercy.digital.transfer.service.transaction.dict.TransferType;
+import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 
 
 @Slf4j
@@ -34,6 +35,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Inject
     private ConverterService converterService;
+
+    @Inject
+    RefillBalanceService refillBalanceService;
 
     private CurrencyCode transferCurrency, clientCurrency, beneficiaryCurrency;
     private Integer clientAccountNo, beneficiaryAccountNo;
@@ -69,14 +73,23 @@ public class TransferServiceImpl implements TransferService {
 
         switch (transferType) {
             case ALL_PARTICIPANTS_SAME_CURRENCY:
+                System.out.println("ALL_PARTICIPANTS_SAME_CURRENCY");
                 return calculateBalance(transactionType, transferAmount, null, clientBalance);
             case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
+                System.out.println("ALL_PARTICIPANTS_DIFFERENT_CURRENCY");
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+                System.out.println("exchangeToTransfer = " + exchangeToTransfer);
                 exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
+                System.out.println("exchangeToBeneficiary = " + exchangeToBeneficiary);
+
                 return calculateBalance(transactionType, exchangeToTransfer, exchangeToBeneficiary, clientBalance);
             }
             case SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY:
+                System.out.println("SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY");
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+                System.out.println("exchangeToTransfer = " + exchangeToTransfer);
+                System.out.println("clientBalance = " + clientBalance);
+
                 return calculateBalance(transactionType, exchangeToTransfer, null, clientBalance);
             default: {
                 return null;
@@ -87,8 +100,8 @@ public class TransferServiceImpl implements TransferService {
     private TransactionStatus applyTransferEntities(TransferType transferType,
                                                     TransactionType transactionType,
                                                     ClientAccountEntity clientAccountEntity,
-                                                    Double transferAmount,
-                                                    Double clientBalance) {
+                                                    Double clientBalance,
+                                                    Double transferAmount) {
 
 
         TransactionEntity transactionEntity = new TransactionEntity();
@@ -130,14 +143,14 @@ public class TransferServiceImpl implements TransferService {
         return false;
     }
 
-    private boolean doContinueTransaction(TransactionStatus status) {
+    private boolean doNotContinueTransaction(TransactionStatus status) {
         switch (status) {
             case ERROR_OCCURRED:
             case INCORRECT_AMOUNT:
             case INSUFFICIENT_FUNDS:
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
     public TransactionStatus doTransfer(
@@ -170,14 +183,15 @@ public class TransferServiceImpl implements TransferService {
 
             transactionStatus = applyTransferEntities(
                     TransferType.ALL_PARTICIPANTS_SAME_CURRENCY,
-                    TransactionType.WITHDRAWAL, clientAccountEntity, transferAmount, clientBalance);
-            if (!doContinueTransaction(transactionStatus)) return transactionStatus;
+                    TransactionType.WITHDRAWAL, clientAccountEntity, clientBalance, transferAmount);
+            if (doNotContinueTransaction(transactionStatus)) return transactionStatus;
 
             if (isClient) {
                 clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+                clientBalance = clientAccountEntity.getBalance();
                 transactionStatus = applyTransferEntities(
                         TransferType.ALL_PARTICIPANTS_SAME_CURRENCY,
-                        TransactionType.REFILL, clientAccountEntity, transferAmount, clientBalance);
+                        TransactionType.REFILL, clientAccountEntity, clientBalance, transferAmount);
             }
             return transactionStatus;
         }
@@ -185,13 +199,15 @@ public class TransferServiceImpl implements TransferService {
         if (!clientCurrency.equals(transferCurrency) && !beneficiaryCurrency.equals(transferCurrency) & !clientCurrency.equals(beneficiaryCurrency)) {
 
             transactionStatus = applyTransferEntities(TransferType.ALL_PARTICIPANTS_DIFFERENT_CURRENCY,
-                    TransactionType.WITHDRAWAL, clientAccountEntity, transferAmount, clientBalance);
-            if (!doContinueTransaction(transactionStatus)) return transactionStatus;
+                    TransactionType.WITHDRAWAL, clientAccountEntity, clientBalance, transferAmount);
+            if (doNotContinueTransaction(transactionStatus)) return transactionStatus;
 
             if (isClient) {
+
                 clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+                clientBalance = clientAccountEntity.getBalance();
                 transactionStatus = applyTransferEntities(TransferType.ALL_PARTICIPANTS_DIFFERENT_CURRENCY,
-                        TransactionType.REFILL, clientAccountEntity, transferAmount, clientBalance);
+                        TransactionType.REFILL, clientAccountEntity, clientBalance, transferAmount);
             }
 
             return transactionStatus;
@@ -199,13 +215,23 @@ public class TransferServiceImpl implements TransferService {
         } else {
 
             transactionStatus = applyTransferEntities(TransferType.SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY,
-                    TransactionType.WITHDRAWAL, clientAccountEntity, transferAmount, clientBalance);
-            if (!doContinueTransaction(transactionStatus)) return transactionStatus;
+                    TransactionType.WITHDRAWAL, clientAccountEntity, clientBalance, transferAmount);
+            if (doNotContinueTransaction(transactionStatus)) return transactionStatus;
+
+            System.out.println("Ordinary + " + clientAccountEntity.getBalance());
+            System.out.println("Ordinary + " + clientAccountEntity.getCurrency());
+            System.out.println("Ordinary + " + clientAccountEntity.getAccountNo());
 
             if (isClient) {
                 clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
+                System.out.println("isClient + " + clientAccountEntity.getBalance());
+                System.out.println("isClient + " + clientAccountEntity.getCurrency());
+                System.out.println("isClient + " + clientAccountEntity.getAccountNo());
+
+
+                clientBalance = clientAccountEntity.getBalance();
                 transactionStatus = applyTransferEntities(TransferType.SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY,
-                        TransactionType.REFILL, clientAccountEntity, transferAmount, clientBalance);
+                        TransactionType.REFILL, clientAccountEntity, clientBalance, transferAmount);
             }
 
             return transactionStatus;

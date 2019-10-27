@@ -55,8 +55,8 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
                     TransactionType.REFILL,
                     transactionAmount,
                     chargeCurrency,
-                    clientAccountNo,
-                    null);
+                    null,
+                    clientAccountNo);
             balanceService.setBalanceEntity(clientAccountEntity, balanceEntity, transactionEntity, clientBalance, newBalance);
             return TransactionStatus.REFILL_COMPLETED;
         } else {
@@ -67,8 +67,8 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
                     TransactionType.REFILL,
                     transactionAmount,
                     chargeCurrency,
-                    clientAccountNo,
-                    null);
+                    null,
+                    clientAccountNo);
             balanceService.setBalanceEntity(clientAccountEntity, balanceEntity, transactionEntity, clientBalance, newBalance);
 
             return TransactionStatus.REFILL_COMPLETED;

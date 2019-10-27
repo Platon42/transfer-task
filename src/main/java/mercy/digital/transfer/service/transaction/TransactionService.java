@@ -10,11 +10,11 @@ public interface TransactionService {
     Integer addEntityTransaction(TransactionEntity transactionEntity);
 
     Integer setTransactionEntity(TransactionEntity transactionEntity,
-                              TransactionType transactionType,
-                              Double transactionAmount,
-                              CurrencyCode currencyCode,
-                              Integer clientAccountNo,
-                              Integer beneficiaryAccountNo);
+                                 TransactionType transactionType,
+                                 Double transactionAmount,
+                                 CurrencyCode currencyCode,
+                                 Integer sourceAccountNo,
+                                 Integer targetAccountNo);
     TransactionEntity findEntityTransactionById(Integer id);
     List<TransactionEntity> findAllTransactions();
 

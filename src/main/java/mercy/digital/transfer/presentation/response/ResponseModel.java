@@ -12,19 +12,20 @@ import java.time.LocalDateTime;
 @Getter
 public class ResponseModel {
 
-    @JsonProperty("service")
+    @JsonProperty("service_name")
     private String service;
-
-    @JsonProperty("id")
-    private int id;
 
     @JsonProperty("date_time")
     private LocalDateTime dateTime;
 
-    @JsonProperty("error_message")
-    private String errorMessage;
-
+    @JsonProperty("additional")
+    private String additional;
+    
     @JsonProperty("message")
     private String message;
+
+    @JsonProperty("status")
+    private Integer status;
+
 
 }

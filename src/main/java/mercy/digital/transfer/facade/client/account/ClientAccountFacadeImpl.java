@@ -66,30 +66,61 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
             accountEntity.setClientByClientId(accountById);
             clientAccountService.addClientEntityAccount(accountEntity);
             responseModel.setMessage("Success created client Account");
+            responseModel.setStatus(0);
         } else {
-            responseModel.setErrorMessage("Cannot create client account, with Client Id " +
+            responseModel.setMessage("Cannot create client account, with Client Id " +
                     clientId + " see log for details");
+            responseModel.setStatus(-1);
+
         }
         return responseModel;
     }
 
     public ResponseModel doTransfer (DoTransfer transfer) {
+        responseModel.setDateTime(LocalDateTime.now());
+        responseModel.setService("doTransfer");
+
         TransactionStatus transactionStatus = transferService.doTransfer (
                 transfer.getAccountNoSender(),
                 transfer.getAccountNoReceiver(),
                 transfer.getAmount(),
                 CurrencyCode.valueOf(transfer.getChangeCurrency())
         );
-        responseModel.setMessage(transactionStatus.name());
+        switch (transactionStatus) {
+            case INSUFFICIENT_FUNDS:
+            case INCORRECT_AMOUNT:
+            case ERROR_OCCURRED:
+                responseModel.setMessage(transactionStatus.name());
+                responseModel.setStatus(-1);
+                break;
+            case REFILL_COMPLETED:
+                responseModel.setMessage(transactionStatus.name());
+                responseModel.setStatus(0);
+                break;
+        }
         return responseModel;
     }
 
     public ResponseModel doRefill (DoRefill refill) {
-        refillBalanceService.refillBalance(
+        responseModel.setDateTime(LocalDateTime.now());
+        responseModel.setService("addClientAccount");
+
+        TransactionStatus transactionStatus = refillBalanceService.refillBalance(
                 refill.getAccountNo(),
                 refill.getAmount(),
                 CurrencyCode.valueOf(refill.getCurrency()));
-        responseModel.setMessage("");
+        switch (transactionStatus) {
+            case INSUFFICIENT_FUNDS:
+            case INCORRECT_AMOUNT:
+            case ERROR_OCCURRED:
+                responseModel.setMessage(transactionStatus.name());
+                responseModel.setStatus(-1);
+                break;
+            case REFILL_COMPLETED:
+                responseModel.setMessage(transactionStatus.name());
+                responseModel.setStatus(0);
+                break;
+        }
         return responseModel;
     }
 
@@ -100,7 +131,7 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
         List<GetTransaction> getTransactions = new ArrayList<>();
         ArrayList<GetBalance> getBalances = new ArrayList<>();
-        Collection<BalanceEntity> balances = new ArrayList<>();
+        Collection<BalanceEntity> balances;
         for (TransactionEntity e : entityTransactions) {
             balances = e.getBalancesByTransactionId();
             GetTransaction getTransaction = new GetTransaction();

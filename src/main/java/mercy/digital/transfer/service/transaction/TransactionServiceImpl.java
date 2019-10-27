@@ -37,11 +37,11 @@ public class TransactionServiceImpl implements TransactionService {
                                         TransactionType transactionType,
                                         Double transactionAmount,
                                         CurrencyCode currencyCode,
-                                        Integer clientAccountNo,
-                                        Integer beneficiaryAccountNo) {
+                                        Integer sourceAccountNo,
+                                        Integer targetAccountNo) {
 
-        transactionEntity.setSourceAccountNo(clientAccountNo);
-        transactionEntity.setTargetAccountNo(beneficiaryAccountNo);
+        transactionEntity.setSourceAccountNo(sourceAccountNo);
+        transactionEntity.setTargetAccountNo(targetAccountNo);
         transactionEntity.setAmount(transactionAmount);
         transactionEntity.setCurrency(currencyCode.name());
         transactionEntity.setTransactionType(transactionType.name());

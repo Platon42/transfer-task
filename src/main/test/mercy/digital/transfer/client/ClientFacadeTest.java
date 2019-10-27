@@ -49,10 +49,10 @@ public class ClientFacadeTest {
         ResponseModel actualResponseModel = clientFacade.addClient(addClientStub);
         // verify
         ResponseModel expectedResponseModel = new ResponseModel();
-        expectedResponseModel.setId(CLIENT_ID);
+        expectedResponseModel.setAdditional(String.valueOf(CLIENT_ID));
         expectedResponseModel.setMessage("Success client added");
         Assertions.assertEquals(expectedResponseModel.getMessage(),actualResponseModel.getMessage());
-        Assertions.assertEquals(expectedResponseModel.getId(),expectedResponseModel.getId());
+        Assertions.assertEquals(expectedResponseModel.getAdditional(), expectedResponseModel.getAdditional());
     }
 
 }
