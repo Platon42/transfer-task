@@ -44,7 +44,7 @@
                 <version>0.8.5</version>
                 <configuration>
                     <excludes>
-                        <exclude>META-INF/**</exclude>
+                        <exclude>./src/main/META-INF/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
