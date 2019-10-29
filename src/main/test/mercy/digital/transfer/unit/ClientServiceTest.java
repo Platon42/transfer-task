@@ -1,8 +1,9 @@
-package mercy.digital.transfer.service.client;
+package mercy.digital.transfer.unit;
 
 import com.google.inject.Inject;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.module.AccountFacadeModule;
+import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.utils.Environment;
 import mercy.digital.transfer.utils.H2Utils;
 import mercy.digital.transfer.utils.PropUtils;
