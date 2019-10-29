@@ -47,23 +47,19 @@ public class H2Utils {
         }
     }
 
-    public static void stopDb(Environment environment) {
-
-        if (environment.equals(Environment.TEST)) {
-            try {
+    public static void stopDb(Environment environment) throws SQLException {
+        try {
+            if (environment.equals(Environment.TEST)) {
                 testConnection.createStatement().execute("SHUTDOWN");
-                testConnection.close();
-            } catch (SQLException e) {
-                log.error("Cannot shutdown " + environment + "database instance");
             }
-        }
-        if (environment.equals(Environment.PRODUCTION)) {
-            try {
+            if (environment.equals(Environment.PRODUCTION)) {
                 prodConnection.createStatement().execute("SHUTDOWN");
-                prodConnection.close();
-            } catch (SQLException e) {
-                log.error("Cannot shutdown " + environment + "database instance");
             }
+        } catch (SQLException e) {
+            log.error("Cannot shutdown " + environment + "database instance");
+        } finally {
+            if (environment.equals(Environment.TEST)) testConnection.close();
+            if (environment.equals(Environment.PRODUCTION)) testConnection.close();
         }
     }
 }
