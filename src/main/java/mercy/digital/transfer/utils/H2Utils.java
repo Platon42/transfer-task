@@ -46,20 +46,4 @@ public class H2Utils {
             initTcpDb();
         }
     }
-
-    public static void stopDb(Environment environment) throws SQLException {
-        try {
-            if (environment.equals(Environment.TEST)) {
-                testConnection.createStatement().execute("SHUTDOWN");
-            }
-            if (environment.equals(Environment.PRODUCTION)) {
-                prodConnection.createStatement().execute("SHUTDOWN");
-            }
-        } catch (SQLException e) {
-            log.error("Cannot shutdown " + environment + "database instance");
-        } finally {
-            if (environment.equals(Environment.TEST)) testConnection.close();
-            if (environment.equals(Environment.PRODUCTION)) testConnection.close();
-        }
-    }
 }
