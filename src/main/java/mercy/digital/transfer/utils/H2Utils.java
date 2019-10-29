@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.h2.tools.RunScript;
 import org.h2.tools.Server;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -17,12 +16,15 @@ public class H2Utils {
     private static Connection prodConnection;
     private static Connection testConnection;
 
-    private static void initTcpDb() throws SQLException, FileNotFoundException {
-        Server.createTcpServer("-tcpPort", "9092", "-tcp", "-tcpAllowOthers", "-ifNotExists").start();
-        prodConnection = DriverManager.getConnection(
-                System.getProperty("db.url"), "sa", "");
-        RunScript.execute(prodConnection, new FileReader("./config/init.sql"));
-        prodConnection.close();
+    private static void initTcpDb() {
+        try {
+            Server.createTcpServer("-tcpPort", "9092", "-tcp", "-tcpAllowOthers", "-ifNotExists").start();
+            prodConnection = DriverManager.getConnection(
+                    System.getProperty("db.url"), "sa", "");
+            RunScript.execute(prodConnection, new FileReader("./config/init.sql"));
+        } catch (SQLException | IOException e) {
+            log.error(e.getLocalizedMessage());
+        }
     }
 
     private static void initInMemDb() {
@@ -37,30 +39,31 @@ public class H2Utils {
     }
 
     public static void startDb(Environment environment) {
-        try {
-            if (environment.equals(Environment.TEST)) {
-                initInMemDb();
-            }
-            if (environment.equals(Environment.PRODUCTION)) {
-                initTcpDb();
-            }
-        } catch (SQLException | FileNotFoundException e) {
-            log.error("Cannot create " + environment + " database instance");
+        if (environment.equals(Environment.TEST)) {
+            initInMemDb();
+        }
+        if (environment.equals(Environment.PRODUCTION)) {
+            initTcpDb();
         }
     }
 
     public static void stopDb(Environment environment) {
-        try {
-            if (environment.equals(Environment.TEST)) {
+
+        if (environment.equals(Environment.TEST)) {
+            try {
                 testConnection.createStatement().execute("SHUTDOWN");
                 testConnection.close();
+            } catch (SQLException e) {
+                log.error("Cannot shutdown " + environment + "database instance");
             }
-            if (environment.equals(Environment.PRODUCTION)) {
+        }
+        if (environment.equals(Environment.PRODUCTION)) {
+            try {
                 prodConnection.createStatement().execute("SHUTDOWN");
                 prodConnection.close();
+            } catch (SQLException e) {
+                log.error("Cannot shutdown " + environment + "database instance");
             }
-        } catch (SQLException e) {
-            log.error("Cannot shutdown " + environment + "database instance");
         }
     }
 }
