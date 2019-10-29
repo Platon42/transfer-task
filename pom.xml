@@ -11,9 +11,11 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <sonar.exclusions>
+                    **/target/**,**/test/**,**/src/main/test/**,src/main/test/mercy/digital/transfer/client/ClientFacadeTest.java
+                </sonar.exclusions>
                 <sonar.sources>.</sonar.sources>
                 <!--                <sonar.test.inclusions>.</sonar.test.inclusions>-->
-                <sonar.exclusions>**/target/**,**/test/**</sonar.exclusions>
                 <sonar.host.url>https://sonarcloud.io/</sonar.host.url>
                 <sonar.organization>tmaks12</sonar.organization>
                 <sonar.login>fb89bbc47d83723fdd5474a0817f1970b67c1f57</sonar.login>
