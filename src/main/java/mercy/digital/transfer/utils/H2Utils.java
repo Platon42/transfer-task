@@ -20,7 +20,7 @@ public class H2Utils {
     private static void initTcpDb() throws SQLException, FileNotFoundException {
         Server.createTcpServer("-tcpPort", "9092", "-tcp", "-tcpAllowOthers", "-ifNotExists").start();
         prodConnection = DriverManager.getConnection(
-                System.getProperty("db.url"), "sa", "sa");
+                System.getProperty("db.url"), "sa", "");
         RunScript.execute(prodConnection, new FileReader("./config/init.sql"));
         prodConnection.close();
     }
@@ -28,7 +28,7 @@ public class H2Utils {
     private static void initInMemDb() {
         try {
             testConnection = DriverManager.getConnection(
-                    System.getProperty("db.url"), "sa", "sa");
+                    System.getProperty("db.url"), "sa", "");
             RunScript.execute(testConnection, new FileReader("./config/init.sql"));
             testConnection.close();
         } catch (SQLException | IOException e) {
@@ -53,9 +53,11 @@ public class H2Utils {
         try {
             if (environment.equals(Environment.TEST)) {
                 testConnection.createStatement().execute("SHUTDOWN");
+                testConnection.close();
             }
             if (environment.equals(Environment.PRODUCTION)) {
                 prodConnection.createStatement().execute("SHUTDOWN");
+                prodConnection.close();
             }
         } catch (SQLException e) {
             log.error("Cannot shutdown " + environment + "database instance");

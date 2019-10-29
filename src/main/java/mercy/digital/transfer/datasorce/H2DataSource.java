@@ -17,7 +17,7 @@ public class H2DataSource implements H2DataSourceService {
     static {
         config.setJdbcUrl(System.getProperty("db.url") + ";IFEXISTS=TRUE" + "DB_CLOSE_DELAY=-1");
         config.setUsername("sa");
-        config.setPassword("sa");
+        config.setPassword("");
         config.setSchema("TRANSFER");
         config.setMinimumIdle(5);
         config.setMaximumPoolSize(20);
