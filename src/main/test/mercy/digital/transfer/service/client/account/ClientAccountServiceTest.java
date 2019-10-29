@@ -1,15 +1,15 @@
 package mercy.digital.transfer.service.client.account;
 
 import com.google.inject.Inject;
-import mercy.digital.transfer.controller.Controller;
 import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.module.AccountFacadeModule;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.utils.Environment;
-import name.falgout.jeffrey.testing.junit.guice.GuiceExtension;
-import name.falgout.jeffrey.testing.junit.guice.IncludeModule;
+import mercy.digital.transfer.utils.Utils;
+import name.falgout.jeffrey.testing.junit5.GuiceExtension;
+import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -32,8 +32,8 @@ class ClientAccountServiceTest {
     private static ClientEntity actualClientEntity;
 
     static {
-        Controller.setProperties(Environment.TEST);
-        Controller.startDb(Environment.TEST);
+        Utils.setProperties(Environment.TEST);
+        Utils.startDb(Environment.TEST);
     }
 
     @Inject

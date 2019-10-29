@@ -15,7 +15,7 @@ public class H2DataSource implements H2DataSourceService {
     private static HikariDataSource ds;
 
     static {
-        config.setJdbcUrl(System.getProperty("db.url") + ";IFEXISTS=TRUE");
+        config.setJdbcUrl(System.getProperty("db.url") + ";IFEXISTS=TRUE" + "DB_CLOSE_DELAY=-1");
         config.setUsername("sa");
         config.setPassword("sa");
         config.setSchema("TRANSFER");
