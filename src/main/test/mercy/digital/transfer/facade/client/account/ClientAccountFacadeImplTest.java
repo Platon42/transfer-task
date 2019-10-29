@@ -12,6 +12,9 @@ import mercy.digital.transfer.service.transaction.TransactionService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
+import mercy.digital.transfer.utils.Environment;
+import mercy.digital.transfer.utils.H2Utils;
+import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.AfterEach;
@@ -30,6 +33,11 @@ import static org.mockito.Mockito.when;
 class ClientAccountFacadeImplTest {
 
     private static final Integer CLIENT_ACCOUNT_ID = 10;
+
+    static {
+        PropUtils.setProperties(Environment.TEST);
+        H2Utils.startDb(Environment.TEST);
+    }
 
     private AddClientAccount addClientAccountStub;
     private ClientAccountFacade clientAccountFacade;
@@ -79,7 +87,6 @@ class ClientAccountFacadeImplTest {
         clientAccountFacade.addClientAccount(addClientAccountStub);
     }
 
-    @Test
     void doTransfer() {
         DoTransfer doTransfer = new DoTransfer();
         doTransfer.setAccountNoReceiver(1);

@@ -26,7 +26,7 @@ public class TransactionServiceImpl implements TransactionService {
         this.dao = dao;
     }
 
-    public Integer addEntityTransaction(TransactionEntity transactionEntity) {
+    private Integer addEntityTransaction(TransactionEntity transactionEntity) {
         Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
         try {
             daoTransactionDao.create(transactionEntity);

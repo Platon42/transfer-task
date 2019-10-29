@@ -7,8 +7,6 @@ import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import java.util.List;
 
 public interface TransactionService {
-    Integer addEntityTransaction(TransactionEntity transactionEntity);
-
     Integer setTransactionEntity(TransactionEntity transactionEntity,
                                  TransactionType transactionType,
                                  Double transactionAmount,

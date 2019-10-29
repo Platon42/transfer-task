@@ -1,3 +1,4 @@
+drop schema if exists TRANSFER cascade;
 create schema TRANSFER;
 
 CREATE SEQUENCE TRANSFER.BENEFICIARY_ID;

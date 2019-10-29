@@ -73,23 +73,14 @@ public class TransferServiceImpl implements TransferService {
 
         switch (transferType) {
             case ALL_PARTICIPANTS_SAME_CURRENCY:
-                System.out.println("ALL_PARTICIPANTS_SAME_CURRENCY");
                 return calculateBalance(transactionType, transferAmount, null, clientBalance);
             case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
-                System.out.println("ALL_PARTICIPANTS_DIFFERENT_CURRENCY");
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
-                System.out.println("exchangeToTransfer = " + exchangeToTransfer);
                 exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
-                System.out.println("exchangeToBeneficiary = " + exchangeToBeneficiary);
-
                 return calculateBalance(transactionType, exchangeToTransfer, exchangeToBeneficiary, clientBalance);
             }
             case SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY:
-                System.out.println("SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY");
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
-                System.out.println("exchangeToTransfer = " + exchangeToTransfer);
-                System.out.println("clientBalance = " + clientBalance);
-
                 return calculateBalance(transactionType, exchangeToTransfer, null, clientBalance);
             default: {
                 return null;
@@ -218,16 +209,8 @@ public class TransferServiceImpl implements TransferService {
                     TransactionType.WITHDRAWAL, clientAccountEntity, clientBalance, transferAmount);
             if (doNotContinueTransaction(transactionStatus)) return transactionStatus;
 
-            System.out.println("Ordinary + " + clientAccountEntity.getBalance());
-            System.out.println("Ordinary + " + clientAccountEntity.getCurrency());
-            System.out.println("Ordinary + " + clientAccountEntity.getAccountNo());
-
             if (isClient) {
                 clientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(beneficiaryAccountNo);
-                System.out.println("isClient + " + clientAccountEntity.getBalance());
-                System.out.println("isClient + " + clientAccountEntity.getCurrency());
-                System.out.println("isClient + " + clientAccountEntity.getAccountNo());
-
 
                 clientBalance = clientAccountEntity.getBalance();
                 transactionStatus = applyTransferEntities(TransferType.SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY,

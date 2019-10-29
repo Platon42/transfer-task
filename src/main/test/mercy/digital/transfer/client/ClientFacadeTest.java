@@ -7,6 +7,9 @@ import mercy.digital.transfer.module.ClientFacadeModule;
 import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.client.ClientService;
+import mercy.digital.transfer.utils.Environment;
+import mercy.digital.transfer.utils.H2Utils;
+import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.Assertions;
@@ -27,6 +30,10 @@ class ClientFacadeTest {
     private static final int CLIENT_ID = 10;
     private AddClient addClientStub;
 
+    static {
+        PropUtils.setProperties(Environment.TEST);
+        H2Utils.startDb(Environment.TEST);
+    }
     @Inject
     private ClientService clientService;
 

@@ -4,7 +4,8 @@ import com.google.inject.Inject;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.module.AccountFacadeModule;
 import mercy.digital.transfer.utils.Environment;
-import mercy.digital.transfer.utils.Utils;
+import mercy.digital.transfer.utils.H2Utils;
+import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.*;
@@ -14,7 +15,7 @@ import java.sql.Date;
 import java.util.List;
 
 @ExtendWith(GuiceExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @IncludeModule(AccountFacadeModule.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ClientServiceTest {
@@ -24,8 +25,8 @@ class ClientServiceTest {
     private static ClientEntity clientEntityStub = new ClientEntity();
 
     static {
-        Utils.setProperties(Environment.TEST);
-        Utils.startDb(Environment.TEST);
+        PropUtils.setProperties(Environment.TEST);
+        H2Utils.startDb(Environment.TEST);
     }
 
     @Inject

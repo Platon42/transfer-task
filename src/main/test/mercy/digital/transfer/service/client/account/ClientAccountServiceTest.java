@@ -7,7 +7,8 @@ import mercy.digital.transfer.module.AccountFacadeModule;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.utils.Environment;
-import mercy.digital.transfer.utils.Utils;
+import mercy.digital.transfer.utils.H2Utils;
+import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.*;
@@ -18,7 +19,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 
 @ExtendWith(GuiceExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_METHOD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @IncludeModule(AccountFacadeModule.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ClientAccountServiceTest {
@@ -32,8 +33,8 @@ class ClientAccountServiceTest {
     private static ClientEntity actualClientEntity;
 
     static {
-        Utils.setProperties(Environment.TEST);
-        Utils.startDb(Environment.TEST);
+        PropUtils.setProperties(Environment.TEST);
+        H2Utils.startDb(Environment.TEST);
     }
 
     @Inject
@@ -123,5 +124,10 @@ class ClientAccountServiceTest {
 
     @Test
     void findAllEntityClientAccounts() {
+    }
+
+    @AfterAll
+    static void eraseDB() {
+        //H2Utils.stopDb(Environment.TEST);
     }
 }

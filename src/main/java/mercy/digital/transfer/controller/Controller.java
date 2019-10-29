@@ -20,14 +20,15 @@ import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
 import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
 import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
 import mercy.digital.transfer.utils.Environment;
-import mercy.digital.transfer.utils.Utils;
+import mercy.digital.transfer.utils.H2Utils;
+import mercy.digital.transfer.utils.PropUtils;
 
 @Slf4j
 public class Controller {
 
     public static void main(String[] args) {
         Environment environment = Environment.PRODUCTION;
-        Utils.setProperties(Environment.PRODUCTION);
+        PropUtils.setProperties(Environment.PRODUCTION);
 
         Injector clientFacadeInjector = Guice.createInjector(new ClientFacadeModule());
         Injector accountFacadeInjector = Guice.createInjector(new AccountFacadeModule());
@@ -35,7 +36,7 @@ public class Controller {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Utils.startDb(environment);
+        H2Utils.startDb(environment);
         Javalin app = Javalin.create().start(8000);
 
         app.get("/client/add", ctx -> {
