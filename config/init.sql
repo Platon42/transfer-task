@@ -7,9 +7,7 @@ CREATE SEQUENCE TRANSFER.CLIENT_ACCOUNT_ID;
 CREATE SEQUENCE TRANSFER.TRANSACTION_ID;
 CREATE SEQUENCE TRANSFER.BALANCE_ID;
 
-set schema TRANSFER;
-
-create table BENEFICIARY
+create table TRANSFER.BENEFICIARY
 (
     BENEFICIARY_ID INTEGER default (NEXT VALUE FOR TRANSFER.BENEFICIARY_ID) auto_increment,
     STREET_LINE    VARCHAR(50),
@@ -20,40 +18,43 @@ create table BENEFICIARY
         primary key (BENEFICIARY_ID)
 );
 
-create table BENEFICIARY_ACCOUNT
+create table TRANSFER.BENEFICIARY_ACCOUNT
 (
     BENEFICIARY_ACCOUNT_ID INTEGER default (NEXT VALUE FOR TRANSFER.BENEFICIARY_ACCOUNT_ID) auto_increment,
     ACCOUNT_NO             BIGINT      not null
         unique,
     NAME                   VARCHAR(50),
-    IS_CLIENT              BOOLEAN default false,
+    IS_CLIENT              BOOLEAN default FALSE,
     BENEFICIARY_ID         INTEGER,
     CURRENCY               VARCHAR(10) not null,
     constraint BENEFICIARY_ACCOUNT_BENEFICIARY_BENEFICIARY_ID_FK
-        foreign key (BENEFICIARY_ID) references BENEFICIARY
+        foreign key (BENEFICIARY_ID) references TRANSFER.BENEFICIARY
             on update cascade on delete cascade
 );
 
-create unique index BENEFICIARY_ACCOUNT_ACCOUNT_ID_UINDEX
-    on BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
+create unique index TRANSFER.BENEFICIARY_ACCOUNT_ACCOUNT_ID_UINDEX
+    on TRANSFER.BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
 
-create unique index PRIMARY_KEY_39
-    on BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
+create unique index TRANSFER.PRIMARY_KEY_39
+    on TRANSFER.BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
 
-create unique index PRIMARY_KEY_393
-    on BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
+create unique index TRANSFER.PRIMARY_KEY_393
+    on TRANSFER.BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
 
-create unique index PRIMARY_KEY_4
-    on BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
+create unique index TRANSFER.PRIMARY_KEY_4
+    on TRANSFER.BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
 
-create unique index PRIMARY_KEY_41
-    on BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
+create unique index TRANSFER.PRIMARY_KEY_41
+    on TRANSFER.BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
 
-alter table BENEFICIARY_ACCOUNT
+create unique index TRANSFER.PRIMARY_KEY_412
+    on TRANSFER.BENEFICIARY_ACCOUNT (BENEFICIARY_ACCOUNT_ID);
+
+alter table TRANSFER.BENEFICIARY_ACCOUNT
     add constraint BENEFICIARY_ACCOUNT_PK
         primary key (BENEFICIARY_ACCOUNT_ID);
 
-create table CLIENT
+create table TRANSFER.CLIENT
 (
     CLIENT_ID        INTEGER default (NEXT VALUE FOR TRANSFER.CLIENT_ID) auto_increment,
     FIRST_NAME       VARCHAR(50) not null,
@@ -66,14 +67,14 @@ create table CLIENT
         primary key (CLIENT_ID)
 );
 
-create table CLIENT_ACCOUNT
+create table TRANSFER.CLIENT_ACCOUNT
 (
-    CLIENT_ACCOUNT_ID INTEGER   default (NEXT VALUE FOR TRANSFER.CLIENT_ACCOUNT_ID) auto_increment,
+    CLIENT_ACCOUNT_ID INTEGER default (NEXT VALUE FOR TRANSFER.CLIENT_ACCOUNT_ID) auto_increment,
     ACCOUNT_NO        BIGINT  not null
         unique,
-    BALANCE           DOUBLE    default 0,
+    BALANCE           DOUBLE  default 0.0,
     CURRENCY          VARCHAR(3),
-    CREATED_AT        TIMESTAMP default CURRENT_TIMESTAMP(),
+    CREATED_AT        TIMESTAMP,
     UPDATED_AT        TIMESTAMP,
     NAME              VARCHAR(50),
     COUNTRY_OF_ISSUE  VARCHAR(20),
@@ -81,11 +82,11 @@ create table CLIENT_ACCOUNT
     constraint ACCOUNT_PK
         primary key (CLIENT_ACCOUNT_ID),
     constraint CLIENT_ACCOUNT_CLIENT_CLIENT_ID_FK
-        foreign key (CLIENT_ID) references CLIENT
+        foreign key (CLIENT_ID) references TRANSFER.CLIENT
             on update cascade on delete cascade
 );
 
-create table TRANSACTION
+create table TRANSFER.TRANSACTION
 (
     TRANSACTION_ID    INTEGER default (NEXT VALUE FOR TRANSFER.TRANSACTION_ID) auto_increment,
     SOURCE_ACCOUNT_NO INTEGER                  not null,
@@ -98,7 +99,7 @@ create table TRANSACTION
         primary key (TRANSACTION_ID)
 );
 
-create table BALANCE
+create table TRANSFER.BALANCE
 (
     BALANCE_ID     INTEGER default (NEXT VALUE FOR TRANSFER.BALANCE_ID) auto_increment,
     ACCOUNT_ID     INTEGER,
@@ -108,10 +109,10 @@ create table BALANCE
     constraint BALANCE_HISTORY_PK
         primary key (BALANCE_ID),
     constraint BALANCE_HISTORY_ACCOUNT_ACCOUNT_ID_FK
-        foreign key (ACCOUNT_ID) references CLIENT_ACCOUNT
+        foreign key (ACCOUNT_ID) references TRANSFER.CLIENT_ACCOUNT
             on update cascade on delete cascade,
     constraint BALANCE_HISTORY_TRANSACTION_HISTORY_TRANSACTION_ID_FK
-        foreign key (TRANSACTION_ID) references TRANSACTION
+        foreign key (TRANSACTION_ID) references TRANSFER.TRANSACTION
             on update cascade on delete cascade
 );
 

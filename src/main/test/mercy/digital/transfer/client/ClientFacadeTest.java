@@ -22,11 +22,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(GuiceExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @IncludeModule(ClientFacadeModule.class)
-public class ClientFacadeTest {
+class ClientFacadeTest {
 
     private static final int CLIENT_ID = 10;
     private AddClient addClientStub;
-
 
     @Inject
     private ClientService clientService;

@@ -17,11 +17,14 @@ import java.util.List;
 @Slf4j
 public class BalanceServiceImpl implements BalanceService {
 
-    @Inject
-    private BalanceDao dao;
+    private final BalanceDao dao;
+    private final ClientAccountService clientAccountService;
 
     @Inject
-    private ClientAccountService clientAccountService;
+    public BalanceServiceImpl(BalanceDao dao, ClientAccountService clientAccountService) {
+        this.dao = dao;
+        this.clientAccountService = clientAccountService;
+    }
 
     public Integer addClientBalance(BalanceEntity balanceEntity) {
         Dao<BalanceEntity, Integer> balanceDao = this.dao.getBalanceDao();

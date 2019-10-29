@@ -15,9 +15,9 @@ public class H2DataSource implements H2DataSourceService {
     private static HikariDataSource ds;
 
     static {
-        config.setJdbcUrl("jdbc:h2:file:./data/h2");
-        config.setUsername("ma");
-        config.setPassword("ma");
+        config.setJdbcUrl(System.getProperty("db.url") + ";IFEXISTS=TRUE");
+        config.setUsername("sa");
+        config.setPassword("sa");
         config.setSchema("TRANSFER");
         config.setMinimumIdle(5);
         config.setMaximumPoolSize(20);
@@ -36,6 +36,4 @@ public class H2DataSource implements H2DataSourceService {
         }
         return dataSourceConnectionSource;
     }
-
-
 }

@@ -10,19 +10,24 @@ import mercy.digital.transfer.dao.client.account.ClientAccountDao;
 import mercy.digital.transfer.domain.ClientAccountEntity;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 public class ClientAccountServiceImpl implements ClientAccountService {
 
+    private final ClientAccountDao dao;
+
     @Inject
-    private ClientAccountDao dao;
+    public ClientAccountServiceImpl(ClientAccountDao dao) {
+        this.dao = dao;
+    }
 
     public Integer addClientEntityAccount(ClientAccountEntity accountEntity) {
         Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         try {
             clientAccountDao.create(accountEntity);
-            return accountEntity.getClientId();
+            return accountEntity.getClientAccountId();
         } catch (SQLException e) {
             log.error("Cannot add Client Account entity " + e.getLocalizedMessage());
         }
@@ -33,7 +38,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
         Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         try {
             clientAccountDao.update(accountEntity);
-            return accountEntity.getClientId();
+            return accountEntity.getClientAccountId();
         } catch (SQLException e) {
             log.error("Cannot update Client Account entity " + e.getLocalizedMessage());
         }
@@ -87,7 +92,7 @@ public class ClientAccountServiceImpl implements ClientAccountService {
             accountEntityList = clientAccountDao.queryForAll();
         } catch (SQLException e) {
             log.error("Cannot find Client Account entity" + e.getLocalizedMessage());
-            return null;
+            return Collections.emptyList();
         }
         return accountEntityList;
 

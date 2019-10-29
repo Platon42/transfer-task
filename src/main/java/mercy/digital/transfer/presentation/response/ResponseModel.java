@@ -20,12 +20,10 @@ public class ResponseModel {
 
     @JsonProperty("additional")
     private String additional;
-    
+
     @JsonProperty("message")
     private String message;
 
     @JsonProperty("status")
     private Integer status;
-
-
 }

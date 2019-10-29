@@ -14,17 +14,21 @@ import mercy.digital.transfer.service.transaction.dict.TransactionType;
 
 public class RefillBalanceServiceImpl implements RefillBalanceService {
 
-    @Inject
-    private BalanceService balanceService;
+    private final BalanceService balanceService;
+    private final TransactionService transactionService;
+    private final ClientAccountService clientAccountService;
+    private final ConverterService converterService;
 
     @Inject
-    private TransactionService transactionService;
-
-    @Inject
-    private ClientAccountService clientAccountService;
-
-    @Inject
-    private ConverterService converterService;
+    public RefillBalanceServiceImpl(BalanceService balanceService,
+                                    TransactionService transactionService,
+                                    ClientAccountService clientAccountService,
+                                    ConverterService converterService) {
+        this.balanceService = balanceService;
+        this.transactionService = transactionService;
+        this.clientAccountService = clientAccountService;
+        this.converterService = converterService;
+    }
 
     public TransactionStatus refillBalance(int clientAccountNo,
                                            Double transactionAmount,

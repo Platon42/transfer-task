@@ -12,11 +12,15 @@ import java.sql.SQLException;
 @Slf4j
 public class ClientDaoImpl implements ClientDao {
 
+    private final H2DataSourceService h2DataSourceService;
+    private Dao<ClientEntity, Integer> dao = null;
+
     @Inject
-    private H2DataSourceService h2DataSourceService;
+    public ClientDaoImpl(H2DataSourceService h2DataSourceService) {
+        this.h2DataSourceService = h2DataSourceService;
+    }
 
     public Dao<ClientEntity, Integer> getClientDao() {
-        Dao<ClientEntity, Integer> dao = null;
         try {
             dao = DaoManager.createDao(h2DataSourceService.getConnectionSource(), ClientEntity.class);
         } catch (SQLException e) {
@@ -24,4 +28,5 @@ public class ClientDaoImpl implements ClientDao {
         }
         return dao;
     }
+
 }

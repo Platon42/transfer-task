@@ -7,13 +7,18 @@ import mercy.digital.transfer.dao.client.ClientDao;
 import mercy.digital.transfer.domain.ClientEntity;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 public class ClientServiceImpl implements ClientService {
 
+    private final ClientDao dao;
+
     @Inject
-    private ClientDao dao;
+    public ClientServiceImpl(ClientDao dao) {
+        this.dao = dao;
+    }
 
     public Integer addEntityClient(ClientEntity clientEntity) {
         Dao<ClientEntity, Integer> clientDao = this.dao.getClientDao();
@@ -45,7 +50,7 @@ public class ClientServiceImpl implements ClientService {
             clientEntityList = clientDao.queryForAll();
         } catch (SQLException e) {
             log.error("Cannot find Client entity" + e.getLocalizedMessage());
-            return null;
+            return Collections.emptyList();
         }
         return clientEntityList;
     }

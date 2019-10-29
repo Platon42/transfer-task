@@ -22,9 +22,6 @@ public class ConverterServiceImpl implements ConverterService {
                 "&from=" + from.name() +
                 "&to=" + to.name() +
                 "&amount=" + amount;
-
-        System.out.println(url);
-
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();

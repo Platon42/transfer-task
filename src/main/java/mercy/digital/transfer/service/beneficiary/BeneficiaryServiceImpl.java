@@ -7,13 +7,18 @@ import mercy.digital.transfer.dao.beneficiary.BeneficiaryDao;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
 public class BeneficiaryServiceImpl implements BeneficiaryService {
 
+    private final BeneficiaryDao dao;
+
     @Inject
-    private BeneficiaryDao dao;
+    public BeneficiaryServiceImpl(BeneficiaryDao dao) {
+        this.dao = dao;
+    }
 
     public Integer addEntityBeneficiary(BeneficiaryEntity beneficiaryEntity) {
         Dao<BeneficiaryEntity, Integer> beneficiaryDao = this.dao.getBeneficiaryDao();
@@ -46,7 +51,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
             return beneficiaryEntities;
         } catch (SQLException e) {
             log.error("Cannot find Beneficiary entity" + e.getLocalizedMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 }

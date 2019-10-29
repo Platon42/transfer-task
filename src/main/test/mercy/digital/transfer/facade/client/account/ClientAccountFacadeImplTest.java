@@ -54,7 +54,6 @@ class ClientAccountFacadeImplTest {
         clientAccountService = Mockito.mock(ClientAccountService.class);
         clientService = Mockito.mock(ClientService.class);
         refillBalanceService = Mockito.mock(RefillBalanceService.class);
-        transferService = Mockito.mock(TransferService.class);
         transactionService = Mockito.mock(TransactionService.class);
 
         clientAccountFacade = new ClientAccountFacadeImpl(

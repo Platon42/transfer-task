@@ -19,11 +19,62 @@ import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
 import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
 import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
+import mercy.digital.transfer.utils.Environment;
+import org.h2.tools.RunScript;
+import org.h2.tools.Server;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Slf4j
 public class Controller {
 
+    public static void setProperties(Environment environment) {
+        switch (environment) {
+            case TEST:
+                System.setProperty("db.url", "jdbc:h2:mem:test_db");
+                break;
+            case PRODUCTION:
+                System.setProperty("db.url", "jdbc:h2:tcp://localhost:9092/mem:transfer");
+                break;
+            default:
+                break;
+        }
+    }
+
+    public static void startDb(Environment environment) {
+        switch (environment) {
+            case PRODUCTION:
+                try {
+                    Server.createTcpServer("-tcpPort", "9092", "-tcp", "-tcpAllowOthers", "-ifNotExists").start();
+                    Class.forName("org.h2.Driver");
+                    Connection conn = DriverManager.getConnection(
+                            System.getProperty("db.url"), "sa", "sa");
+
+                    RunScript.execute(conn, new FileReader("./config/init.sql"));
+                } catch (SQLException | FileNotFoundException | ClassNotFoundException e) {
+                    log.error("Cannot start PROD database " + e.getLocalizedMessage());
+                }
+                break;
+            case TEST:
+                try {
+                    Class.forName("org.h2.Driver");
+                    Connection conn = DriverManager.getConnection(
+                            System.getProperty("db.url"), "sa", "sa");
+                    RunScript.execute(conn, new FileReader("./config/init.sql"));
+                } catch (SQLException | FileNotFoundException | ClassNotFoundException e) {
+                    log.error("Cannot start TEST database " + e.getLocalizedMessage());
+                }
+                break;
+        }
+    }
+
     public static void main(String[] args) {
+        Environment environment = Environment.PRODUCTION;
+        setProperties(Environment.PRODUCTION);
 
         Injector clientFacadeInjector = Guice.createInjector(new ClientFacadeModule());
         Injector accountFacadeInjector = Guice.createInjector(new AccountFacadeModule());
@@ -31,7 +82,9 @@ public class Controller {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
+        startDb(environment);
         Javalin app = Javalin.create().start(8000);
+
         app.get("/client/add", ctx -> {
             AddClient client = objectMapper.readValue(ctx.body(), AddClient.class);
             ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);

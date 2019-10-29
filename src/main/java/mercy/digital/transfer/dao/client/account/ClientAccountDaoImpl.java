@@ -12,8 +12,12 @@ import java.sql.SQLException;
 @Slf4j
 public class ClientAccountDaoImpl implements ClientAccountDao {
 
+    private final H2DataSourceService h2DataSourceService;
+
     @Inject
-    private H2DataSourceService h2DataSourceService;
+    public ClientAccountDaoImpl(H2DataSourceService h2DataSourceService) {
+        this.h2DataSourceService = h2DataSourceService;
+    }
 
     public Dao<ClientAccountEntity,Integer> getAccountDao () {
         Dao<ClientAccountEntity,Integer> dao = null;

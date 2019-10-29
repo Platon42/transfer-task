@@ -13,11 +13,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "CLIENT_ACCOUNT", schema = "TRANSFER", catalog = "H2")
 public class ClientAccountEntity {
+
     @DatabaseField(generatedId = true, columnName = "CLIENT_ACCOUNT_ID")
     private int clientAccountId;
-
     @DatabaseField(columnName = "ACCOUNT_NO")
-    private Long accountNo;
+    private Integer accountNo;
     @DatabaseField(columnName = "BALANCE")
     private Double balance;
     @DatabaseField(columnName = "CURRENCY")
@@ -33,11 +33,10 @@ public class ClientAccountEntity {
     @ForeignCollectionField
     private Collection<BalanceEntity> balanceHistoriesByClientAccountId;
 
-    private Integer clientId;
+    //private Integer clientId;
 
     @DatabaseField(foreign = true, columnName = "CLIENT_ID")
     private ClientEntity clientByClientId;
-
     private Collection<BalanceEntity> balancesByClientAccountId;
 
     @Id
@@ -52,15 +51,11 @@ public class ClientAccountEntity {
 
     @Basic
     @Column(name = "ACCOUNT_NO", nullable = false)
-    public Long getAccountNo() {
+    public Integer getAccountNo() {
         return accountNo;
     }
 
-    public void setAccountNo(long accountNo) {
-        this.accountNo = accountNo;
-    }
-
-    public void setAccountNo(Long accountNo) {
+    public void setAccountNo(Integer accountNo) {
         this.accountNo = accountNo;
     }
 
@@ -119,24 +114,22 @@ public class ClientAccountEntity {
     public String getCountryOfIssue() {
         return countryOfIssue;
     }
+
     public void setCountryOfIssue(String countryOfIssue) {
         this.countryOfIssue = countryOfIssue;
     }
 
+    /*
     @Basic
     @Column(name = "CLIENT_ID", nullable = false)
     public Integer getClientId() {
         return clientId;
     }
 
-    public void setClientId(int clientId) {
-        this.clientId = clientId;
-    }
-
     public void setClientId(Integer clientId) {
         this.clientId = clientId;
     }
-
+    */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

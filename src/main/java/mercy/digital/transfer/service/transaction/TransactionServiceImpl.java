@@ -19,8 +19,12 @@ import java.util.List;
 @Slf4j
 public class TransactionServiceImpl implements TransactionService {
 
+    private final TransactionDao dao;
+
     @Inject
-    private TransactionDao dao;
+    public TransactionServiceImpl(TransactionDao dao) {
+        this.dao = dao;
+    }
 
     public Integer addEntityTransaction(TransactionEntity transactionEntity) {
         Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();

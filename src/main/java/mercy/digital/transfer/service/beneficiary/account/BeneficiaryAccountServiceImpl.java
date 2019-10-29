@@ -11,6 +11,7 @@ import mercy.digital.transfer.domain.ClientAccountEntity;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -86,7 +87,7 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
             return beneficiaryAccountEntityList;
         } catch (SQLException e) {
             log.error("Cannot find Beneficiary Account entity" + e.getLocalizedMessage());
-            return null;
+            return Collections.emptyList();
         }
     }
 }

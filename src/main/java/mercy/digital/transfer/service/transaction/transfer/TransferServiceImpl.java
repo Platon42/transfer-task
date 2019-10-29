@@ -15,29 +15,29 @@ import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import mercy.digital.transfer.service.transaction.dict.TransferType;
-import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 
 
 @Slf4j
 public class TransferServiceImpl implements TransferService {
 
-    @Inject
-    private BalanceService balanceService;
+    private final BalanceService balanceService;
+    private final TransactionService transactionService;
+    private final ClientAccountService clientAccountService;
+    private final BeneficiaryAccountService beneficiaryAccountService;
+    private final ConverterService converterService;
 
     @Inject
-    private TransactionService transactionService;
-
-    @Inject
-    private ClientAccountService clientAccountService;
-
-    @Inject
-    private BeneficiaryAccountService beneficiaryAccountService;
-
-    @Inject
-    private ConverterService converterService;
-
-    @Inject
-    RefillBalanceService refillBalanceService;
+    public TransferServiceImpl(BalanceService balanceService,
+                               TransactionService transactionService,
+                               ClientAccountService clientAccountService,
+                               BeneficiaryAccountService beneficiaryAccountService,
+                               ConverterService converterService) {
+        this.balanceService = balanceService;
+        this.transactionService = transactionService;
+        this.clientAccountService = clientAccountService;
+        this.beneficiaryAccountService = beneficiaryAccountService;
+        this.converterService = converterService;
+    }
 
     private CurrencyCode transferCurrency, clientCurrency, beneficiaryCurrency;
     private Integer clientAccountNo, beneficiaryAccountNo;
