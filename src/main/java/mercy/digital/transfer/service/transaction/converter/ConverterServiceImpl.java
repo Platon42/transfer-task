@@ -27,7 +27,6 @@ public class ConverterServiceImpl implements ConverterService {
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             JsonNode jsonNode = mapper.readTree(con.getInputStream());
-            System.out.println(jsonNode);
             exchangeTargetAmount = jsonNode.get("result").asDouble();
         } catch (IOException e) {
             log.error(e.getLocalizedMessage());

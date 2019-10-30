@@ -64,7 +64,12 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
         if (accountById != null) {
             ClientAccountEntity accountEntity = this.mapper.map(clientAccount, ClientAccountEntity.class);
             accountEntity.setClientByClientId(accountById);
-            clientAccountService.addClientEntityAccount(accountEntity);
+            Integer id = clientAccountService.addClientEntityAccount(accountEntity);
+            if (id == null || id == -1) {
+                responseModel.setMessage("Cannot create client account, with Client Id " +
+                        clientId + " see log for details");
+                responseModel.setStatus(-1);
+            }
             responseModel.setMessage("Success created client Account");
             responseModel.setStatus(0);
         } else {

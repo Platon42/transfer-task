@@ -18,6 +18,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 @ExtendWith(GuiceExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -27,9 +28,13 @@ class ClientAccountServiceTest {
 
     private static final Integer CLIENT_ID = 1;
     private static final Integer CLIENT_ACCOUNT_ID = 1;
+
     private static final Integer ACCOUNT_NO = 101;
+    private static final Integer WRONG_CLIENT_ACCOUNT_NO = 111111;
+
     private static ClientEntity clientEntityStub = new ClientEntity();
     private static ClientAccountEntity clientAccountEntityStub = new ClientAccountEntity();
+
     private static ClientAccountEntity actualClientAccountEntity;
     private static ClientEntity actualClientEntity;
 
@@ -81,7 +86,10 @@ class ClientAccountServiceTest {
         actualClientAccountId = clientAccountService.addClientEntityAccount(clientAccountEntityStub);
         //check id
         Assertions.assertEquals(CLIENT_ACCOUNT_ID, actualClientAccountId, "check addClientEntityAccount");
-
+        // check wrong flag
+        clientAccountEntityStub.setAccountNo(WRONG_CLIENT_ACCOUNT_NO);
+        Integer wrongFlag = clientAccountService.addClientEntityAccount(clientAccountEntityStub);
+        Assertions.assertEquals(-1, wrongFlag);
     }
 
     @Test
@@ -101,6 +109,7 @@ class ClientAccountServiceTest {
     @Test
     @Order(5)
     void updateColumnClientAccount() {
+
         String columnName = "BALANCE";
         String value = "100.0";
 
@@ -113,17 +122,28 @@ class ClientAccountServiceTest {
         actualClientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(ACCOUNT_NO);
         Double actualBalance = actualClientAccountEntity.getBalance();
 
-        Assertions.assertNotEquals(balanceBefore, actualBalance);
+        //Assertions.assertNotEquals(balanceBefore, actualBalance);
         Assertions.assertEquals(Double.parseDouble(value), actualBalance);
 
     }
 
     @Test
-    void updateClientAccount() {
-        //actualClientAccountEntity = clientAccountService.updateClientAccount();
-    }
-
-    @Test
+    @Order(6)
     void findAllEntityClientAccounts() {
+
+        clientAccountEntityStub = new ClientAccountEntity();
+
+        clientAccountEntityStub.setAccountNo(1012);
+        clientAccountEntityStub.setBalance(0.0);
+        clientAccountEntityStub.setCreatedAt(Timestamp.from(Instant.now()));
+        clientAccountEntityStub.setCurrency(CurrencyCode.RUB.name());
+        clientAccountEntityStub.setClientByClientId(actualClientEntity);
+
+        //add account
+        Integer actualClientAccountId = clientAccountService.addClientEntityAccount(clientAccountEntityStub);
+        Assertions.assertEquals(2, actualClientAccountId);
+        List<ClientAccountEntity> allEntityClientAccounts = clientAccountService.findAllEntityClientAccounts();
+        Assertions.assertEquals(1012, allEntityClientAccounts.get(1).getAccountNo());
+
     }
 }

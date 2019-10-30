@@ -19,7 +19,6 @@ import mercy.digital.transfer.utils.H2Utils;
 import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -72,10 +71,6 @@ class ClientAccountFacadeImplTest {
                 clientService,
                 refillBalanceService,
                 transactionService);
-    }
-
-    @AfterEach
-    void tearDown() {
     }
 
     @Test

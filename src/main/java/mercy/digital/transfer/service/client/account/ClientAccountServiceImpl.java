@@ -26,21 +26,11 @@ public class ClientAccountServiceImpl implements ClientAccountService {
     public Integer addClientEntityAccount(ClientAccountEntity accountEntity) {
         Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
         try {
+            if (!accountEntity.getAccountNo().toString().startsWith("101")) return -1;
             clientAccountDao.create(accountEntity);
             return accountEntity.getClientAccountId();
         } catch (SQLException e) {
             log.error("Cannot add Client Account entity " + e.getLocalizedMessage());
-        }
-        return null;
-    }
-
-    public Integer updateClientAccount(ClientAccountEntity accountEntity) {
-        Dao<ClientAccountEntity, Integer> clientAccountDao = this.dao.getAccountDao();
-        try {
-            clientAccountDao.update(accountEntity);
-            return accountEntity.getClientAccountId();
-        } catch (SQLException e) {
-            log.error("Cannot update Client Account entity " + e.getLocalizedMessage());
         }
         return null;
     }
