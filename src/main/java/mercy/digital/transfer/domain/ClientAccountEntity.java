@@ -33,8 +33,6 @@ public class ClientAccountEntity {
     @ForeignCollectionField
     private Collection<BalanceEntity> balanceHistoriesByClientAccountId;
 
-    //private Integer clientId;
-
     @DatabaseField(foreign = true, columnName = "CLIENT_ID")
     private ClientEntity clientByClientId;
     private Collection<BalanceEntity> balancesByClientAccountId;
@@ -119,17 +117,6 @@ public class ClientAccountEntity {
         this.countryOfIssue = countryOfIssue;
     }
 
-    /*
-    @Basic
-    @Column(name = "CLIENT_ID", nullable = false)
-    public Integer getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(Integer clientId) {
-        this.clientId = clientId;
-    }
-    */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

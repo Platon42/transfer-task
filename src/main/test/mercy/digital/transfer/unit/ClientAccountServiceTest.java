@@ -126,9 +126,4 @@ class ClientAccountServiceTest {
     @Test
     void findAllEntityClientAccounts() {
     }
-
-    @AfterAll
-    static void eraseDB() {
-        //H2Utils.stopDb(Environment.TEST);
-    }
 }

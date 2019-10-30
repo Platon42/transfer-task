@@ -13,6 +13,10 @@ import java.sql.SQLException;
 @Slf4j
 public class H2Utils {
 
+    private H2Utils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     private static Connection prodConnection;
     private static Connection testConnection;
 
