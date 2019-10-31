@@ -12,8 +12,7 @@
             </activation>
             <properties>
                 <sonar.sources>src/main/java</sonar.sources>
-                <sonar.test.exclusions>
-                    src/main/java/domain/*,src/main/java/presentation/*,src/main/test/mercy/digital/transfer/unit/*
+                <sonar.test.exclusions>src/main/java/presentation/*,src/main/test/mercy/digital/transfer/unit/*
                 </sonar.test.exclusions>
                 <sonar.inclusions>src/main/java/**</sonar.inclusions>
                 <sonar.host.url>https://sonarcloud.io/</sonar.host.url>

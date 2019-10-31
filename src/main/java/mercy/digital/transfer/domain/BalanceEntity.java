@@ -2,10 +2,12 @@ package mercy.digital.transfer.domain;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.Generated;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+@Generated
 @DatabaseTable(tableName = "BALANCE")
 @Entity
 @Table(name = "BALANCE", schema = "TRANSFER", catalog = "H2")

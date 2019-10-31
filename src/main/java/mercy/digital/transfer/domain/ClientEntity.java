@@ -3,12 +3,14 @@ package mercy.digital.transfer.domain;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
+import lombok.Generated;
 
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Objects;
 
+@Generated
 @DatabaseTable(tableName = "CLIENT")
 @Entity
 @Table(name = "CLIENT", schema = "TRANSFER", catalog = "H2")
