@@ -44,7 +44,6 @@ class BeneficiaryAccountServiceTest {
     private static final Integer CLIENT_NO_2 = 1013;
     private static final Integer CLIENT_NO_3 = 1014;
 
-
     private static final Integer BENEFICIARY_ACCOUNT_NO_CLIENT = 1012;
     private static final Integer BENEFICIARY_ACCOUNT_NO_CLIENT_2 = 1014;
 
