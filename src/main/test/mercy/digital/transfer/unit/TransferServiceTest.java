@@ -1,4 +1,4 @@
-package mercy.digital.transfer.service.transaction.transfer;
+package mercy.digital.transfer.unit;
 
 import org.junit.jupiter.api.Test;
 
