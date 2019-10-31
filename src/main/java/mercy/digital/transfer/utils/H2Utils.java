@@ -19,14 +19,13 @@ public class H2Utils {
 
     private static Connection prodConnection;
     private static Connection testConnection;
-    private static Connection fakeConnection;
 
 
     private static void initTcpDb() {
         try {
             Server.createTcpServer("-tcpPort", "9092", "-tcp", "-tcpAllowOthers", "-ifNotExists").start();
             prodConnection = DriverManager.getConnection(
-                    System.getProperty("db.url"), "sa", "sa");
+                    System.getProperty("db.url"), System.getProperty("db.user"), System.getProperty("db.password"));
             RunScript.execute(prodConnection, new FileReader("./config/init.sql"));
         } catch (SQLException | IOException e) {
             log.error(e.getLocalizedMessage());
@@ -36,7 +35,7 @@ public class H2Utils {
     private static void initInMemDb() {
         try {
             testConnection = DriverManager.getConnection(
-                    System.getProperty("db.url"), "sa", "sa");
+                    System.getProperty("db.url"), System.getProperty("db.user"), System.getProperty("db.password"));
             RunScript.execute(testConnection, new FileReader("./config/init.sql"));
             testConnection.close();
         } catch (SQLException | IOException e) {
@@ -51,6 +50,7 @@ public class H2Utils {
         if (environment.equals(Environment.PRODUCTION)) {
             initTcpDb();
         }
-
     }
+
+
 }
