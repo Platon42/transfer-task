@@ -1,10 +1,12 @@
 package mercy.digital.transfer.presentation.client.account;
 
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Value;
 
 import java.time.ZonedDateTime;
 
+@Generated
 @Value
 @Getter
 public class GetClientAccount {

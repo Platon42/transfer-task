@@ -54,6 +54,8 @@ class ClientAccountServiceTest {
         clientEntityStub.setLastName("Smirnov");
         clientEntityStub.setResidentCountry("RU");
         clientEntityStub.setSex(1);
+        clientEntityStub.setResidentCountry("Russia");
+        clientEntityStub.setMiddleName("Vlad");
         clientEntityStub.setBirthday(new Date(19082019));
     }
 

@@ -2,11 +2,13 @@ package mercy.digital.transfer.presentation.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+@Generated
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter

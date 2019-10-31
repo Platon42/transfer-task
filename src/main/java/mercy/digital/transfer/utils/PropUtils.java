@@ -2,6 +2,9 @@ package mercy.digital.transfer.utils;
 
 public class PropUtils {
 
+    private PropUtils() {
+    }
+
     public static void setProperties(Environment environment) {
 
         if (environment.equals(Environment.TEST)) {

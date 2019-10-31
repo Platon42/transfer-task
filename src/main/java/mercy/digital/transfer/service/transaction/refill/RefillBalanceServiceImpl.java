@@ -30,6 +30,28 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
         this.converterService = converterService;
     }
 
+    private TransactionStatus setRefillEntities(Double clientBalance,
+                                                Double transactionAmount,
+                                                TransactionEntity transactionEntity,
+                                                BalanceEntity balanceEntity,
+                                                ClientAccountEntity clientAccountEntity,
+                                                CurrencyCode chargeCurrency,
+                                                Integer clientAccountNo) {
+        Double newBalance = clientBalance + transactionAmount;
+        Integer id;
+        id = transactionService.setTransactionEntity(
+                transactionEntity,
+                TransactionType.REFILL,
+                transactionAmount,
+                chargeCurrency,
+                null,
+                clientAccountNo);
+        if (id == null) return TransactionStatus.ERROR_OCCURRED;
+
+        id = balanceService.setBalanceEntity(clientAccountEntity, balanceEntity, transactionEntity, clientBalance, newBalance);
+        if (id == null) return TransactionStatus.ERROR_OCCURRED;
+        return TransactionStatus.REFILL_COMPLETED;
+    }
     public TransactionStatus refillBalance(int clientAccountNo,
                                            Double transactionAmount,
                                            CurrencyCode chargeCurrency) {
@@ -51,32 +73,16 @@ public class RefillBalanceServiceImpl implements RefillBalanceService {
         }
 
         clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
-        Double newBalance;
+
         if (clientCurrency.equals(chargeCurrency)) {
-            newBalance = clientBalance + transactionAmount;
-            transactionService.setTransactionEntity(
-                    transactionEntity,
-                    TransactionType.REFILL,
-                    transactionAmount,
-                    chargeCurrency,
-                    null,
-                    clientAccountNo);
-            balanceService.setBalanceEntity(clientAccountEntity, balanceEntity, transactionEntity, clientBalance, newBalance);
-            return TransactionStatus.REFILL_COMPLETED;
+            return setRefillEntities(clientBalance,
+                    transactionAmount, transactionEntity, balanceEntity,
+                    clientAccountEntity, chargeCurrency, clientAccountNo);
         } else {
             Double exchangeAmount = converterService.doExchange(chargeCurrency, clientCurrency, transactionAmount);
-            newBalance = clientBalance + exchangeAmount;
-            transactionService.setTransactionEntity(
-                    transactionEntity,
-                    TransactionType.REFILL,
-                    transactionAmount,
-                    chargeCurrency,
-                    null,
-                    clientAccountNo);
-            balanceService.setBalanceEntity(clientAccountEntity, balanceEntity, transactionEntity, clientBalance, newBalance);
-
-            return TransactionStatus.REFILL_COMPLETED;
-
+            return setRefillEntities(clientBalance,
+                    exchangeAmount, transactionEntity, balanceEntity,
+                    clientAccountEntity, chargeCurrency, clientAccountNo);
         }
     }
 }

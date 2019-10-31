@@ -26,35 +26,28 @@ public class TransactionServiceImpl implements TransactionService {
         this.dao = dao;
     }
 
-    private Integer addEntityTransaction(TransactionEntity transactionEntity) {
-        Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
-        try {
-            daoTransactionDao.create(transactionEntity);
-            return transactionEntity.getTransactionId();
-        } catch (SQLException e) {
-            log.error("Cannot add Transaction entity " + e.getLocalizedMessage());
-            return null;
-        }
-    }
-
     public Integer setTransactionEntity(TransactionEntity transactionEntity,
                                         TransactionType transactionType,
                                         Double transactionAmount,
                                         CurrencyCode currencyCode,
                                         Integer sourceAccountNo,
                                         Integer targetAccountNo) {
+        try {
+            Dao<TransactionEntity, Integer> daoTransactionDao = this.dao.getTransactionDao();
 
-        transactionEntity.setSourceAccountNo(sourceAccountNo);
-        transactionEntity.setTargetAccountNo(targetAccountNo);
-        transactionEntity.setAmount(transactionAmount);
-        transactionEntity.setCurrency(currencyCode.name());
-        transactionEntity.setTransactionType(transactionType.name());
-        transactionEntity.setCreatedAt(Timestamp.from(Instant.now()));
-
-        addEntityTransaction(transactionEntity);
-
+            transactionEntity.setSourceAccountNo(sourceAccountNo);
+            transactionEntity.setTargetAccountNo(targetAccountNo);
+            transactionEntity.setAmount(transactionAmount);
+            transactionEntity.setCurrency(currencyCode.name());
+            transactionEntity.setTransactionType(transactionType.name());
+            transactionEntity.setCreatedAt(Timestamp.from(Instant.now()));
+            daoTransactionDao.create(transactionEntity);
+        } catch (SQLException e) {
+            log.error("Cannot add Transaction entity " + e.getLocalizedMessage());
+            return null;
+            //throw new IncorrectDaoOperation("Cannot add Transaction entity ");
+        }
         return transactionEntity.getTransactionId();
-
     }
 
     public List<TransactionEntity> findEntitiesTransactionByAccountNo(Integer accountNo) {

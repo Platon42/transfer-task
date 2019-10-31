@@ -2,6 +2,7 @@ package mercy.digital.transfer.presentation.beneficiary.account;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
@@ -9,6 +10,7 @@ import mercy.digital.transfer.domain.BeneficiaryEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Generated
 @JsonPOJOBuilder(withPrefix = "")
 @Setter
 @Getter

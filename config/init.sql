@@ -90,8 +90,8 @@ create table TRANSFER.CLIENT_ACCOUNT
 create table TRANSFER.TRANSACTION
 (
     TRANSACTION_ID    INTEGER default (NEXT VALUE FOR TRANSFER.TRANSACTION_ID) auto_increment,
-    SOURCE_ACCOUNT_NO INTEGER                  not null,
-    TARGET_ACCOUNT_NO INTEGER,
+    SOURCE_ACCOUNT_NO INTEGER,
+    TARGET_ACCOUNT_NO INTEGER                  not null,
     AMOUNT            DOUBLE,
     CURRENCY          VARCHAR(3)               not null,
     CREATED_AT        TIMESTAMP WITH TIME ZONE not null,
