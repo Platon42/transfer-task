@@ -20,6 +20,7 @@ import mercy.digital.transfer.utils.H2Utils;
 import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
+import org.apache.commons.lang3.Range;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -93,10 +94,7 @@ class TransferServiceTest {
         clientAccountEntityStub.setClientByClientId(clientEntityStub);
 
         Integer actualId = clientService.addEntityClient(clientEntityStub);
-        //Assertions.assertEquals(CLIENT_ID, actualId);
-
         Integer actualAccountId = clientAccountService.addClientEntityAccount(clientAccountEntityStub);
-        //Assertions.assertEquals(CLIENT_ACCOUNT_ID, actualAccountId);
     }
 
     void setUpClientSecond(CurrencyCode currencyCode, Integer accountNo) {
@@ -116,10 +114,8 @@ class TransferServiceTest {
         clientAccountEntityStubTwo.setClientByClientId(clientEntityStubTwo);
 
         Integer actualId = clientService.addEntityClient(clientEntityStubTwo);
-        //Assertions.assertEquals(CLIENT_ID_SECOND, actualId);
 
         Integer actualAccountId = clientAccountService.addClientEntityAccount(clientAccountEntityStubTwo);
-        //Assertions.assertEquals(CLIENT_ACCOUNT_ID_SECOND, actualAccountId);
 
     }
 
@@ -134,10 +130,7 @@ class TransferServiceTest {
         beneficiaryAccountEntityStub.setCurrency(currencyCode.name());
 
         Integer beneficiaryId = beneficiaryService.addEntityBeneficiary(beneficiaryEntity);
-        //Assertions.assertEquals(1,beneficiaryId);
-
         Integer beneficiaryAccountId = beneficiaryAccountService.addBeneficiaryEntityAccount(beneficiaryAccountEntityStub);
-        //Assertions.assertEquals(1,beneficiaryAccountId);
     }
 
     void refillFirstBalance(CurrencyCode currencyCode, Double amount, Integer accountNo) {
@@ -149,13 +142,11 @@ class TransferServiceTest {
                 TransactionType.REFILL,
                 amount, currencyCode,
                 null, accountNo);
-        //Assertions.assertEquals(1, actualTransactionId);
 
         Integer balanceId = balanceService.setBalanceEntity(
                 clientAccountEntityStub,
                 balanceEntity,
                 transactionEntity, amount, amount);
-        //Assertions.assertEquals(BALANCE_ID, balanceId);
 
         Assertions.assertEquals(amount, balanceEntity.getBeforeBalance());
         Assertions.assertEquals(amount, balanceEntity.getPastBalance());
@@ -171,13 +162,11 @@ class TransferServiceTest {
                 TransactionType.REFILL,
                 amount, currencyCode,
                 null, accountNo);
-        //Assertions.assertEquals(2, actualTransactionId);
 
         Integer balanceId = balanceService.setBalanceEntity(
                 clientAccountEntityStubTwo,
                 balanceEntityTwo,
                 transactionEntityTwo, amount, amount);
-        //Assertions.assertEquals(BALANCE_ID_SECOND, balanceId);
 
         Assertions.assertEquals(amount, balanceEntityTwo.getBeforeBalance());
         Assertions.assertEquals(amount, balanceEntityTwo.getPastBalance());
@@ -199,8 +188,12 @@ class TransferServiceTest {
         TransactionStatus transactionStatus =
                 transferService.doTransfer(senderAccountNo, receiverAccountNo, 40.0, CurrencyCode.RUB);
         Assertions.assertEquals(TransactionStatus.TRANSFER_COMPLETED, transactionStatus);
-        Assertions.assertEquals(110, clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance());
-        Assertions.assertEquals(140, clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance());
+
+        Double balanceSender = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
+        Double balanceReceiver = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
+
+        Assertions.assertEquals(110, balanceSender);
+        Assertions.assertEquals(140, balanceReceiver);
 
     }
 
@@ -220,21 +213,16 @@ class TransferServiceTest {
         TransactionStatus transactionStatus =
                 transferService.doTransfer(senderAccountNo, receiverAccountNo, 40.0, CurrencyCode.USD);
         Assertions.assertEquals(TransactionStatus.TRANSFER_COMPLETED, transactionStatus);
-        Integer accountNo = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getAccountNo();
-        System.out.println(accountNo);
-        String currency = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getCurrency();
-        Double balance = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
-        Double balance2 = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
 
-        System.out.println(balance);
-        System.out.println(balance2);
-        //Assertions.assertEquals(76767, clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance());
-        //Assertions.assertEquals(140, clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance());
-
+        Double balanceSender = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
+        Assertions.assertEquals(110, balanceSender);
+        Double balanceReceiver = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
+        Range<Double> receiverRange = Range.between(2500.0, 2800.00);
+        Assertions.assertTrue(receiverRange.contains(balanceReceiver));
     }
 
     @Test
-    @Order(2)
+    @Order(3)
     void doTransferSomeDiffCurrencyBetweenClients_2() {
         Integer senderAccountNo = 10127;
         Integer receiverAccountNo = 10128;
@@ -248,21 +236,19 @@ class TransferServiceTest {
 
         TransactionStatus transactionStatus =
                 transferService.doTransfer(senderAccountNo, receiverAccountNo, 40.0, CurrencyCode.USD);
-        //Assertions.assertEquals(TransactionStatus.TRANSFER_COMPLETED, transactionStatus);
-        Integer accountNo = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getAccountNo();
-        String currency = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getCurrency();
-        Double balance = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
-        Double balance2 = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
+        Assertions.assertEquals(TransactionStatus.TRANSFER_COMPLETED, transactionStatus);
 
-        System.out.println("receiver " + balance);
-        System.out.println("sender " + balance2);
-        //Assertions.assertEquals(76767, clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance());
-        //Assertions.assertEquals(140, clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance());
+        Double balanceReceiver = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
+        Assertions.assertEquals(140, balanceReceiver);
+
+        Double balanceSender = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
+        Range<Double> senderRange = Range.between(7850.0, 8700.00);
+        Assertions.assertTrue(senderRange.contains(balanceSender));
 
     }
 
     @Test
-    @Order(2)
+    @Order(4)
     void doTransferSomeDiffCurrencyBetweenClients_3() {
         Integer senderAccountNo = 10129;
         Integer receiverAccountNo = 10130;
@@ -277,15 +263,14 @@ class TransferServiceTest {
         TransactionStatus transactionStatus =
                 transferService.doTransfer(senderAccountNo, receiverAccountNo, 1000.0, CurrencyCode.RUB);
         Assertions.assertEquals(TransactionStatus.TRANSFER_COMPLETED, transactionStatus);
-        Integer accountNo = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getAccountNo();
-        String currency = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getCurrency();
-        Double balance = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
-        Double balance2 = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
 
-        System.out.println("receiver " + balance);
-        System.out.println("sender " + balance2);
-        //Assertions.assertEquals(76767, clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance());
-        //Assertions.assertEquals(140, clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance());
+        Double balanceReceiver = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
+        Double balanceSender = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
+        Range<Double> receiverRange = Range.between(105.00, 120.00);
+        Range<Double> senderRange = Range.between(80.0, 90.00);
+
+        Assertions.assertTrue(receiverRange.contains(balanceReceiver));
+        Assertions.assertTrue(senderRange.contains(balanceSender));
 
     }
 
