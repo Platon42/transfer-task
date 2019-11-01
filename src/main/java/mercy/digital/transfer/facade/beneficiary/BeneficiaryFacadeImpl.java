@@ -9,10 +9,9 @@ import mercy.digital.transfer.domain.BeneficiaryEntity;
 import mercy.digital.transfer.presentation.beneficiary.AddBeneficiary;
 import mercy.digital.transfer.presentation.beneficiary.account.AddBeneficiaryAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
+import mercy.digital.transfer.presentation.response.ResponseServiceBuilder;
 import mercy.digital.transfer.service.beneficiary.BeneficiaryService;
 import mercy.digital.transfer.service.beneficiary.account.BeneficiaryAccountService;
-
-import java.time.LocalDateTime;
 
 public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
 
@@ -32,18 +31,20 @@ public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
 
     public ResponseModel addBeneficiary(AddBeneficiary beneficiary) {
         BeneficiaryEntity beneficiaryEntity = this.mapper.map(beneficiary, BeneficiaryEntity.class);
-        Integer id = beneficiaryService.addEntityBeneficiary(beneficiaryEntity);
-        responseModel.setService("addBeneficiary");
-        responseModel.setDateTime(LocalDateTime.now());
+        Integer beneficiaryId = beneficiaryService.addEntityBeneficiary(beneficiaryEntity);
 
-        if (id != null) {
-            responseModel.setMessage("Success beneficiary added");
-            responseModel.setAdditional(String.valueOf(id));
-            responseModel.setStatus(0);
+        ResponseServiceBuilder responseServiceBuilder =
+                new ResponseServiceBuilder(responseModel, "addBeneficiary");
+
+        if (beneficiaryId != null) {
+            responseServiceBuilder.withMessage("Success beneficiary added");
+            responseServiceBuilder.withStatus(0);
+            responseServiceBuilder.withAdditional("beneficiaryId:" + beneficiaryId);
         } else {
-            responseModel.setMessage("Common error occurred, see log for details");
-            responseModel.setStatus(-1);
+            responseServiceBuilder.withMessage("Common error occurred, see log for details");
+            responseServiceBuilder.withStatus(-1);
         }
+        responseServiceBuilder.build();
         return responseModel;
     }
 
@@ -52,28 +53,30 @@ public class BeneficiaryFacadeImpl implements BeneficiaryFacade {
         int beneficiaryId = addBeneficiaryAccount.getGetBeneficiary().getBeneficiaryId();
         BeneficiaryEntity entityBeneficiaryById = beneficiaryService.findEntityBeneficiaryById(beneficiaryId);
 
-        responseModel.setDateTime(LocalDateTime.now());
-        responseModel.setService("addBeneficiaryAccount");
+        ResponseServiceBuilder responseServiceBuilder =
+                new ResponseServiceBuilder(responseModel, "addBeneficiaryAccount");
 
         if (entityBeneficiaryById != null) {
             BeneficiaryAccountEntity beneficiaryAccountEntity = this.mapper.map(addBeneficiaryAccount,
                     BeneficiaryAccountEntity.class);
             beneficiaryAccountEntity.setBeneficiaryByBeneficiaryId(entityBeneficiaryById);
-            Integer integer = beneficiaryAccountService.addBeneficiaryEntityAccount(beneficiaryAccountEntity);
-            if (integer == null) {
-                responseModel.setMessage("Cannot create Beneficiary account, with Beneficiary Id " +
-                        beneficiaryId + " see log for details");
-                responseModel.setStatus(-1);
+            Integer beneficiaryAccountId = beneficiaryAccountService.addBeneficiaryEntityAccount(beneficiaryAccountEntity);
+
+            if (beneficiaryAccountId != null) {
+                responseServiceBuilder.withMessage("Success beneficiary account added");
+                responseServiceBuilder.withStatus(0);
+                responseServiceBuilder.withAdditional("beneficiaryAccountId:" + beneficiaryAccountId);
             } else {
-                responseModel.setAdditional(String.valueOf(beneficiaryId));
-                responseModel.setMessage("Success beneficiary account added");
-                responseModel.setStatus(0);
+                responseServiceBuilder.withMessage("Cannot create Beneficiary account, with Beneficiary Id " +
+                        beneficiaryId + " see log for details");
+                responseServiceBuilder.withStatus(-1);
             }
         } else {
-            responseModel.setStatus(-1);
-            responseModel.setMessage("Cannot create Beneficiary account, with Beneficiary Id " +
+            responseServiceBuilder.withMessage("Cannot create Beneficiary account, with Beneficiary Id " +
                     beneficiaryId + " see log for details");
+            responseServiceBuilder.withStatus(-1);
         }
+        responseServiceBuilder.build();
         return responseModel;
     }
 

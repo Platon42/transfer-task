@@ -11,6 +11,7 @@ import mercy.digital.transfer.domain.TransactionEntity;
 import mercy.digital.transfer.presentation.balance.GetBalance;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
+import mercy.digital.transfer.presentation.response.ResponseServiceBuilder;
 import mercy.digital.transfer.presentation.transaction.GetTransaction;
 import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
 import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
@@ -23,7 +24,6 @@ import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,33 +57,35 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
 
         int clientId = clientAccount.getGetClient().getClientId();
         ClientEntity accountById = clientService.findEntityAccountById(clientId);
-
-        responseModel.setDateTime(LocalDateTime.now());
-        responseModel.setService("addClientAccount");
+        ResponseServiceBuilder responseServiceBuilder =
+                new ResponseServiceBuilder(responseModel, "addClientAccount");
 
         if (accountById != null) {
             ClientAccountEntity accountEntity = this.mapper.map(clientAccount, ClientAccountEntity.class);
             accountEntity.setClientByClientId(accountById);
-            Integer id = clientAccountService.addClientEntityAccount(accountEntity);
-            if (id == null || id == -1) {
-                responseModel.setMessage("Cannot create client account, with Client Id " +
+            Integer clientAccountId = clientAccountService.addClientEntityAccount(accountEntity);
+            if (clientAccountId == null || clientAccountId == -1) {
+                responseServiceBuilder.withMessage("Cannot create client account, with Client Id " +
                         clientId + " see log for details");
-                responseModel.setStatus(-1);
+                responseServiceBuilder.withStatus(-1);
+            } else {
+                responseServiceBuilder.withMessage("Success created client Account");
+                responseServiceBuilder.withStatus(0);
+                responseServiceBuilder.withAdditional("clientAccountId id:" + clientAccountId);
             }
-            responseModel.setMessage("Success created client Account");
-            responseModel.setStatus(0);
         } else {
-            responseModel.setMessage("Cannot create client account, with Client Id " +
+            responseServiceBuilder.withMessage("Cannot create client account, with Client Id " +
                     clientId + " see log for details");
-            responseModel.setStatus(-1);
-
+            responseServiceBuilder.withStatus(-1);
         }
+        responseServiceBuilder.build();
         return responseModel;
     }
 
     public ResponseModel doTransfer (DoTransfer transfer) {
-        responseModel.setDateTime(LocalDateTime.now());
-        responseModel.setService("doTransfer");
+
+        ResponseServiceBuilder responseServiceBuilder =
+                new ResponseServiceBuilder(responseModel, "doTransfer");
 
         TransactionStatus transactionStatus = transferService.doTransfer (
                 transfer.getAccountNoSender(),
@@ -91,41 +93,22 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
                 transfer.getAmount(),
                 CurrencyCode.valueOf(transfer.getChangeCurrency())
         );
-        switch (transactionStatus) {
-            case INSUFFICIENT_FUNDS:
-            case INCORRECT_AMOUNT:
-            case ERROR_OCCURRED:
-                responseModel.setMessage(transactionStatus.name());
-                responseModel.setStatus(-1);
-                break;
-            case REFILL_COMPLETED:
-                responseModel.setMessage(transactionStatus.name());
-                responseModel.setStatus(0);
-                break;
-        }
+        responseServiceBuilder.withTransactionStatus(transactionStatus);
+        responseServiceBuilder.build();
         return responseModel;
     }
 
     public ResponseModel doRefill (DoRefill refill) {
-        responseModel.setDateTime(LocalDateTime.now());
-        responseModel.setService("addClientAccount");
+        ResponseServiceBuilder responseServiceBuilder =
+                new ResponseServiceBuilder(responseModel, "doRefill");
 
         TransactionStatus transactionStatus = refillBalanceService.refillBalance(
                 refill.getAccountNo(),
                 refill.getAmount(),
                 CurrencyCode.valueOf(refill.getCurrency()));
-        switch (transactionStatus) {
-            case INSUFFICIENT_FUNDS:
-            case INCORRECT_AMOUNT:
-            case ERROR_OCCURRED:
-                responseModel.setMessage(transactionStatus.name());
-                responseModel.setStatus(-1);
-                break;
-            case REFILL_COMPLETED:
-                responseModel.setMessage(transactionStatus.name());
-                responseModel.setStatus(0);
-                break;
-        }
+        responseServiceBuilder.withTransactionStatus(transactionStatus);
+        responseServiceBuilder.build();
+
         return responseModel;
     }
 
@@ -159,12 +142,7 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
             getTransactions.add(getTransaction);
         }
 
-        for (GetBalance getBalance : getBalances) {
-            System.out.println(getBalance.getTransactionId());
-        }
-
         transactionDetails.setTransactionList(getTransactions);
-
         transactionDetails.setAccountNo(1);
         transactionDetails.setAccountNo(accountId);
 

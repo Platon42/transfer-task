@@ -8,9 +8,8 @@ import ma.glasnost.orika.impl.DefaultMapperFactory;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.response.ResponseModel;
+import mercy.digital.transfer.presentation.response.ResponseServiceBuilder;
 import mercy.digital.transfer.service.client.ClientService;
-
-import java.time.LocalDateTime;
 
 @Slf4j
 public class ClientFacadeImpl implements ClientFacade {
@@ -28,19 +27,18 @@ public class ClientFacadeImpl implements ClientFacade {
 
     public ResponseModel addClient(AddClient client) {
         ClientEntity clientEntity = this.mapper.map(client, ClientEntity.class);
-        Integer id = clientService.addEntityClient(clientEntity);
-
-        responseModel.setService("addClient");
-        responseModel.setDateTime(LocalDateTime.now());
-
-        if (id != null) {
-            responseModel.setMessage("Success client added");
-            responseModel.setAdditional(String.valueOf(id));
-            responseModel.setStatus(0);
+        Integer clientId = clientService.addEntityClient(clientEntity);
+        ResponseServiceBuilder responseServiceBuilder =
+                new ResponseServiceBuilder(responseModel, "addClient");
+        if (clientId != null) {
+            responseServiceBuilder.withMessage("Success client added");
+            responseServiceBuilder.withAdditional("clientId:" + clientId);
+            responseServiceBuilder.withStatus(0);
         } else {
-            responseModel.setMessage("Common error occurred, see log for details");
-            responseModel.setStatus(-1);
+            responseServiceBuilder.withMessage("Common error occurred, see log for details");
+            responseServiceBuilder.withStatus(-1);
         }
+        responseServiceBuilder.build();
         return responseModel;
     }
 }

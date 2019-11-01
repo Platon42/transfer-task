@@ -12,26 +12,26 @@ public class PropUtils {
     private PropUtils() {
     }
 
-    private static final String dbUrlParamName = "db.url";
-    private static final String dbUserParamName = "db.user";
-    private static final String ddPasswordParamName = "db.url";
+    private static final String DB_URL_PARAM_NAME = "db.url";
+    private static final String DB_USER = "db.user";
+    private static final String DB_PASS_PARAM_NAME = "db.password";
 
     public static void setProperties(Environment environment) {
         try {
             if (environment.equals(Environment.TEST)) {
                 Properties properties = new Properties();
                 properties.load((PropUtils.class.getResourceAsStream("/test.properties")));
-                System.setProperty(dbUrlParamName, properties.getProperty(dbUrlParamName));
-                System.setProperty("db.user", properties.getProperty("db.user"));
-                System.setProperty("db.password", properties.getProperty("db.password"));
+                System.setProperty(DB_URL_PARAM_NAME, properties.getProperty(DB_URL_PARAM_NAME));
+                System.setProperty(DB_USER, properties.getProperty(DB_USER));
+                System.setProperty(DB_PASS_PARAM_NAME, properties.getProperty(DB_PASS_PARAM_NAME));
 
             }
             if (environment.equals(Environment.PRODUCTION)) {
                 Properties properties = new Properties();
                 properties.load((PropUtils.class.getResourceAsStream("/prod.properties")));
-                System.setProperty(dbUrlParamName, properties.getProperty(dbUrlParamName));
-                System.setProperty(dbUserParamName, properties.getProperty(dbUserParamName));
-                System.setProperty(ddPasswordParamName, properties.getProperty(ddPasswordParamName));
+                System.setProperty(DB_URL_PARAM_NAME, properties.getProperty(DB_URL_PARAM_NAME));
+                System.setProperty(DB_USER, properties.getProperty(DB_USER));
+                System.setProperty(DB_PASS_PARAM_NAME, properties.getProperty(DB_PASS_PARAM_NAME));
             }
         } catch (IOException e) {
             log.error("Cannot load properties file");
