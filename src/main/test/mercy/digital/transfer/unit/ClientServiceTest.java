@@ -44,14 +44,27 @@ class ClientServiceTest {
 
     @Test
     @Order(1)
+    void findAllEntityAccountsException() {
+        List<ClientEntity> allEntityAccounts = clientService.findAllEntityAccounts();
+        Assertions.assertTrue(allEntityAccounts.isEmpty());
+    }
+
+    @Test
+    @Order(2)
     void addEntityClient() {
         Integer actualClientId;
         actualClientId = clientService.addEntityClient(clientEntityStub);
         Assertions.assertEquals(CLIENT_ID, actualClientId);
     }
+    @Test
+    @Order(3)
+    void addEntityClientException() {
+        ClientEntity clientEntity = new ClientEntity();
+        Assertions.assertNull(clientService.addEntityClient(clientEntity));
+    }
 
     @Test
-    @Order(2)
+    @Order(4)
     void findEntityAccountById() {
         ClientEntity actualAccount = clientService.findEntityAccountById(CLIENT_ID);
         Integer actualClientId = actualAccount.getClientId();
@@ -59,10 +72,18 @@ class ClientServiceTest {
     }
 
     @Test
-    @Order(3)
+    @Order(5)
+    void findEntityAccountByIdException() {
+        ClientEntity actualAccount = clientService.findEntityAccountById(2);
+        Assertions.assertNull(actualAccount);
+    }
+
+    @Test
+    @Order(6)
     void findAllEntityAccounts() {
         List<ClientEntity> allEntityAccounts = clientService.findAllEntityAccounts();
         String actualFirstName = allEntityAccounts.get(0).getFirstName();
         Assertions.assertEquals(FIRST_NAME, actualFirstName);
     }
+
 }

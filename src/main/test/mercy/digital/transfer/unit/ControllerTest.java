@@ -33,9 +33,9 @@ class ControllerTest {
     @Test
     void main() {
         app.get("/client/add", ctx -> {
-
             AddClient actualClient = objectMapper.readValue(ctx.body(), AddClient.class);
             when(objectMapper.readValue(ctx.body(), AddClient.class)).thenReturn(actualClient);
+
             ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
             //ResponseModel responseModel = clientFacade.addClient(client);
             //ctx.result(objectMapper.writeValueAsString(responseModel));

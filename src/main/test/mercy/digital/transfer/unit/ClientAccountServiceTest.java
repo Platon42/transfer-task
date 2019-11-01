@@ -61,6 +61,13 @@ class ClientAccountServiceTest {
 
     @Test
     @Order(1)
+    void findAllEntityClientAccountsException() {
+        List<ClientAccountEntity> allEntityClientAccounts = clientAccountService.findAllEntityClientAccounts();
+        Assertions.assertTrue(allEntityClientAccounts.isEmpty());
+    }
+
+    @Test
+    @Order(2)
     void addClient() {
 
         Integer actualClientId;
@@ -73,8 +80,8 @@ class ClientAccountServiceTest {
     }
 
     @Test
-    @Order(2)
-    void addClientEntityAccount() {
+    @Order(3)
+    void addClientAndNotClientEntityAccount() {
 
         Integer actualClientAccountId;
 
@@ -95,21 +102,48 @@ class ClientAccountServiceTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
+    void addClientEntityAccountException() {
+
+        ClientAccountEntity clientAccountEntity = new ClientAccountEntity();
+        clientAccountEntity.setAccountNo(101222);
+        Integer actualClientAccountId = clientAccountService.addClientEntityAccount(clientAccountEntity);
+
+        Assertions.assertNull(actualClientAccountId);
+    }
+
+
+    @Test
+    @Order(5)
     void findClientEntityAccountById() {
         actualClientAccountEntity = clientAccountService.findClientEntityAccountById(CLIENT_ID);
         Assertions.assertEquals(CLIENT_ACCOUNT_ID, actualClientAccountEntity.getClientAccountId());
     }
 
     @Test
-    @Order(4)
+    @Order(6)
+    void findClientEntityAccountByIdException() {
+        actualClientAccountEntity = clientAccountService.findClientEntityAccountById(323323);
+        Assertions.assertNull(actualClientAccountEntity);
+    }
+
+    @Test
+    @Order(7)
     void findClientEntityAccountByAccountNo() {
         actualClientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(ACCOUNT_NO);
         Assertions.assertEquals(ACCOUNT_NO, actualClientAccountEntity.getAccountNo());
     }
 
     @Test
-    @Order(5)
+    @Order(8)
+    void findClientEntityAccountByAccountNoException() {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
+            actualClientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(323323);
+        });
+    }
+
+    @Test
+    @Order(9)
     void updateColumnClientAccount() {
 
         String columnName = "BALANCE";
@@ -129,8 +163,24 @@ class ClientAccountServiceTest {
 
     }
 
+
     @Test
-    @Order(6)
+    @Order(10)
+    void updateColumnClientAccountException() {
+
+        String columnName = "BALANCE";
+        String value = "100.0_EXCEPTION";
+
+        actualClientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(ACCOUNT_NO);
+
+        Integer id = clientAccountService.updateColumnClientAccount(CLIENT_ACCOUNT_ID, columnName, value);
+        Assertions.assertNull(id);
+
+    }
+
+
+    @Test
+    @Order(11)
     void findAllEntityClientAccounts() {
 
         clientAccountEntityStub = new ClientAccountEntity();
@@ -143,7 +193,7 @@ class ClientAccountServiceTest {
 
         //add account
         Integer actualClientAccountId = clientAccountService.addClientEntityAccount(clientAccountEntityStub);
-        Assertions.assertEquals(2, actualClientAccountId);
+        Assertions.assertEquals(3, actualClientAccountId);
         List<ClientAccountEntity> allEntityClientAccounts = clientAccountService.findAllEntityClientAccounts();
         Assertions.assertEquals(1012, allEntityClientAccounts.get(1).getAccountNo());
 

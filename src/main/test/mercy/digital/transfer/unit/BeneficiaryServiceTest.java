@@ -39,14 +39,29 @@ class BeneficiaryServiceTest {
         beneficiaryEntityStub.setCountry("RU");
     }
 
+    @Test
     @Order(1)
+    void findAllEntityBeneficiaryException() {
+        List<BeneficiaryEntity> allEntityBeneficiary = beneficiaryService.findAllEntityBeneficiary();
+        Assertions.assertTrue(allEntityBeneficiary.isEmpty());
+    }
+
+    @Order(2)
     @Test
     void addEntityBeneficiary() {
         Integer actualBeneficiaryId = beneficiaryService.addEntityBeneficiary(beneficiaryEntityStub);
         Assertions.assertEquals(BENEFICIARY_ID, actualBeneficiaryId);
     }
 
-    @Order(2)
+    @Order(3)
+    @Test
+    void addEntityBeneficiaryException() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            beneficiaryService.addEntityBeneficiary(null);
+        });
+    }
+
+    @Order(4)
     @Test
     void findEntityBeneficiaryById() {
         BeneficiaryEntity actualBeneficiaryById = beneficiaryService.findEntityBeneficiaryById(BENEFICIARY_ID);
@@ -54,7 +69,14 @@ class BeneficiaryServiceTest {
         Assertions.assertEquals(CITY, actualCity);
     }
 
-    @Order(3)
+    @Order(5)
+    @Test
+    void findEntityBeneficiaryByIdException() {
+        BeneficiaryEntity actualBeneficiaryById = beneficiaryService.findEntityBeneficiaryById(32323);
+        Assertions.assertNull(actualBeneficiaryById);
+    }
+
+    @Order(6)
     @Test
     void findAllEntityBeneficiary() {
         beneficiaryEntityStub = new BeneficiaryEntity();

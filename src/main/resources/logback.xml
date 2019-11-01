@@ -18,11 +18,11 @@
         </encoder>
     </appender>
 
-    <logger name="digital.mercy" level="DEBUG" additivity="false">
+    <logger name="digital.mercy" level="INFO" additivity="false">
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="FILE-ROLLING"/>
     </root>
 
