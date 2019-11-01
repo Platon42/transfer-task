@@ -77,16 +77,25 @@ public class TransferServiceImpl implements TransferService {
                 switch (transactionType) {
                     case WITHDRAWAL:
                         if (clientCurrency.equals(transferCurrency) && !clientCurrency.equals(beneficiaryCurrency)) {
+                            log.debug("1CONDITION!!!!!");
                             newBalance = clientBalance - transferAmount;
+                            log.debug("1CONDITION!!!! " + clientBalance);
+                            log.debug("1CONDITION!!!! " + transferAmount);
+
                             return newBalance;
                         }
                         if (!clientCurrency.equals(transferCurrency) && transferCurrency.equals(beneficiaryCurrency)) {
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, transferCurrency, transferAmount);
+                            log.debug("2CONDITION!!!!!");
+                            exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
                             newBalance = clientBalance - exchangeToTransfer;
+                            log.debug("clientBalance " + clientBalance);
+                            log.debug("exchangeToTransfer " + exchangeToTransfer);
+
                             return newBalance;
                         }
                         if (!clientCurrency.equals(transferCurrency) && clientCurrency.equals(beneficiaryCurrency)) {
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, transferCurrency, transferAmount);
+                            log.debug("3CONDITION!!!!!");
+                            exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
                             newBalance = clientBalance - exchangeToTransfer;
                             return newBalance;
                         }
@@ -102,7 +111,7 @@ public class TransferServiceImpl implements TransferService {
                             return newBalance;
                         }
                         if (!clientCurrency.equals(transferCurrency) && clientCurrency.equals(beneficiaryCurrency)) {
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, transferCurrency, transferAmount);
+                            exchangeToTransfer = converterService.doExchange(transferCurrency, beneficiaryCurrency, transferAmount);
                             newBalance = clientBalance + exchangeToTransfer;
                             return newBalance;
                         }
