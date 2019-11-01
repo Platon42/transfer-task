@@ -158,6 +158,9 @@ public class TransferServiceImpl implements TransferService {
 
         TransactionEntity transactionEntity = new TransactionEntity();
         BalanceEntity balanceEntity = new BalanceEntity();
+        if (transferAmount <= 0) {
+            return TransactionStatus.INCORRECT_AMOUNT;
+        }
         Double newBalance = calculateTransferAmount(
                 transferType,
                 transactionType,

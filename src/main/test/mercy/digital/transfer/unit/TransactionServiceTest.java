@@ -47,18 +47,7 @@ class TransactionServiceTest {
     @Test
     @Order(1)
     void setTransactionEntity() {
-        /*
-        Assertions.assertThrows(SQLException.class, () -> {
-            transactionService.setTransactionEntity(
-                    transactionEntity,
-                    TransactionType.REFILL,
-                    transactionAmount, CurrencyCode.RUB,
-                    sourceAccountNo, targetAccountNo);
-        });
-           Mockito.when(mock.setTransactionEntity(any(),any(),any(),any(),any(),any()))                .
-           thenThrow(new NullPointerException());
 
-         */
         Integer actualTransactionId = transactionService.setTransactionEntity(
                 transactionEntity,
                 TransactionType.REFILL,

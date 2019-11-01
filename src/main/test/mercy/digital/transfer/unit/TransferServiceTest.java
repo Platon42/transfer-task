@@ -301,4 +301,43 @@ class TransferServiceTest {
         Assertions.assertTrue(senderRange.contains(balanceSender));
     }
 
+
+    @Test
+    @Order(6)
+    void doTransferInsufficientFunds() {
+        Integer senderAccountNo = 10133;
+        Integer receiverAccountNo = 10134;
+
+        setUpClientFirst(CurrencyCode.USD, senderAccountNo);
+        refillFirstBalance(CurrencyCode.USD, 100.0, senderAccountNo);
+
+        setUpClientSecond(CurrencyCode.RUB, receiverAccountNo);
+        setUpBeneficiary(CurrencyCode.RUB, receiverAccountNo);
+        refillSecondBalance(CurrencyCode.RUB, 100.0, receiverAccountNo);
+
+        TransactionStatus transactionStatus =
+                transferService.doTransfer(senderAccountNo, receiverAccountNo, 550.0, CurrencyCode.EUR);
+        Assertions.assertEquals(TransactionStatus.INSUFFICIENT_FUNDS, transactionStatus);
+
+    }
+
+    @Test
+    @Order(7)
+    void doTransferIncorrectAmount() {
+        Integer senderAccountNo = 10135;
+        Integer receiverAccountNo = 10136;
+
+        setUpClientFirst(CurrencyCode.USD, senderAccountNo);
+        refillFirstBalance(CurrencyCode.USD, 100.0, senderAccountNo);
+
+        setUpClientSecond(CurrencyCode.RUB, receiverAccountNo);
+        setUpBeneficiary(CurrencyCode.RUB, receiverAccountNo);
+        refillSecondBalance(CurrencyCode.RUB, 100.0, receiverAccountNo);
+
+        TransactionStatus transactionStatus =
+                transferService.doTransfer(senderAccountNo, receiverAccountNo, -100.0, CurrencyCode.EUR);
+        Assertions.assertEquals(TransactionStatus.INCORRECT_AMOUNT, transactionStatus);
+
+    }
+
 }
