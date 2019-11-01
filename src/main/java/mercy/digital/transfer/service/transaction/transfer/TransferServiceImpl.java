@@ -15,6 +15,7 @@ import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import mercy.digital.transfer.service.transaction.dict.TransferType;
+import org.jetbrains.annotations.Nullable;
 
 
 @Slf4j
@@ -42,10 +43,76 @@ public class TransferServiceImpl implements TransferService {
     private CurrencyCode transferCurrency, clientCurrency, beneficiaryCurrency;
     private Integer clientAccountNo, beneficiaryAccountNo;
 
+    @Nullable
+    private Double calcBalanceSameOrAllDiffCurrency(TransactionType transactionType, Double clientBalance, Double exchangeToBeneficiary) {
+        Double newBalance;
+        switch (transactionType) {
+            case WITHDRAWAL:
+                newBalance = clientBalance - exchangeToBeneficiary;
+                return newBalance;
+            case REFILL:
+                newBalance = clientBalance + exchangeToBeneficiary;
+                return newBalance;
+            default:
+                return null;
+        }
+    }
+
+    private Double calcBalanceSomeDiffCurrency(Double transferAmount,
+                                               Double clientBalance,
+                                               TransactionType transactionType) {
+        Double newBalance;
+        Double exchangeToTransfer;
+
+        if (clientCurrency.equals(transferCurrency) && !clientCurrency.equals(beneficiaryCurrency)) {
+            switch (transactionType) {
+                case WITHDRAWAL:
+                    newBalance = clientBalance - transferAmount;
+                    return newBalance;
+                case REFILL:
+                    exchangeToTransfer = converterService.doExchange(transferCurrency, beneficiaryCurrency, transferAmount);
+                    newBalance = clientBalance + exchangeToTransfer;
+                    return newBalance;
+                default:
+                    return null;
+            }
+        }
+        if (!clientCurrency.equals(transferCurrency) && transferCurrency.equals(beneficiaryCurrency)) {
+            switch (transactionType) {
+                case WITHDRAWAL:
+                    exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+                    newBalance = clientBalance - exchangeToTransfer;
+                    return newBalance;
+                case REFILL:
+                    exchangeToTransfer = converterService.doExchange(transferCurrency, transferCurrency, transferAmount);
+                    newBalance = clientBalance + exchangeToTransfer;
+                    return newBalance;
+                default:
+                    return null;
+            }
+        }
+        if (!clientCurrency.equals(transferCurrency) && clientCurrency.equals(beneficiaryCurrency)) {
+            switch (transactionType) {
+                case WITHDRAWAL:
+                    exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+                    newBalance = clientBalance - exchangeToTransfer;
+                    return newBalance;
+                case REFILL:
+                    exchangeToTransfer = converterService.doExchange(transferCurrency, beneficiaryCurrency, transferAmount);
+                    newBalance = clientBalance + exchangeToTransfer;
+                    return newBalance;
+                default:
+                    return null;
+            }
+        }
+        return null;
+    }
+
     private Double calculateTransferAmount(TransferType transferType,
                                            TransactionType transactionType,
                                            Double clientBalance,
                                            Double transferAmount) {
+
 
         Double exchangeToTransfer;
         Double exchangeToBeneficiary;
@@ -53,71 +120,17 @@ public class TransferServiceImpl implements TransferService {
 
         switch (transferType) {
             case ALL_PARTICIPANTS_SAME_CURRENCY:
-                switch (transactionType) {
-                    case WITHDRAWAL:
-                        newBalance = clientBalance - transferAmount;
-                        return newBalance;
-                    case REFILL:
-                        newBalance = clientBalance + transferAmount;
-                        return newBalance;
-                }
+                return calcBalanceSameOrAllDiffCurrency(transactionType, clientBalance, transferAmount);
             case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
                 exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
                 exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
-                switch (transactionType) {
-                    case WITHDRAWAL:
-                        newBalance = clientBalance - exchangeToBeneficiary;
-                        return newBalance;
-                    case REFILL:
-                        newBalance = clientBalance + exchangeToBeneficiary;
-                        return newBalance;
-                }
+                return calcBalanceSameOrAllDiffCurrency(transactionType, clientBalance, exchangeToBeneficiary);
             }
             case SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY:
-                switch (transactionType) {
-                    case WITHDRAWAL:
-                        if (clientCurrency.equals(transferCurrency) && !clientCurrency.equals(beneficiaryCurrency)) {
-                            log.debug("1CONDITION!!!!!");
-                            newBalance = clientBalance - transferAmount;
-                            log.debug("1CONDITION!!!! " + clientBalance);
-                            log.debug("1CONDITION!!!! " + transferAmount);
-
-                            return newBalance;
-                        }
-                        if (!clientCurrency.equals(transferCurrency) && transferCurrency.equals(beneficiaryCurrency)) {
-                            log.debug("2CONDITION!!!!!");
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
-                            newBalance = clientBalance - exchangeToTransfer;
-                            log.debug("clientBalance " + clientBalance);
-                            log.debug("exchangeToTransfer " + exchangeToTransfer);
-
-                            return newBalance;
-                        }
-                        if (!clientCurrency.equals(transferCurrency) && clientCurrency.equals(beneficiaryCurrency)) {
-                            log.debug("3CONDITION!!!!!");
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
-                            newBalance = clientBalance - exchangeToTransfer;
-                            return newBalance;
-                        }
-                    case REFILL:
-                        if (clientCurrency.equals(transferCurrency) && !clientCurrency.equals(beneficiaryCurrency)) {
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, beneficiaryCurrency, transferAmount);
-                            newBalance = clientBalance + exchangeToTransfer;
-                            return newBalance;
-                        }
-                        if (!clientCurrency.equals(transferCurrency) && transferCurrency.equals(beneficiaryCurrency)) {
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, transferCurrency, transferAmount);
-                            newBalance = clientBalance + exchangeToTransfer;
-                            return newBalance;
-                        }
-                        if (!clientCurrency.equals(transferCurrency) && clientCurrency.equals(beneficiaryCurrency)) {
-                            exchangeToTransfer = converterService.doExchange(transferCurrency, beneficiaryCurrency, transferAmount);
-                            newBalance = clientBalance + exchangeToTransfer;
-                            return newBalance;
-                        }
-                }
+                return calcBalanceSomeDiffCurrency(transferAmount, clientBalance, transactionType);
+            default:
+                return null;
         }
-        return null;
     }
 
     private TransactionStatus applyTransferEntities(TransferType transferType,
@@ -173,8 +186,9 @@ public class TransferServiceImpl implements TransferService {
             case INCORRECT_AMOUNT:
             case INSUFFICIENT_FUNDS:
                 return true;
+            default:
+                return false;
         }
-        return false;
     }
 
     public TransactionStatus doTransfer(
