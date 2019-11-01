@@ -15,7 +15,6 @@ import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.dict.TransactionType;
 import mercy.digital.transfer.service.transaction.dict.TransferType;
-import org.jetbrains.annotations.Nullable;
 
 
 @Slf4j
@@ -43,12 +42,35 @@ public class TransferServiceImpl implements TransferService {
     private CurrencyCode transferCurrency, clientCurrency, beneficiaryCurrency;
     private Integer clientAccountNo, beneficiaryAccountNo;
 
-    @Nullable
-    private Double calcBalanceSameOrAllDiffCurrency(TransactionType transactionType, Double clientBalance, Double exchangeToBeneficiary) {
+    private Double calcBalanceSameCurrency(TransactionType transactionType,
+                                           Double clientBalance,
+                                           Double transferAmount) {
         Double newBalance;
         switch (transactionType) {
             case WITHDRAWAL:
-                newBalance = clientBalance - exchangeToBeneficiary;
+                newBalance = clientBalance - transferAmount;
+                return newBalance;
+            case REFILL:
+                newBalance = clientBalance + transferAmount;
+                return newBalance;
+            default:
+                return null;
+        }
+    }
+
+    private Double calcBalanceSameOrAllDiffCurrencyCurrency(TransactionType transactionType,
+                                                            Double clientBalance,
+                                                            Double transferAmount) {
+        Double newBalance;
+        Double exchangeToTransfer;
+        Double exchangeToBeneficiary;
+
+        exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
+        exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
+
+        switch (transactionType) {
+            case WITHDRAWAL:
+                newBalance = clientBalance - exchangeToTransfer;
                 return newBalance;
             case REFILL:
                 newBalance = clientBalance + exchangeToBeneficiary;
@@ -114,17 +136,11 @@ public class TransferServiceImpl implements TransferService {
                                            Double transferAmount) {
 
 
-        Double exchangeToTransfer;
-        Double exchangeToBeneficiary;
-        Double newBalance;
-
         switch (transferType) {
             case ALL_PARTICIPANTS_SAME_CURRENCY:
-                return calcBalanceSameOrAllDiffCurrency(transactionType, clientBalance, transferAmount);
+                return calcBalanceSameCurrency(transactionType, clientBalance, transferAmount);
             case ALL_PARTICIPANTS_DIFFERENT_CURRENCY: {
-                exchangeToTransfer = converterService.doExchange(transferCurrency, clientCurrency, transferAmount);
-                exchangeToBeneficiary = converterService.doExchange(transferCurrency, beneficiaryCurrency, exchangeToTransfer);
-                return calcBalanceSameOrAllDiffCurrency(transactionType, clientBalance, exchangeToBeneficiary);
+                return calcBalanceSameOrAllDiffCurrencyCurrency(transactionType, clientBalance, transferAmount);
             }
             case SOMEONE_PARTICIPANT_DIFFERENT_CURRENCY:
                 return calcBalanceSomeDiffCurrency(transferAmount, clientBalance, transactionType);
@@ -216,6 +232,7 @@ public class TransferServiceImpl implements TransferService {
         clientBalance = clientAccountEntity.getBalance();
         clientCurrency = CurrencyCode.valueOf(clientAccountEntity.getCurrency());
         beneficiaryCurrency = CurrencyCode.valueOf(beneficiaryAccountEntity.getCurrency());
+
         boolean isClient = beneficiaryAccountEntity.getClient();
         if (clientCurrency.equals(transferCurrency) && beneficiaryCurrency.equals(transferCurrency)) {
 

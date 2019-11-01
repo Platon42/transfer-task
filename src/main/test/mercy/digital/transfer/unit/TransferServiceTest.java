@@ -274,4 +274,31 @@ class TransferServiceTest {
 
     }
 
+    @Test
+    @Order(5)
+    void doTransferAllDiffCurrencyBetweenClients() {
+        Integer senderAccountNo = 10131;
+        Integer receiverAccountNo = 10132;
+
+        setUpClientFirst(CurrencyCode.USD, senderAccountNo);
+        refillFirstBalance(CurrencyCode.USD, 100.0, senderAccountNo);
+
+        setUpClientSecond(CurrencyCode.RUB, receiverAccountNo);
+        setUpBeneficiary(CurrencyCode.RUB, receiverAccountNo);
+        refillSecondBalance(CurrencyCode.RUB, 100.0, receiverAccountNo);
+
+        TransactionStatus transactionStatus =
+                transferService.doTransfer(senderAccountNo, receiverAccountNo, 50.0, CurrencyCode.EUR);
+        Assertions.assertEquals(TransactionStatus.TRANSFER_COMPLETED, transactionStatus);
+
+        Double balanceReceiver = clientAccountService.findClientEntityAccountByAccountNo(receiverAccountNo).getBalance();
+        Double balanceSender = clientAccountService.findClientEntityAccountByAccountNo(senderAccountNo).getBalance();
+
+        Range<Double> receiverRange = Range.between(3900.00, 4150.00);
+        Range<Double> senderRange = Range.between(40.0, 50.00);
+
+        Assertions.assertTrue(receiverRange.contains(balanceReceiver));
+        Assertions.assertTrue(senderRange.contains(balanceSender));
+    }
+
 }

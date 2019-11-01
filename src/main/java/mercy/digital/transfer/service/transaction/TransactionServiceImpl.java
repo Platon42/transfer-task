@@ -45,7 +45,6 @@ public class TransactionServiceImpl implements TransactionService {
         } catch (SQLException e) {
             log.error("Cannot add Transaction entity " + e.getLocalizedMessage());
             return null;
-            //throw new IncorrectDaoOperation("Cannot add Transaction entity ");
         }
         return transactionEntity.getTransactionId();
     }

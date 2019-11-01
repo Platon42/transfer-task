@@ -79,12 +79,6 @@ public class Controller {
             ctx.result(objectMapper.writeValueAsString(responseModel));
         });
 
-        /*
-        app.get("/client/get", ctx -> {
-            GetClient getClient = objectMapper.readValue(ctx.body(), GetClient.class);
-            ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
-        });
-        */
         app.get("/client/account/transaction/details/:account_no", ctx -> {
             Integer accountNo = Integer.valueOf(ctx.pathParam("account_no"));
             ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);

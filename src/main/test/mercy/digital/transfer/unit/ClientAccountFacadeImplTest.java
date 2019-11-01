@@ -1,17 +1,19 @@
 package mercy.digital.transfer.unit;
 
 import com.google.inject.Inject;
-import mercy.digital.transfer.domain.ClientAccountEntity;
+import mercy.digital.transfer.domain.ClientEntity;
+import mercy.digital.transfer.facade.client.ClientFacade;
+import mercy.digital.transfer.facade.client.ClientFacadeImpl;
 import mercy.digital.transfer.facade.client.account.ClientAccountFacade;
 import mercy.digital.transfer.facade.client.account.ClientAccountFacadeImpl;
 import mercy.digital.transfer.module.AccountFacadeModule;
+import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
-import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
+import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 import mercy.digital.transfer.service.transaction.TransactionService;
-import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
 import mercy.digital.transfer.utils.Environment;
@@ -19,9 +21,7 @@ import mercy.digital.transfer.utils.H2Utils;
 import mercy.digital.transfer.utils.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
@@ -33,15 +33,15 @@ import static org.mockito.Mockito.when;
 @IncludeModule(AccountFacadeModule.class)
 class ClientAccountFacadeImplTest {
 
-    private static final Integer CLIENT_ACCOUNT_ID = 10;
-
     static {
         PropUtils.setProperties(Environment.TEST);
         H2Utils.startDb(Environment.TEST);
     }
 
+    private AddClient addClientStub;
     private AddClientAccount addClientAccountStub;
     private ClientAccountFacade clientAccountFacade;
+    private ClientFacade clientFacade;
 
     @Inject
     private TransferService transferService;
@@ -54,17 +54,21 @@ class ClientAccountFacadeImplTest {
     @Inject
     private TransactionService transactionService;
 
-    @BeforeEach
+    @BeforeAll
     void setUp() {
 
         addClientAccountStub = new AddClientAccount();
-
+        GetClient getClient = new GetClient();
+        getClient.setClientId(1);
+        addClientAccountStub.setGetClient(getClient);
+        addClientStub = new AddClient();
         transferService = Mockito.mock(TransferService.class);
         clientAccountService = Mockito.mock(ClientAccountService.class);
         clientService = Mockito.mock(ClientService.class);
         refillBalanceService = Mockito.mock(RefillBalanceService.class);
         transactionService = Mockito.mock(TransactionService.class);
 
+        clientFacade = new ClientFacadeImpl(clientService);
         clientAccountFacade = new ClientAccountFacadeImpl(
                 transferService,
                 clientAccountService,
@@ -74,29 +78,58 @@ class ClientAccountFacadeImplTest {
     }
 
     @Test
-    void addClientAccount() {
+    @Order(1)
+    void addClientAccountSuccess() {
 
-        GetClient getClient = new GetClient();
-        getClient.setClientId(100);
-        addClientAccountStub.setGetClient(getClient);
+        when(clientService.findEntityAccountById(any())).thenReturn(new ClientEntity());
+        when(clientAccountService.addClientEntityAccount(any())).thenReturn(1);
 
-        when(clientAccountService.addClientEntityAccount(any())).thenReturn(CLIENT_ACCOUNT_ID);
         clientAccountFacade.addClientAccount(addClientAccountStub);
+
+        ResponseModel expectedModel = new ResponseModel();
+        expectedModel.setStatus(0);
+        ResponseModel actualModel = clientAccountFacade.addClientAccount(addClientAccountStub);
+
+        Assertions.assertEquals(expectedModel.getStatus(), actualModel.getStatus());
+
     }
 
+    @Test
+    @Order(2)
+    void addClientAccountNotFoundClient() {
+
+        when(clientService.findEntityAccountById(any())).thenReturn(null);
+        when(clientAccountService.addClientEntityAccount(any())).thenReturn(1);
+
+        clientAccountFacade.addClientAccount(addClientAccountStub);
+
+        ResponseModel expectedModel = new ResponseModel();
+        expectedModel.setStatus(-1);
+        ResponseModel actualModel = clientAccountFacade.addClientAccount(addClientAccountStub);
+
+        Assertions.assertEquals(expectedModel.getStatus(), actualModel.getStatus());
+
+    }
+
+    @Test
+    @Order(3)
+    void addClientAccountCannotAddEntity() {
+
+        when(clientService.findEntityAccountById(any())).thenReturn(new ClientEntity());
+        when(clientAccountService.addClientEntityAccount(any())).thenReturn(null);
+
+        clientAccountFacade.addClientAccount(addClientAccountStub);
+
+        ResponseModel expectedModel = new ResponseModel();
+        expectedModel.setStatus(-1);
+        ResponseModel actualModel = clientAccountFacade.addClientAccount(addClientAccountStub);
+
+        Assertions.assertEquals(expectedModel.getStatus(), actualModel.getStatus());
+
+    }
+
+    @Test
     void doTransfer() {
-        DoTransfer doTransfer = new DoTransfer();
-        doTransfer.setAccountNoReceiver(1);
-        doTransfer.setAccountNoSender(2);
-        doTransfer.setAmount(80.0);
-        doTransfer.setChangeCurrency(CurrencyCode.RUB.name());
-
-        ClientAccountEntity sender = new ClientAccountEntity();
-        sender.setAccountNo(2);
-
-        //when(clientAccountService.addClientEntityAccount())
-
-        clientAccountFacade.doTransfer(doTransfer);
 
     }
 
