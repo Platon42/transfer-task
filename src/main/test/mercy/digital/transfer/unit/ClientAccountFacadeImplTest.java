@@ -3,7 +3,6 @@ package mercy.digital.transfer.unit;
 import com.google.inject.Inject;
 import mercy.digital.transfer.domain.ClientEntity;
 import mercy.digital.transfer.facade.client.ClientFacade;
-import mercy.digital.transfer.facade.client.ClientFacadeImpl;
 import mercy.digital.transfer.facade.client.account.ClientAccountFacade;
 import mercy.digital.transfer.facade.client.account.ClientAccountFacadeImpl;
 import mercy.digital.transfer.module.AccountFacadeModule;
@@ -11,6 +10,7 @@ import mercy.digital.transfer.presentation.client.AddClient;
 import mercy.digital.transfer.presentation.client.GetClient;
 import mercy.digital.transfer.presentation.client.account.AddClientAccount;
 import mercy.digital.transfer.presentation.response.ResponseModel;
+import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
 import mercy.digital.transfer.service.client.ClientService;
 import mercy.digital.transfer.service.client.account.ClientAccountService;
 import mercy.digital.transfer.service.transaction.TransactionService;
@@ -61,6 +61,7 @@ class ClientAccountFacadeImplTest {
         GetClient getClient = new GetClient();
         getClient.setClientId(1);
         addClientAccountStub.setGetClient(getClient);
+
         addClientStub = new AddClient();
         transferService = Mockito.mock(TransferService.class);
         clientAccountService = Mockito.mock(ClientAccountService.class);
@@ -68,7 +69,6 @@ class ClientAccountFacadeImplTest {
         refillBalanceService = Mockito.mock(RefillBalanceService.class);
         transactionService = Mockito.mock(TransactionService.class);
 
-        clientFacade = new ClientFacadeImpl(clientService);
         clientAccountFacade = new ClientAccountFacadeImpl(
                 transferService,
                 clientAccountService,
@@ -130,7 +130,13 @@ class ClientAccountFacadeImplTest {
 
     @Test
     void doTransfer() {
+        DoTransfer doTransfer = new DoTransfer();
 
+        //when()
+
+        //doTransfer.set
+
+        //clientAccountFacade.doTransfer()
     }
 
     @Test

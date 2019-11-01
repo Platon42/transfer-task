@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 
 class ClientFacadeTest {
 
-    private static final int CLIENT_ID = 10;
     private AddClient addClientStub;
 
     static {
