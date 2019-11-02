@@ -39,6 +39,7 @@ public class ResponseServiceBuilder {
                 responseModel.setStatus(-1);
                 break;
             case REFILL_COMPLETED:
+            case TRANSFER_COMPLETED:
                 responseModel.setMessage(transactionStatus.name());
                 responseModel.setStatus(0);
                 break;
