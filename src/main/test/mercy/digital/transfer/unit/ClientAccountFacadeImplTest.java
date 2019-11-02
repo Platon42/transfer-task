@@ -227,5 +227,6 @@ class ClientAccountFacadeImplTest {
 
     @Test
     void getTransactionDetails() {
+
     }
 }

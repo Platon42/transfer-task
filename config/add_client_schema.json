@@ -1,0 +1,55 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "first_name",
+    "last_name",
+    "resident_country",
+    "birthday"
+  ],
+  "properties": {
+    "first_name": {
+      "$id": "#/properties/first_name",
+      "type": "string",
+      "title": "The First_name Schema",
+      "default": "",
+      "examples": [
+        "Maksim"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "last_name": {
+      "$id": "#/properties/last_name",
+      "type": "string",
+      "title": "The Last_name Schema",
+      "default": "",
+      "examples": [
+        "MT"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "resident_country": {
+      "$id": "#/properties/resident_country",
+      "type": "string",
+      "title": "The Resident_country Schema",
+      "default": "",
+      "examples": [
+        "UK"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "birthday": {
+      "$id": "#/properties/birthday",
+      "type": "string",
+      "title": "The Birthday Schema",
+      "default": "",
+      "examples": [
+        "1992-08-14"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}
