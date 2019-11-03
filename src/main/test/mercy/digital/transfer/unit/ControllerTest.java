@@ -175,12 +175,12 @@ class ControllerTest {
         Assertions.assertEquals("REFILL_COMPLETED", responseModel.getMessage());
     }
 
-    @Order(10)
+    @Order(11)
     @Test
     void doRefillIncorrectCurrencyJson() throws IOException {
 
         HttpPost httpPost = new HttpPost("http://localhost:7000/transaction/refill");
-        String entity = Files.readString(Paths.get(JSON_HOME_ERROR + "/refill/refill_wrong_structure.json"));
+        String entity = Files.readString(Paths.get(JSON_HOME_ERROR + "/refill/refill_wrong_currency.json"));
         httpPost.setEntity(new StringEntity(entity));
 
         CloseableHttpResponse response = httpclient.execute(httpPost);
@@ -188,7 +188,7 @@ class ControllerTest {
         Assertions.assertTrue(validationError.contains("Request body as DoRefill invalid - Failed check"));
     }
 
-    @Order(10)
+    @Order(12)
     @Test
     void doRefillIncorrectJson() throws IOException {
 
@@ -198,6 +198,48 @@ class ControllerTest {
 
         CloseableHttpResponse response = httpclient.execute(httpPost);
         String validationError = new String(response.getEntity().getContent().readAllBytes());
-        Assertions.assertTrue(validationError.contains("Request body as DoRefill invalid - Failed check"));
+        Assertions.assertTrue(validationError.contains("$.account_no: is missing but it is required"));
+    }
+
+    @Order(13)
+    @Test
+    void doTransferSuccess() throws IOException {
+
+        HttpPost httpPost = new HttpPost("http://localhost:7000/transaction/transfer");
+        String entity = Files.readString(Paths.get(JSON_HOME_SUCCESS + "/transfer.json"));
+        httpPost.setEntity(new StringEntity(entity));
+
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+        String json = new String(response.getEntity().getContent().readAllBytes());
+        ResponseModel responseModel = objectMapper.readValue(json, ResponseModel.class);
+        Assertions.assertEquals("TRANSFER_COMPLETED", responseModel.getMessage());
+    }
+
+    @Order(14)
+    @Test
+    void doTransferIncorrectClientNo() throws IOException {
+
+        HttpPost httpPost = new HttpPost("http://localhost:7000/transaction/transfer");
+        String entity = Files.readString(Paths.get(JSON_HOME_ERROR + "/transfer/transfer_not_a_client.json"));
+        httpPost.setEntity(new StringEntity(entity));
+
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+        String json = new String(response.getEntity().getContent().readAllBytes());
+        ResponseModel responseModel = objectMapper.readValue(json, ResponseModel.class);
+        Assertions.assertEquals("ERROR_OCCURRED", responseModel.getMessage());
+    }
+
+    @Order(15)
+    @Test
+    void doTransferIncorrectJson() throws IOException {
+
+        HttpPost httpPost = new HttpPost("http://localhost:7000/transaction/transfer");
+        String entity = Files.readString(Paths.get(JSON_HOME_ERROR + "/transfer/transfer_wrong_structure.json"));
+        httpPost.setEntity(new StringEntity(entity));
+
+        CloseableHttpResponse response = httpclient.execute(httpPost);
+        String validationError = new String(response.getEntity().getContent().readAllBytes());
+        Assertions.assertTrue(validationError.contains("$.account_no_sender: is missing but it is required"));
+
     }
 }
