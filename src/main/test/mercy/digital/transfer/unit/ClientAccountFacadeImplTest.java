@@ -20,16 +20,16 @@ import mercy.digital.transfer.service.transaction.dict.CurrencyCode;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 import mercy.digital.transfer.service.transaction.refill.RefillBalanceService;
 import mercy.digital.transfer.service.transaction.transfer.TransferService;
-import mercy.digital.transfer.utils.Environment;
-import mercy.digital.transfer.utils.H2Utils;
-import mercy.digital.transfer.utils.PropUtils;
+import mercy.digital.transfer.utils.db.H2Utils;
+import mercy.digital.transfer.utils.prop.Environment;
+import mercy.digital.transfer.utils.prop.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(GuiceExtension.class)

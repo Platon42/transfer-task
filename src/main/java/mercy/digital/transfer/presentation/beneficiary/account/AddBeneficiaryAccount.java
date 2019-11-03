@@ -19,8 +19,8 @@ public class AddBeneficiaryAccount {
     @JsonProperty("currency")
     private String currency;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("account_name")
+    private String accountName;
 
     @JsonProperty("account_no")
     private String accountNo;

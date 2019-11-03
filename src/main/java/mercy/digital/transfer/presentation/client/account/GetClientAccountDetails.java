@@ -33,8 +33,8 @@ public class GetClientAccountDetails {
     @JsonProperty("updated_at")
     private ZonedDateTime updatedAt;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("accountName")
+    private String accountName;
 
     @JsonProperty("country_of_issue")
     private String countryOfIssue;

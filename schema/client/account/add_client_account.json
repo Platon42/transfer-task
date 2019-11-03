@@ -1,0 +1,72 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "client_param",
+    "currency",
+    "account_no"
+  ],
+  "properties": {
+    "client_param": {
+      "$id": "#/properties/client_param",
+      "type": "object",
+      "title": "The Client_param Schema",
+      "required": [
+        "client_id"
+      ],
+      "properties": {
+        "client_id": {
+          "$id": "#/properties/client_param/properties/client_id",
+          "type": "integer",
+          "title": "The Client_id Schema",
+          "default": 0,
+          "examples": [
+            1
+          ]
+        }
+      }
+    },
+    "currency": {
+      "$id": "#/properties/currency",
+      "type": "string",
+      "title": "The Currency Schema",
+      "default": "",
+      "examples": [
+        "RUB"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "account_name": {
+      "$id": "#/properties/account_name",
+      "type": "string",
+      "title": "The Name Schema",
+      "default": "",
+      "examples": [
+        "First"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "country_of_issue": {
+      "$id": "#/properties/country_of_issue",
+      "type": "string",
+      "title": "The Country_of_issue Schema",
+      "default": "",
+      "examples": [
+        "RU"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "account_no": {
+      "$id": "#/properties/account_no",
+      "type": "integer",
+      "title": "The Account_no Schema",
+      "default": 0,
+      "examples": [
+        1015454
+      ]
+    }
+  }
+}

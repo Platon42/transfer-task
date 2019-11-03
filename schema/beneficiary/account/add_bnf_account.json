@@ -1,0 +1,63 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "beneficiary_param",
+    "currency",
+    "account_name",
+    "account_no"
+  ],
+  "properties": {
+    "beneficiary_param": {
+      "$id": "#/properties/beneficiary_param",
+      "type": "object",
+      "title": "The Beneficiary_param Schema",
+      "required": [
+        "beneficiary_id"
+      ],
+      "properties": {
+        "beneficiary_id": {
+          "$id": "#/properties/beneficiary_param/properties/beneficiary_id",
+          "type": "integer",
+          "title": "The Beneficiary_id Schema",
+          "default": 0,
+          "examples": [
+            1
+          ]
+        }
+      }
+    },
+    "currency": {
+      "$id": "#/properties/currency",
+      "type": "string",
+      "title": "The Currency Schema",
+      "default": "",
+      "examples": [
+        "RUB"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "account_name": {
+      "$id": "#/properties/account_name",
+      "type": "string",
+      "title": "The Account_name Schema",
+      "default": "",
+      "examples": [
+        "First"
+      ],
+      "pattern": "^(.*)$"
+    },
+    "account_no": {
+      "$id": "#/properties/account_no",
+      "type": "integer",
+      "title": "The Account_no Schema",
+      "default": 0,
+      "examples": [
+        1011145
+      ]
+    }
+  }
+}

@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import mercy.digital.transfer.domain.BeneficiaryEntity;
 import mercy.digital.transfer.module.BeneficiaryFacadeModule;
 import mercy.digital.transfer.service.beneficiary.BeneficiaryService;
-import mercy.digital.transfer.utils.Environment;
-import mercy.digital.transfer.utils.H2Utils;
-import mercy.digital.transfer.utils.PropUtils;
+import mercy.digital.transfer.utils.db.H2Utils;
+import mercy.digital.transfer.utils.prop.Environment;
+import mercy.digital.transfer.utils.prop.PropUtils;
 import name.falgout.jeffrey.testing.junit5.GuiceExtension;
 import name.falgout.jeffrey.testing.junit5.IncludeModule;
 import org.junit.jupiter.api.*;
@@ -35,6 +35,7 @@ class BeneficiaryServiceTest {
 
     @BeforeAll
     static void setUp() {
+        beneficiaryEntityStub.setName("TEST");
         beneficiaryEntityStub.setCity(CITY);
         beneficiaryEntityStub.setCountry("RU");
     }
@@ -56,9 +57,10 @@ class BeneficiaryServiceTest {
     @Order(3)
     @Test
     void addEntityBeneficiaryException() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            beneficiaryService.addEntityBeneficiary(null);
-        });
+        BeneficiaryEntity beneficiaryEntityNull = new BeneficiaryEntity();
+        Integer id = beneficiaryService.addEntityBeneficiary(beneficiaryEntityNull);
+        Assertions.assertNull(id);
+
     }
 
     @Order(4)
@@ -80,6 +82,7 @@ class BeneficiaryServiceTest {
     @Test
     void findAllEntityBeneficiary() {
         beneficiaryEntityStub = new BeneficiaryEntity();
+        beneficiaryEntityStub.setName("TEST2");
         beneficiaryEntityStub.setCity(SECOND_CITY);
         beneficiaryService.addEntityBeneficiary(beneficiaryEntityStub);
 

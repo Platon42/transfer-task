@@ -1,5 +1,6 @@
 package mercy.digital.transfer.presentation.client;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Generated;
@@ -14,21 +15,22 @@ import java.sql.Date;
 @Getter
 public class AddClient {
 
-    @JsonProperty("first_name")
+    @JsonProperty(value = "first_name", required = true)
     private String firstName;
 
-    @JsonProperty("last_name")
+    @JsonProperty(value = "last_name", required = true)
     private String lastName;
 
     @JsonProperty("middle_name")
     private String middleName;
 
-    @JsonProperty("birthday")
+    @JsonProperty(value = "birthday", required = true)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date birthday;
 
-    @JsonProperty("sex")
+    @JsonProperty(value = "sex", required = true)
     private int sex;
 
-    @JsonProperty("resident_country")
+    @JsonProperty(value = "resident_country", required = true)
     private String residentCountry;
 }

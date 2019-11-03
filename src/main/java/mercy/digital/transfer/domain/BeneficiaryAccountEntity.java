@@ -19,8 +19,8 @@ public class BeneficiaryAccountEntity {
     @DatabaseField(columnName = "ACCOUNT_NO")
     private Integer accountNo;
 
-    @DatabaseField(columnName = "NAME")
-    private String name;
+    @DatabaseField(columnName = "ACCOUNT_NAME")
+    private String accountName;
 
     @DatabaseField(columnName = "IS_CLIENT")
     private Boolean isClient;
@@ -52,13 +52,13 @@ public class BeneficiaryAccountEntity {
     }
 
     @Basic
-    @Column(name = "NAME", length = 50)
-    public String getName() {
-        return name;
+    @Column(name = "ACCOUNT_NAME", length = 50)
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAccountName(String name) {
+        this.accountName = name;
     }
 
     @Basic
@@ -78,13 +78,13 @@ public class BeneficiaryAccountEntity {
         BeneficiaryAccountEntity that = (BeneficiaryAccountEntity) o;
         return beneficiaryAccountId == that.beneficiaryAccountId &&
                 accountNo.equals(that.accountNo) &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(accountName, that.accountName) &&
                 Objects.equals(isClient, that.isClient);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(beneficiaryAccountId, accountNo, name, isClient);
+        return Objects.hash(beneficiaryAccountId, accountNo, accountName, isClient);
     }
 
     @ManyToOne

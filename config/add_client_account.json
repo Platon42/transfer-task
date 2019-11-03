@@ -3,7 +3,7 @@
     "client_id": 1
   },
   "currency": "RUB",
-  "name": "First",
+  "account_name": "First",
   "country_of_issue": "RU",
-  "account_no": "684545727"
+  "account_no": 1015454
 }

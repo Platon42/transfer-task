@@ -28,8 +28,8 @@ public class ClientAccountEntity {
     private Timestamp createdAt;
     @DatabaseField(columnName = "UPDATED_AT")
     private Timestamp updatedAt;
-    @DatabaseField(columnName = "NAME")
-    private String name;
+    @DatabaseField(columnName = "ACCOUNT_NAME")
+    private String accountName;
     @DatabaseField(columnName = "COUNTRY_OF_ISSUE")
     private String countryOfIssue;
     @ForeignCollectionField
@@ -100,13 +100,13 @@ public class ClientAccountEntity {
     }
 
     @Basic
-    @Column(name = "NAME", nullable = true, length = 50)
-    public String getName() {
-        return name;
+    @Column(name = "ACCOUNT_NAME", nullable = true, length = 50)
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAccountName(String name) {
+        this.accountName = name;
     }
 
     @Basic
@@ -130,13 +130,13 @@ public class ClientAccountEntity {
                 Objects.equals(currency, that.currency) &&
                 Objects.equals(createdAt, that.createdAt) &&
                 Objects.equals(updatedAt, that.updatedAt) &&
-                Objects.equals(name, that.name) &&
+                Objects.equals(accountName, that.accountName) &&
                 Objects.equals(countryOfIssue, that.countryOfIssue);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(clientAccountId, accountNo, balance, currency, createdAt, updatedAt, name, countryOfIssue);
+        return Objects.hash(clientAccountId, accountNo, balance, currency, createdAt, updatedAt, accountName, countryOfIssue);
     }
 
     @OneToMany(mappedBy = "clientAccountByAccountId")

@@ -1,4 +1,4 @@
-package mercy.digital.transfer.utils;
+package mercy.digital.transfer.utils.prop;
 
 public enum Environment {
     PRODUCTION,

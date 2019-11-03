@@ -17,7 +17,7 @@ public class GetClientAccount {
     private String currency;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
-    private String name;
+    private String accountName;
     private String countryOfIssue;
 
 }

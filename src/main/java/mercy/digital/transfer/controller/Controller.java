@@ -1,8 +1,10 @@
 package mercy.digital.transfer.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.customProperties.ValidationSchemaFactoryWrapper;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.networknt.schema.ValidationMessage;
 import io.javalin.Javalin;
 import lombok.extern.slf4j.Slf4j;
 import mercy.digital.transfer.facade.beneficiary.BeneficiaryFacade;
@@ -19,15 +21,17 @@ import mercy.digital.transfer.presentation.response.ResponseModel;
 import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
 import mercy.digital.transfer.presentation.transaction.refill.DoRefill;
 import mercy.digital.transfer.presentation.transaction.transfer.DoTransfer;
-import mercy.digital.transfer.utils.Environment;
-import mercy.digital.transfer.utils.H2Utils;
-import mercy.digital.transfer.utils.PropUtils;
+import mercy.digital.transfer.utils.db.H2Utils;
+import mercy.digital.transfer.utils.prop.Environment;
+import mercy.digital.transfer.utils.prop.PropUtils;
+import mercy.digital.transfer.utils.schema.SchemaValidator;
+
+import java.util.Set;
 
 @Slf4j
 public class Controller {
 
     public static void main(String[] args) {
-        Environment environment = Environment.PRODUCTION;
         PropUtils.setProperties(Environment.PRODUCTION);
 
         Injector clientFacadeInjector = Guice.createInjector(new ClientFacadeModule());
@@ -35,15 +39,22 @@ public class Controller {
         Injector beneficiaryFacadeInjector = Guice.createInjector(new BeneficiaryFacadeModule());
 
         ObjectMapper objectMapper = new ObjectMapper();
-
-        H2Utils.startDb(environment);
-        Javalin app = Javalin.create().start(8000);
+        ValidationSchemaFactoryWrapper visitor = new ValidationSchemaFactoryWrapper();
+        H2Utils.startDb(Environment.PRODUCTION);
+        Javalin app = Javalin.create().start(7000);
 
         app.get("/client/add", ctx -> {
-            AddClient client = objectMapper.readValue(ctx.body(), AddClient.class);
-            ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
-            ResponseModel responseModel = clientFacade.addClient(client);
-            ctx.result(objectMapper.writeValueAsString(responseModel));
+            Set<ValidationMessage> validationMessages = SchemaValidator.validateSchema(ctx.body(), ApiRequestType.ADD_CLIENT);
+            System.out.println(validationMessages);
+            if (!validationMessages.isEmpty()) {
+                ctx.result(objectMapper.writeValueAsString(validationMessages));
+            } else {
+                AddClient client = objectMapper.readValue(ctx.body(), AddClient.class);
+                ClientFacade clientFacade = clientFacadeInjector.getInstance(ClientFacade.class);
+                ResponseModel responseModel = clientFacade.addClient(client);
+                ctx.result(objectMapper.writeValueAsString(responseModel));
+            }
+
         });
         app.get("/client/account/add", ctx -> {
             AddClientAccount account = objectMapper.readValue(ctx.body(), AddClientAccount.class);

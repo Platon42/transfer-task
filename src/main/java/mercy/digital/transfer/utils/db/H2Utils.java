@@ -1,6 +1,7 @@
-package mercy.digital.transfer.utils;
+package mercy.digital.transfer.utils.db;
 
 import lombok.extern.slf4j.Slf4j;
+import mercy.digital.transfer.utils.prop.Environment;
 import org.h2.tools.RunScript;
 import org.h2.tools.Server;
 
@@ -14,7 +15,6 @@ import java.sql.SQLException;
 public class H2Utils {
 
     private H2Utils() {
-        throw new IllegalStateException("Utility class");
     }
 
     private static Connection prodConnection;

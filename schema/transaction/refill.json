@@ -1,0 +1,42 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "account_no",
+    "amount",
+    "currency"
+  ],
+  "properties": {
+    "account_no": {
+      "$id": "#/properties/account_no",
+      "type": "integer",
+      "title": "The Account_no Schema",
+      "default": 0,
+      "examples": [
+        684545
+      ]
+    },
+    "amount": {
+      "$id": "#/properties/amount",
+      "type": "number",
+      "title": "The Amount Schema",
+      "default": 0.0,
+      "examples": [
+        10.66
+      ]
+    },
+    "currency": {
+      "$id": "#/properties/currency",
+      "type": "string",
+      "title": "The Currency Schema",
+      "default": "",
+      "examples": [
+        "RUB"
+      ],
+      "pattern": "^(.*)$"
+    }
+  }
+}

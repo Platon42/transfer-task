@@ -3,6 +3,6 @@
     "beneficiary_id": 1
   },
   "currency": "RUB",
-  "name": "First",
-  "account_no": "684545728"
+  "account_name": "First",
+  "account_no": 1011145
 }

@@ -11,6 +11,7 @@ CREATE SEQUENCE TRANSFER.BALANCE_ID;
 create table TRANSFER.BENEFICIARY
 (
     BENEFICIARY_ID INTEGER default (NEXT VALUE FOR TRANSFER.BENEFICIARY_ID) auto_increment,
+    NAME           VARCHAR(50) not null,
     STREET_LINE    VARCHAR(50),
     CITY           VARCHAR(50),
     COUNTRY        VARCHAR(3),
@@ -24,7 +25,7 @@ create table TRANSFER.BENEFICIARY_ACCOUNT
     BENEFICIARY_ACCOUNT_ID INTEGER default (NEXT VALUE FOR TRANSFER.BENEFICIARY_ACCOUNT_ID) auto_increment,
     ACCOUNT_NO             BIGINT      not null
         unique,
-    NAME                   VARCHAR(50),
+    ACCOUNT_NAME           VARCHAR(50),
     IS_CLIENT              BOOLEAN default FALSE,
     BENEFICIARY_ID         INTEGER,
     CURRENCY               VARCHAR(10) not null,
@@ -77,7 +78,7 @@ create table TRANSFER.CLIENT_ACCOUNT
     CURRENCY          VARCHAR(3),
     CREATED_AT        TIMESTAMP,
     UPDATED_AT        TIMESTAMP,
-    NAME              VARCHAR(50),
+    ACCOUNT_NAME      VARCHAR(50),
     COUNTRY_OF_ISSUE  VARCHAR(20),
     CLIENT_ID         INTEGER not null,
     constraint ACCOUNT_PK

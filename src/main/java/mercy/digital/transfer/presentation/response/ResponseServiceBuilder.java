@@ -10,7 +10,6 @@ public class ResponseServiceBuilder {
     private String service;
 
     public ResponseServiceBuilder(ResponseModel responseModel, String service) {
-        responseModel.setDateTime(LocalDateTime.now());
         this.responseModel = responseModel;
         this.service = service;
     }
@@ -50,6 +49,8 @@ public class ResponseServiceBuilder {
     }
 
     public ResponseServiceBuilder build() {
+        responseModel.setDateTime(LocalDateTime.now());
+        responseModel.setService(service);
         return new ResponseServiceBuilder(responseModel, service);
     }
 }

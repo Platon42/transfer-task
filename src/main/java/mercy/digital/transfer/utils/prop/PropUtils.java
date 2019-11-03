@@ -1,4 +1,4 @@
-package mercy.digital.transfer.utils;
+package mercy.digital.transfer.utils.prop;
 
 
 import lombok.extern.slf4j.Slf4j;

@@ -19,8 +19,8 @@ public class AddClientAccount {
     @JsonProperty("currency")
     private String currency;
 
-    @JsonProperty("name")
-    private String name;
+    @JsonProperty("account_name")
+    private String accountName;
 
     @JsonProperty("country_of_issue")
     private String countryOfIssue;

@@ -18,6 +18,9 @@ public class BeneficiaryEntity {
     @DatabaseField(generatedId = true, columnName = "BENEFICIARY_ID")
     private int beneficiaryId;
 
+    @DatabaseField(columnName = "NAME")
+    private String name;
+
     @DatabaseField(columnName = "STREET_LINE")
     private String streetLine;
 
@@ -43,6 +46,15 @@ public class BeneficiaryEntity {
         this.beneficiaryId = beneficiaryId;
     }
 
+    @Basic
+    @Column(name = "NAME", nullable = false, length = 50)
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
     @Basic
     @Column(name = "STREET_LINE", nullable = true, length = 50)
     public String getStreetLine() {
@@ -108,4 +120,6 @@ public class BeneficiaryEntity {
     public void setBeneficiaryAccountsByBeneficiaryId(Collection<BeneficiaryAccountEntity> beneficiaryAccountsByBeneficiaryId) {
         this.beneficiaryAccountsByBeneficiaryId = beneficiaryAccountsByBeneficiaryId;
     }
+
+
 }
