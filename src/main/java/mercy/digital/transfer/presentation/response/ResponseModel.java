@@ -1,12 +1,11 @@
 package mercy.digital.transfer.presentation.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Generated
 @JsonPOJOBuilder(withPrefix = "")
@@ -18,7 +17,8 @@ public class ResponseModel {
     private String service;
 
     @JsonProperty("date_time")
-    private LocalDateTime dateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss:SSS")
+    private String dateTime;
 
     @JsonProperty("additional")
     private String additional;

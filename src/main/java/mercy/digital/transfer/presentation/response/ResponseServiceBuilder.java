@@ -3,6 +3,9 @@ package mercy.digital.transfer.presentation.response;
 import mercy.digital.transfer.service.transaction.dict.TransactionStatus;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 
 public class ResponseServiceBuilder {
 
@@ -49,7 +52,8 @@ public class ResponseServiceBuilder {
     }
 
     public ResponseServiceBuilder build() {
-        responseModel.setDateTime(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Moscow"));
+        responseModel.setDateTime(now.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss:SSS")));
         responseModel.setService(service);
         return new ResponseServiceBuilder(responseModel, service);
     }

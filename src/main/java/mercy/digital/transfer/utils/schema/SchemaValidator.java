@@ -16,9 +16,9 @@ import java.util.Set;
 
 public class SchemaValidator {
 
+    private final static String SCHEMA_HOME = "./schema";
     private final static JsonSchemaFactory factory = JsonSchemaFactory.getInstance();
     private final static ObjectMapper mapper = new ObjectMapper();
-    private final static String SCHEMA_HOME = "./schema";
 
     public static Set<ValidationMessage> validateSchema(String jsonInstance, ApiRequestType apiRequestType) throws IOException {
 
@@ -38,7 +38,6 @@ public class SchemaValidator {
         }
         if (apiRequestType == ApiRequestType.ADD_CLIENT) {
             schemaPath = Paths.get(SCHEMA_HOME + "/client/add_client.json");
-            System.out.println(schemaPath);
         }
         if (apiRequestType == ApiRequestType.REFILL) {
             schemaPath = Paths.get(SCHEMA_HOME + "/transaction/refill.json");
@@ -51,9 +50,6 @@ public class SchemaValidator {
         rawSchema = new String(Files.readAllBytes(schemaPath));
         finalSchema = factory.getSchema(rawSchema);
         rawNode = mapper.readTree(jsonInstance);
-
-        System.out.println(rawNode);
-        System.out.println(finalSchema);
 
         return finalSchema.validate(rawNode);
 

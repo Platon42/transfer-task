@@ -73,7 +73,7 @@ public class BeneficiaryAccountServiceImpl implements BeneficiaryAccountService 
                     queryBuilder.where().eq("ACCOUNT_NO", accountNo).prepare();
             beneficiaryAccountEntity =  accountDao.query(accountNoQuery).get(0);
             return beneficiaryAccountEntity;
-        } catch (SQLException e) {
+        } catch (IndexOutOfBoundsException | SQLException e) {
             log.error("Cannot find by account No " + accountNo + " Beneficiary Account entity" + e.getLocalizedMessage());
             return null;
         }

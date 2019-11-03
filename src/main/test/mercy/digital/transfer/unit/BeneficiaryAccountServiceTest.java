@@ -84,7 +84,6 @@ class BeneficiaryAccountServiceTest {
         clientEntityStub.setBirthday(new Date(19082019));
     }
 
-
     @Test
     @Order(1)
     void addBeneficiaryAsClient() {
@@ -109,6 +108,7 @@ class BeneficiaryAccountServiceTest {
         Assertions.assertEquals(true, beneficiaryEntityAccountById.getClient());
 
     }
+
     @Test
     @Order(2)
     void addBeneficiaryNonClient() {

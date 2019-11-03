@@ -137,9 +137,8 @@ class ClientAccountServiceTest {
     @Test
     @Order(8)
     void findClientEntityAccountByAccountNoException() {
-        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> {
-            actualClientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(323323);
-        });
+        actualClientAccountEntity = clientAccountService.findClientEntityAccountByAccountNo(323323);
+        Assertions.assertNull(actualClientAccountEntity);
     }
 
     @Test

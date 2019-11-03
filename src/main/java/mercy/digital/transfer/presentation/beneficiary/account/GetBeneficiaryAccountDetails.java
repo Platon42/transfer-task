@@ -36,7 +36,7 @@ public class GetBeneficiaryAccountDetails {
     @JsonProperty("name")
     private String name;
 
-    @JsonProperty("name")
+    @JsonProperty("country_of_issue")
     private String countryOfIssue;
 
     @JsonProperty("beneficiary_list")

@@ -12,6 +12,9 @@ import lombok.Setter;
 @Getter
 public class AddBeneficiary {
 
+    @JsonProperty("name")
+    private String name;
+
     @JsonProperty("street_line")
     private String streetLine;
 

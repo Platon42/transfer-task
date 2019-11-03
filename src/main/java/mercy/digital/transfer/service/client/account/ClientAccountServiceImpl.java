@@ -68,7 +68,8 @@ public class ClientAccountServiceImpl implements ClientAccountService {
             PreparedQuery<ClientAccountEntity> accountNoQuery =
                     queryBuilder.where().eq("ACCOUNT_NO", accountNo).prepare();
             accountEntity = clientAccountDao.query(accountNoQuery).get(0);
-        } catch (SQLException e) {
+
+        } catch (IndexOutOfBoundsException | SQLException e) {
             log.error("Cannot find by account No " + accountNo + " Client Account entity" + e.getLocalizedMessage());
             return null;
         }
