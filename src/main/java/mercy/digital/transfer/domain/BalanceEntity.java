@@ -4,7 +4,15 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Generated;
 
-import javax.persistence.*;
+import javax.persistence.ManyToOne;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+
+
 import java.util.Objects;
 
 @Generated

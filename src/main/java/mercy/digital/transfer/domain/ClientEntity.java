@@ -5,7 +5,13 @@ import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 import lombok.Generated;
 
-import javax.persistence.*;
+import javax.persistence.OneToMany;
+import javax.persistence.Basic;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Id;
+import javax.persistence.Column;
+
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Objects;
