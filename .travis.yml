@@ -19,3 +19,8 @@ addons:
 script:
   # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=Platon42_transfer-task2
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: "42b7fb3c-525c-492e-a443-f56388dc66f7"
