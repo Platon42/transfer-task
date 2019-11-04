@@ -7,6 +7,12 @@ cache:
   directories:
   - "$HOME/.cache"
 
-deploy:
-  provider: script
-  script: "mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
+addons:
+  sonarcloud:
+    organization: "platon42"
+    token:
+      secure: "418587e888317e86feb518129ce2274a8a95d900" # encrypted value of your token
+
+script:
+  # the following command line builds the project, runs the tests with coverage and then execute the SonarCloud analysis
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=Platon42_transfer-task2
