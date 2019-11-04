@@ -1,0 +1,12 @@
+language: java
+jdk: 
+- oraclejdk11
+services:
+- docker
+cache:
+  directories:
+  - "$HOME/.cache"
+
+deploy:
+  provider: script
+  script: "mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
