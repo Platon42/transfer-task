@@ -44,7 +44,7 @@ public class Controller {
 
         ObjectMapper objectMapper = new ObjectMapper();
         H2Utils.startDb(Environment.PRODUCTION);
-        app = Javalin.create().start(Integer.getInteger(System.getenv("PORT")) | 7000);
+        app = Javalin.create().start(7000);
 
         app.post("/client/add", ctx -> {
             Set<ValidationMessage> validationMessages = SchemaValidator.validateSchema(ctx.body(), ApiRequestType.ADD_CLIENT);
