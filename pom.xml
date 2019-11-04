@@ -205,6 +205,11 @@
                                     </excludes>
                                 </filter>
                             </filters>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>org.slf4j:slf4j-log4j12:*</exclude>
+                                </excludes>
+                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
