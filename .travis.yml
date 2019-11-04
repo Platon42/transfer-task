@@ -1,6 +1,8 @@
 env:
   global:
     - CODECOV_TOKEN=:"e914d929-bc36-4b90-8647-0b3f0d837d58"
+git:
+  depth: false
 language: java
 jdk: 
 - oraclejdk11
