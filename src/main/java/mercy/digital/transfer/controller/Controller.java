@@ -131,13 +131,13 @@ public class Controller {
                     Integer accountNo = Integer.valueOf(ctx.pathParam("account_no"));
                     ClientAccountFacade clientAccountFacade = accountFacadeInjector.getInstance(ClientAccountFacade.class);
                     GetTransactionDetails details = clientAccountFacade.getTransactionDetails(accountNo);
-                    ctx.result(objectMapper.writeValueAsString(details));
+            if (details == null) {
+                ctx.result("Not found data transaction by Account No:" + accountNo);
+            } else {
+                ctx.result(objectMapper.writeValueAsString(details));
+            }
                 }
         );
-
-        app.get("hello", context -> {
-            context.result("Hi user!");
-        });
     }
 
     public static void stopJavalin() {

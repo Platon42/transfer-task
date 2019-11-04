@@ -54,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
         QueryBuilder<TransactionEntity, Integer> transactionQueryBuilder = daoTransactionDao.queryBuilder();
         List<TransactionEntity> transactionEntities;
         try {
-            PreparedQuery<TransactionEntity> accountQuery = transactionQueryBuilder.where().eq("SOURCE_ACCOUNT_NO", accountNo).prepare();
+            PreparedQuery<TransactionEntity> accountQuery = transactionQueryBuilder.where().eq("TARGET_ACCOUNT_NO", accountNo).prepare();
             transactionEntities = daoTransactionDao.query(accountQuery);
         } catch (SQLException e) {
             log.error("Cannot find by account No " + accountNo + " Transaction entity " + e.getLocalizedMessage());

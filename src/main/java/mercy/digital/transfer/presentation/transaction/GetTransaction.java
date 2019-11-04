@@ -33,7 +33,4 @@ public class GetTransaction {
     @JsonProperty("transaction_type")
     private String transactionType;
 
-    @JsonProperty("balance_info")
-    private List<GetBalance> getBalance;
-
 }

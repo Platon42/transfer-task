@@ -3,7 +3,9 @@ package mercy.digital.transfer.unit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mercy.digital.transfer.controller.Controller;
 import mercy.digital.transfer.presentation.response.ResponseModel;
+import mercy.digital.transfer.presentation.transaction.GetTransactionDetails;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -58,6 +60,7 @@ class ControllerTest {
 
         CloseableHttpResponse response = httpclient.execute(httpPost);
         String validationError = new String(response.getEntity().getContent().readAllBytes());
+        System.out.println(validationError);
         Assertions.assertTrue(validationError.substring(validationError.indexOf("message")).contains("11992-08-14 is an invalid date"));
     }
 
@@ -240,6 +243,31 @@ class ControllerTest {
         CloseableHttpResponse response = httpclient.execute(httpPost);
         String validationError = new String(response.getEntity().getContent().readAllBytes());
         Assertions.assertTrue(validationError.contains("$.account_no_sender: is missing but it is required"));
+
+    }
+
+    @Order(16)
+    @Test
+    void getInfoTransaction() throws IOException {
+
+        HttpGet httpGet = new HttpGet("http://localhost:7000/client/account/transaction/details/1015454");
+        CloseableHttpResponse response = httpclient.execute(httpGet);
+        String json = new String(response.getEntity().getContent().readAllBytes());
+
+        GetTransactionDetails getTransactionDetails = objectMapper.readValue(json, GetTransactionDetails.class);
+        Assertions.assertNotNull(getTransactionDetails);
+
+    }
+
+    @Order(16)
+    @Test
+    void getInfoTransactionEmpty() throws IOException {
+
+        HttpGet httpGet = new HttpGet("http://localhost:7000/client/account/transaction/details/1015455");
+        CloseableHttpResponse response = httpclient.execute(httpGet);
+        String json = new String(response.getEntity().getContent().readAllBytes());
+
+        Assertions.assertEquals("Not found data transaction by Account No:1015455", json);
 
     }
 }

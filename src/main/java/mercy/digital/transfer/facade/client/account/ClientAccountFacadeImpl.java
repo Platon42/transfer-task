@@ -115,21 +115,13 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
     public GetTransactionDetails getTransactionDetails (Integer accountId) {
 
         List<TransactionEntity> entityTransactions = transactionService.findEntitiesTransactionByAccountNo(accountId);
-        GetTransactionDetails transactionDetails = new GetTransactionDetails();
+        if (entityTransactions.isEmpty()) return null;
 
+        GetTransactionDetails transactionDetails = new GetTransactionDetails();
         List<GetTransaction> getTransactions = new ArrayList<>();
-        ArrayList<GetBalance> getBalances = new ArrayList<>();
-        Collection<BalanceEntity> balances;
+
         for (TransactionEntity e : entityTransactions) {
-            balances = e.getBalancesByTransactionId();
             GetTransaction getTransaction = new GetTransaction();
-            GetBalance getBalance = new GetBalance();
-            for (BalanceEntity b : balances) {
-                getBalance.setBeforeBalance(b.getBeforeBalance());
-                getBalance.setPastBalance(b.getPastBalance());
-                getBalance.setTransactionId(b.getTransactionByTransactionId().getTransactionId());
-                getBalances.add(getBalance);
-            }
 
             getTransaction.setTransactionId(e.getTransactionId());
             getTransaction.setAmount(e.getAmount());
@@ -137,17 +129,14 @@ public class ClientAccountFacadeImpl implements ClientAccountFacade {
             getTransaction.setTargetAccountNo(e.getTargetAccountNo());
             getTransaction.setSourceAccountNo(e.getSourceAccountNo());
             getTransaction.setTransactionType(e.getTransactionType());
-            getTransaction.setGetBalance(getBalances);
 
             getTransactions.add(getTransaction);
+
         }
 
         transactionDetails.setTransactionList(getTransactions);
-        transactionDetails.setAccountNo(1);
         transactionDetails.setAccountNo(accountId);
 
         return transactionDetails;
-
     }
-
 }
