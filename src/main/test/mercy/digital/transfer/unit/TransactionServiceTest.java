@@ -62,7 +62,7 @@ class TransactionServiceTest {
     @Test
     void findEntitiesTransactionByAccountNo() {
         List<TransactionEntity> entitiesTransactionByAccountNo =
-                transactionService.findEntitiesTransactionByAccountNo(sourceAccountNo);
+                transactionService.findEntitiesTransactionByAccountNo(targetAccountNo);
         Assertions.assertEquals(entitiesTransactionByAccountNo.get(0).getTransactionId(), TRANSACTION_ID);
     }
 
