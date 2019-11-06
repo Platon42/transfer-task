@@ -26,3 +26,9 @@ deploy:
   provider: heroku
   api_key:
     secure: "42b7fb3c-525c-492e-a443-f56388dc66f7"
+  provider: releases
+    api_key: "0a26800390f538abc5e223f0bfbb8ad1b7ccedc0"
+    file: "target/revolut-money-transfer-1.0-SNAPSHOT-jar-with-dependencies.jar"
+    skip_cleanup: true
+    on:
+      tags: true
